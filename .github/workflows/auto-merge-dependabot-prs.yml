@@ -1,0 +1,9 @@
+name: Auto merge Dependabot PRs
+
+on: pull_request
+
+jobs:
+  auto-merge-dependabot-prs:
+    uses: opensafely-core/.github/.github/workflows/auto-merge-dependabot-prs.yml@main
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}

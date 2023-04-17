@@ -1,0 +1,40 @@
+---
+name: CI
+
+on:
+  push:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: "opensafely-core/setup-action@v1"
+        with:
+          python-version: "3.11"
+          install-just: true
+      - name: Check formatting, linting and import sorting
+        run: just check
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: "opensafely-core/setup-action@v1"
+        with:
+          python-version: "3.11"
+          install-just: true
+      - name: Run tests
+#       env:  # Add environment variables required for tests
+        run: |
+          just test
+
+  lint-dockerfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hadolint/hadolint-action@54c9adbab1582c2ef04b2016b760714a4bfde3cf  # v3.1.0
+        with:
+          failure-threshold: error
