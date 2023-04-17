@@ -111,7 +111,7 @@ fix: devenv
 
 # Run the dev project
 run: devenv
-    echo "Not implemented yet"
+    $BIN/uvicorn app:app
 
 
 
