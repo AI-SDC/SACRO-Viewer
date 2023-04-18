@@ -31,9 +31,12 @@ def run_chrome():
     subprocess.run(["google-chrome", "--app=http://127.0.0.1:8000"], check=True)
 
 
-if __name__ == "__main__":
+def main():
     t = threading.Thread(target=run_chrome)
     t.start()
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
     # TODO handle app exit from either thread
+
+
+if __name__ == "__main__":
+    main()
