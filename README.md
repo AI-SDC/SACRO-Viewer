@@ -23,6 +23,7 @@ New repo checklist:
 - [ ] Update DEVELOPERS.md with any project-specific requirements and commands
 - [ ] Update commands in `justfile`
 
+adsf
 
 ## Developer docs
 
