@@ -24,7 +24,7 @@ just #  shortcut for just --list
 
 Set up a local development environment with:
 ```
-just dev_setup
+just devenv
 ```
 
 ## Tests
@@ -32,3 +32,20 @@ Run the tests with:
 ```
 just test <args>
 ```
+
+
+## Building the python web app
+
+```
+just build
+```
+
+This builds the pyoxidizer binary of the python application for the current platform.
+
+## Building the electron GUI app
+
+```
+just sacro-app/build
+```
+
+
