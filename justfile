@@ -1,6 +1,8 @@
 # just has no idiom for setting a default value for an environment variable
-# so we shell out, as we need VIRTUAL_ENV in the justfile environment
-export VIRTUAL_ENV  := `echo ${VIRTUAL_ENV:-.venv}`
+# so we shell out, as we need VIRTUAL_ENV in the justfile environme
+
+DEFAULT_VENV_NAME := if os_family() == "unix" { ".venv" } else { ".wenv" }
+export VIRTUAL_ENV  := env_var_or_default('VIRTUAL_ENV', DEFAULT_VENV_NAME)
 
 export BIN := VIRTUAL_ENV + if os_family() == "unix" { "/bin" } else { "/Scripts" }
 export PIP := BIN + if os_family() == "unix" { "/python -m pip" } else { "/python.exe -m pip" }
@@ -35,7 +37,7 @@ _compile src dst *args: virtualenv
     #!/usr/bin/env bash
     # exit if src file is older than dst file (-nt = 'newer than', but we negate with || to avoid error exit code)
     test "${FORCE:-}" = "true" -o {{ src }} -nt {{ dst }} || exit 0
-    $BIN/pip-compile --allow-unsafe --generate-hashes --output-file={{ dst }} {{ src }} {{ args }}
+    $BIN/pip-compile --allow-unsafe --output-file={{ dst }} {{ src }} {{ args }}
 
 
 # update requirements.prod.txt if requirements.prod.in has changed
@@ -156,3 +158,6 @@ assets: assets-install assets-build
 
 
 assets-rebuild: assets-clean assets
+
+build:
+    $BIN/pyoxidizer build --release

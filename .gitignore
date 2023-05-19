@@ -1,4 +1,7 @@
 .venv/
+.wenv/
+.ipynb*
 .pytest-cache/
 build/
 __pycache__
+.*.sw*

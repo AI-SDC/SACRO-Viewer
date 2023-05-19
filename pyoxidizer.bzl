@@ -190,7 +190,7 @@ def make_exe():
     # python_config.write_modules_directory_env = "/tmp/oxidized/loaded_modules"
 
     # Evaluate a string as Python code when the interpreter starts.
-    python_config.run_command = "import testapp; testapp.main()"
+    python_config.run_command = "import sacro; sacro.main()"
 
     # Run a Python module as __main__ when the interpreter starts.
     # python_config.run_module = "<module>"
@@ -202,7 +202,7 @@ def make_exe():
     # resources, and other options. The returned object represents the
     # standalone executable that will be built.
     exe = dist.to_python_executable(
-        name="testapp",
+        name="sacro",
         # If no argument passed, the default `PythonPackagingPolicy` for the
         # distribution is used.
         packaging_policy=policy,
@@ -255,7 +255,7 @@ def make_exe():
     # Python packages.
     exe.add_python_resources(exe.read_package_root(
         path=".",
-        packages=["testapp"],
+        packages=["sacro"],
     ))
 
     # Discover Python files from a virtualenv and add them to our embedded
@@ -278,7 +278,7 @@ def make_install(exe):
     files = FileManifest()
 
     # Add the generated executable to our install layout in the root directory.
-    files.add_python_resource("testapp", exe)
+    files.add_python_resource("sacro", exe)
 
     return files
 
@@ -288,11 +288,11 @@ def make_msi(exe):
     # .msi installer when it is built.
     return exe.to_wix_msi_builder(
         # Simple identifier of your app.
-        "testapp",
+        "sacro",
         # The name of your application.
-        "Test app",
+        "SACRO Outputs Viewer",
         # The version of your application.
-        "1.0",
+        "0.1",
         # The author/manufacturer of your application.
         "OpenSAFELY",
     )
