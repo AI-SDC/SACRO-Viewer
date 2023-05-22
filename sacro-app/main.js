@@ -25,8 +25,9 @@ function findAppPath() {
       return path;
     }
   }
-  console.log("Could not find sacro, checked", possibilities);
+  console.error("Could not find sacro, checked", possibilities);
   app.quit();
+  return null;
 }
 
 
@@ -39,17 +40,16 @@ function createWindow() {
 
   // Spawn the server process
   p = findAppPath()
-  console.log(p);
   const serverProcess = spawn(p)
 
   // Forward server's stdout to Electron's stdout
   serverProcess.stdout.on('data', (data) => {
-    console.log(`Server stdout: ${data}`);
+    process.stdout.write(data);
   });
 
   // Forward server's stderr to Electron's stderr
   serverProcess.stderr.on('data', (data) => {
-    console.error(`Server stderr: ${data}`);
+    process.stderr.write(data);
   });
 
   // Handle server process exit
@@ -63,13 +63,10 @@ function createWindow() {
     const startTime = Date.now();
 
     const checkInterval = setInterval(() => {
-      console.log(`getting ${serverUrl}`);
       http.get(serverUrl, (res) => {
         clearInterval(checkInterval); // Stop the interval
-        console.log('Server is ready!');
         win.loadURL(serverUrl); // Load the URL of the local server
       }).on('error', (err) => {
-        console.log(err);
         const elapsedTime = Date.now() - startTime;
         if (elapsedTime >= maxWaitTime) {
           clearInterval(checkInterval); // Stop the interval

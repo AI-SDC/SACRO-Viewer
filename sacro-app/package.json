@@ -1,9 +1,9 @@
 {
-  "name": "sacro",
-  "version": "1.0.0",
+  "name": "SACRO",
+  "version": "0.1.0",
   "main": "main.js",
   "scripts": {
-    "run": "electron . --no-sandbox",
+    "dev": "electron . --no-sandbox",
     "build": "electron-builder"
   },
   "devDependencies": {

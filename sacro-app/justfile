@@ -1,7 +1,7 @@
 export BUILD_TARGET := if os_family() == "windows" { "pc-windows-msvc" } else { "unknown-linux-gcc" } 
 
 run:
-    npm run run
+    npm run dev
 
 build:
     #!/bin/bash
