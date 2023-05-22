@@ -2,6 +2,8 @@
 .wenv/
 .ipynb*
 .pytest-cache/
-build/
+.coverage
 __pycache__
 .*.sw*
+/build
+sacro-app/dist

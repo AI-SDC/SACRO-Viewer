@@ -1,31 +1,36 @@
 {
-  "name": "sacro-app",
-  "productName": "sacro-app",
-  "version": "0.1.0",
-  "description": "SACRO Outputs Viewer",
-  "main": "src/index.js",
+  "name": "sacro",
+  "version": "1.0.0",
+  "main": "main.js",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
-  },
-  "keywords": [],
-  "author": {
-    "name": "The OpenSAFELY team",
-    "email": "tech@opensafely.org"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "run": "electron . --no-sandbox",
+    "build": "electron-builder"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.1.1",
-    "@electron-forge/maker-deb": "^6.1.1",
-    "@electron-forge/maker-rpm": "^6.1.1",
-    "@electron-forge/maker-squirrel": "^6.1.1",
-    "@electron-forge/maker-zip": "^6.1.1",
-    "electron": "24.3.1"
+    "electron": "^24.3.0",
+    "electron-builder": "^24.4.0"
+  },
+  "build": {
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "extraResources": [
+      {
+        "from": "${env.BUILD_DIR}",
+        "to": "sacro/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  },
+  "dependencies": {
+    "minimatch": "^9.0.0"
   }
 }

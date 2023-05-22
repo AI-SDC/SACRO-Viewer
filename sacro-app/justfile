@@ -1,5 +1,9 @@
+export BUILD_TARGET := if os_family() == "windows" { "pc-windows-msvc" } else { "unknown-linux-gcc" } 
+
 run:
-   npm start
+    npm run run
 
 build:
-   npm run make
+    #!/bin/bash
+    export BUILD_DIR="../build/{{arch()}}-$BUILD_TARGET/release/install/sacro"
+    npm run build

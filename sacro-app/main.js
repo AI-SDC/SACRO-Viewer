@@ -15,10 +15,10 @@ function findAppPath() {
     // in packaged app
     path.join(process.resourcesPath, "sacro", exe),
     // in development
-    path.join(__dirname, "../..build/x86_64-pc-windows-msvc/debug/install/sacro/", exe),
-    path.join(__dirname, "../../build/x86_64-pc-windows-msvc/release/install/sacro/", exe),
-    path.join(__dirname, "../../build/x86_64-unknown-linux-gnu/debug/install/sacro/", exe),
-    path.join(__dirname, "../../build/x86_64-unknown-linux-gnu/release/install/sacro/", exe),
+    path.join(__dirname, "../build/x86_64-pc-windows-msvc/debug/install/sacro/", exe),
+    path.join(__dirname, "../build/x86_64-pc-windows-msvc/release/install/sacro/", exe),
+    path.join(__dirname, "../build/x86_64-unknown-linux-gnu/debug/install/sacro/", exe),
+    path.join(__dirname, "../build/x86_64-unknown-linux-gnu/release/install/sacro/", exe),
   ];
   for (const path of possibilities) {
     if (fs.existsSync(path)) {
@@ -77,12 +77,12 @@ function createWindow() {
           app.quit(); // Quit the Electron app
         }
       });
-    }, 2000); // Retry every 0.2 second
+    }, 200); // Retry every 0.2 second
   };
 
   // Start checking if server is ready with a maximum wait time of 10 seconds (adjust as needed)
   const serverUrl = 'http://127.0.0.1:8000/'; // Specify your server URL here
-  const maxWaitTime = 85000; // Specify the maximum wait time in milliseconds
+  const maxWaitTime = 5000; // Specify the maximum wait time in milliseconds
   checkServerReady(serverUrl, maxWaitTime);
 
   // Event handler for Electron app window close
