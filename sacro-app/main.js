@@ -1,9 +1,13 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, session } = require('electron');
 const { spawn } = require('child_process');
 const http = require('http');
 const path = require('path');
 const process = require('process');
 const fs = require("fs");
+const crypto = require("crypto");
+const portfinder = require("portfinder");
+
+const RANDOM_SECRET = crypto.randomBytes(32).toString("hex");
 
 function findAppPath() {
   var exe = "sacro"
@@ -16,12 +20,13 @@ function findAppPath() {
     path.join(process.resourcesPath, "sacro", exe),
     // in development
     path.join(__dirname, "../build/x86_64-pc-windows-msvc/debug/install/sacro/", exe),
-    path.join(__dirname, "../build/x86_64-pc-windows-msvc/release/install/sacro/", exe),
     path.join(__dirname, "../build/x86_64-unknown-linux-gnu/debug/install/sacro/", exe),
+    path.join(__dirname, "../build/x86_64-pc-windows-msvc/release/install/sacro/", exe),
     path.join(__dirname, "../build/x86_64-unknown-linux-gnu/release/install/sacro/", exe),
   ];
   for (const path of possibilities) {
     if (fs.existsSync(path)) {
+      console.log(`using path ${path}`);
       return path;
     }
   }
@@ -31,16 +36,27 @@ function findAppPath() {
 }
 
 
-function createWindow() {
-  const win = new BrowserWindow({
-    width: 1024,
-    height: 768,
-  });
-  //win.maximize();
+async function createWindow() {
+ 
+  let freePort = null;
+  try {
+    freePort = await portfinder.getPortPromise({ port: 11011 });
+  } catch (err) {
+    console.error("Failed to obtain a port", err);
+    app.quit();
+  }
+  const serverUrl = `http://127.0.0.1:${freePort}/`;
 
   // Spawn the server process
   p = findAppPath()
-  const serverProcess = spawn(p)
+  const serverProcess = spawn(p, {env: {
+    SACRO_APP_TOKEN: RANDOM_SECRET,
+    PORT: freePort,
+  }})
+
+  // set a cookie with the random token in
+  const cookie = { url: serverUrl, name: 'sacro_app_token', value: RANDOM_SECRET }
+  await session.defaultSession.cookies.set(cookie);
 
   // Forward server's stdout to Electron's stdout
   serverProcess.stdout.on('data', (data) => {
@@ -58,6 +74,12 @@ function createWindow() {
     app.quit(); // Exit Electron app when server process exits
   });
 
+  const win = new BrowserWindow({
+    width: 1024,
+    height: 768,
+  });
+  //win.maximize();
+  
   // Wait for HTTP server to be ready with a maximum duration
   const checkServerReady = (serverUrl, maxWaitTime) => {
     const startTime = Date.now();
@@ -77,9 +99,7 @@ function createWindow() {
     }, 200); // Retry every 0.2 second
   };
 
-  // Start checking if server is ready with a maximum wait time of 10 seconds (adjust as needed)
-  const serverUrl = 'http://127.0.0.1:8000/'; // Specify your server URL here
-  const maxWaitTime = 5000; // Specify the maximum wait time in milliseconds
+  const maxWaitTime = 5000;
   checkServerReady(serverUrl, maxWaitTime);
 
   // Event handler for Electron app window close
@@ -89,11 +109,11 @@ function createWindow() {
 }
 
 
-app.whenReady().then(() => {
-  createWindow();
+app.whenReady().then(async () => {
+  await createWindow();
 
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  app.on('activate', async function () {
+    if (BrowserWindow.getAllWindows().length === 0) await createWindow();
   });
 });
 
