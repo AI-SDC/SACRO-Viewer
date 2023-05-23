@@ -15,18 +15,19 @@ function findAppPath() {
     // in packaged app
     path.join(process.resourcesPath, "sacro", exe),
     // in development
-    path.join(__dirname, "../..build/x86_64-pc-windows-msvc/debug/install/sacro/", exe),
-    path.join(__dirname, "../../build/x86_64-pc-windows-msvc/release/install/sacro/", exe),
-    path.join(__dirname, "../../build/x86_64-unknown-linux-gnu/debug/install/sacro/", exe),
-    path.join(__dirname, "../../build/x86_64-unknown-linux-gnu/release/install/sacro/", exe),
+    path.join(__dirname, "../build/x86_64-pc-windows-msvc/debug/install/sacro/", exe),
+    path.join(__dirname, "../build/x86_64-pc-windows-msvc/release/install/sacro/", exe),
+    path.join(__dirname, "../build/x86_64-unknown-linux-gnu/debug/install/sacro/", exe),
+    path.join(__dirname, "../build/x86_64-unknown-linux-gnu/release/install/sacro/", exe),
   ];
   for (const path of possibilities) {
     if (fs.existsSync(path)) {
       return path;
     }
   }
-  console.log("Could not find sacro, checked", possibilities);
+  console.error("Could not find sacro, checked", possibilities);
   app.quit();
+  return null;
 }
 
 
@@ -39,17 +40,16 @@ function createWindow() {
 
   // Spawn the server process
   p = findAppPath()
-  console.log(p);
   const serverProcess = spawn(p)
 
   // Forward server's stdout to Electron's stdout
   serverProcess.stdout.on('data', (data) => {
-    console.log(`Server stdout: ${data}`);
+    process.stdout.write(data);
   });
 
   // Forward server's stderr to Electron's stderr
   serverProcess.stderr.on('data', (data) => {
-    console.error(`Server stderr: ${data}`);
+    process.stderr.write(data);
   });
 
   // Handle server process exit
@@ -63,13 +63,10 @@ function createWindow() {
     const startTime = Date.now();
 
     const checkInterval = setInterval(() => {
-      console.log(`getting ${serverUrl}`);
       http.get(serverUrl, (res) => {
         clearInterval(checkInterval); // Stop the interval
-        console.log('Server is ready!');
         win.loadURL(serverUrl); // Load the URL of the local server
       }).on('error', (err) => {
-        console.log(err);
         const elapsedTime = Date.now() - startTime;
         if (elapsedTime >= maxWaitTime) {
           clearInterval(checkInterval); // Stop the interval
@@ -77,12 +74,12 @@ function createWindow() {
           app.quit(); // Quit the Electron app
         }
       });
-    }, 2000); // Retry every 0.2 second
+    }, 200); // Retry every 0.2 second
   };
 
   // Start checking if server is ready with a maximum wait time of 10 seconds (adjust as needed)
   const serverUrl = 'http://127.0.0.1:8000/'; // Specify your server URL here
-  const maxWaitTime = 85000; // Specify the maximum wait time in milliseconds
+  const maxWaitTime = 5000; // Specify the maximum wait time in milliseconds
   checkServerReady(serverUrl, maxWaitTime);
 
   // Event handler for Electron app window close
