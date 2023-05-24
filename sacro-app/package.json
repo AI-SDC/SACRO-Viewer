@@ -2,6 +2,9 @@
   "name": "SACRO",
   "version": "0.1.0",
   "main": "main.js",
+  "description": "SACRO Output Viewer",
+  "author": "OpenSAFELY",
+  "homepage": "https://github.com/opensafely-core/sacro",
   "scripts": {
     "dev": "electron . --no-sandbox",
     "build": "electron-builder"
@@ -15,7 +18,12 @@
       "output": "dist"
     },
     "win": {
-      "target": "nsis"
+      "target": [
+        "nsis",
+        "portable",
+        "msi",
+        "zip"
+      ]
     },
     "linux": {
       "target": "AppImage"
@@ -31,6 +39,7 @@
     ]
   },
   "dependencies": {
-    "minimatch": "^9.0.0"
+    "minimatch": "^9.0.0",
+    "portfinder": "^1.0.32"
   }
 }

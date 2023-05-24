@@ -113,7 +113,7 @@ fix: devenv
 
 # Run the dev project
 run: devenv
-    $BIN/uvicorn app:app
+    $BIN/uvicorn sacro:app
 
 
 
