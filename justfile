@@ -7,7 +7,8 @@ export VIRTUAL_ENV  := env_var_or_default('VIRTUAL_ENV', DEFAULT_VENV_NAME)
 export BIN := VIRTUAL_ENV + if os_family() == "unix" { "/bin" } else { "/Scripts" }
 export PIP := BIN + if os_family() == "unix" { "/python -m pip" } else { "/python.exe -m pip" }
 
-export DEFAULT_PYTHON := if os_family() == "unix" { "python3.11" } else { "python" }
+# Note: we'd use python 3.11 if we could, but its not yet supported by pyoxidizer
+export DEFAULT_PYTHON := if os_family() == "unix" { "python3.10" } else { "py -3.10" }
 
 
 # list available commands
