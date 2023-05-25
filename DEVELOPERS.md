@@ -33,6 +33,17 @@ just test <args>
 just run  # run python server
 ```
 
+## Running the electon app
+
+You can run the development version the python webapp and then run the electron
+app pointing at that by setting the SACRO_URL env var.
+
+```
+just run &
+export SACRO_URL=http://localhost:8000
+just sacro-app/run
+```
+
 
 ## Building the python web app
 

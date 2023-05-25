@@ -35,24 +35,29 @@ function findAppPath() {
   return null;
 }
 
-
-async function createWindow() {
- 
+async function startServer() {
   let freePort = null;
   try {
+    // Workaround 1 for the lack of unix sockets on windows
+    // We use a fixed port in order to minimise firewall pop ups
+    // However, portfinder will ensure we do get a port, even if the chosen one
+    // is not free
     freePort = await portfinder.getPortPromise({ port: 11011 });
   } catch (err) {
     console.error("Failed to obtain a port", err);
     app.quit();
   }
+
   const serverUrl = `http://127.0.0.1:${freePort}/`;
 
   // Spawn the server process
   p = findAppPath()
-  const serverProcess = spawn(p, {env: {
-    SACRO_APP_TOKEN: RANDOM_SECRET,
-    PORT: freePort,
-  }})
+  const serverProcess = spawn(p, {
+    env: {
+      SACRO_APP_TOKEN: RANDOM_SECRET,
+      PORT: freePort,
+    }
+  })
 
   // set a cookie with the random token in
   const cookie = { url: serverUrl, name: 'sacro_app_token', value: RANDOM_SECRET }
@@ -73,39 +78,62 @@ async function createWindow() {
     console.log(`Server process exited with code ${code}`);
     app.quit(); // Exit Electron app when server process exits
   });
+ 
+  return {
+    url: serverUrl,
+    server: serverProcess,
+  };
+}
+
+// Wait for HTTP server to be ready with a maximum duration
+const waitThenLoad = (serverUrl, maxWaitTime, win) => {
+  const startTime = Date.now();
+
+  const checkInterval = setInterval(() => {
+    http.get(serverUrl, (res) => {
+      clearInterval(checkInterval);
+      win.loadURL(serverUrl);
+    }).on('error', (err) => {
+      const elapsedTime = Date.now() - startTime;
+      if (elapsedTime >= maxWaitTime) {
+        clearInterval(checkInterval); 
+        console.error('Server took too long to start.');
+        app.quit(); // TODO: show error page
+      }
+    });
+  }, 250);
+
+};
+
+
+async function createWindow() {
+ 
+  var serverUrl = serverUrl = process.env.SACRO_URL ?? null;
+  var serverProcess = null;
+
+  if (serverUrl === null) {
+    const {url, server} = await startServer();
+    serverUrl = url;
+    serverProcess = server;
+  }
+  
+  console.log(`Using ${serverUrl} as backend`);
 
   const win = new BrowserWindow({
     width: 1024,
     height: 768,
   });
-  //win.maximize();
-  
-  // Wait for HTTP server to be ready with a maximum duration
-  const checkServerReady = (serverUrl, maxWaitTime) => {
-    const startTime = Date.now();
 
-    const checkInterval = setInterval(() => {
-      http.get(serverUrl, (res) => {
-        clearInterval(checkInterval); // Stop the interval
-        win.loadURL(serverUrl); // Load the URL of the local server
-      }).on('error', (err) => {
-        const elapsedTime = Date.now() - startTime;
-        if (elapsedTime >= maxWaitTime) {
-          clearInterval(checkInterval); // Stop the interval
-          console.error('Server took too long to start.');
-          app.quit(); // Quit the Electron app
-        }
-      });
-    }, 200); // Retry every 0.2 second
-  };
-
-  const maxWaitTime = 5000;
-  checkServerReady(serverUrl, maxWaitTime);
-
-  // Event handler for Electron app window close
   win.on('close', () => {
-    serverProcess.kill(); // Kill the server process when Electron app closes
+    if (serverProcess !== null) serverProcess.kill();
   });
+
+  if (serverProcess === null) {
+    win.loadURL(serverUrl);
+  } else {
+    waitThenLoad(serverUrl, 4000, win);
+  }
+
 }
 
 
