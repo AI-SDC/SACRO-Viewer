@@ -1,9 +1,18 @@
 export BUILD_TARGET := if os_family() == "windows" { "pc-windows-msvc" } else { "unknown-linux-gcc" } 
 
-run:
+# run npm ci if needed
+npm-ci:
+    #!/bin/bash
+    test package-lock.json -nt node_modules/.ci || exit 0
+    npm ci
+    touch node_modules/.ci
+
+# run electron app in dev mode
+run: npm-ci
     npm run dev
 
-build:
+# build installer
+build: npm-ci
     #!/bin/bash
     export BUILD_DIR="../build/{{arch()}}-$BUILD_TARGET/release/install/sacro"
     npm run build
