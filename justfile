@@ -114,8 +114,7 @@ fix: devenv
 
 # Run the dev project
 run: devenv
-    $BIN/uvicorn sacro:app
-
+    $BIN/python manage.py runserver
 
 
 # Remove built assets and collected static files
