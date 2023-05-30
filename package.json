@@ -1,23 +1,53 @@
 {
-  "name": "sacro-assets",
-  "version": "1.0.0",
+  "name": "sacro",
+  "version": "0.0.0",
   "private": true,
-  "type": "module",
+  "description": "SACRO Output Viewer",
+  "author": "OpenSAFELY",
+  "homepage": "https://github.com/opensafely-core/sacro",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "assets:dev": "vite",
+    "assets:build": "vite build",
+    "assets:preview": "vite preview",
+    "electron:dev": "electron ./sacro-app/main.js --no-sandbox",
+    "electron:build": "electron-builder --projectDir ./sacro-app",
     "lint": "eslint \"./**/*.js\"",
     "lint:fix": "eslint \"./**/*.js\" --fix"
   },
   "dependencies": {
+    "electron": "^24.4.0",
+    "portfinder": "^1.0.32",
     "vite": "^4.3.9"
   },
   "devDependencies": {
+    "electron-builder": "^24.4.0",
     "eslint": "^8.41.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1"
+    "eslint-plugin-prettier": "^4.2.1",
+    "minimatch": "^9.0.1"
+  },
+  "build": {
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "msi"
+      ]
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "extraResources": [
+      {
+        "from": "${env.BUILD_DIR}",
+        "to": "sacro/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
   }
 }
