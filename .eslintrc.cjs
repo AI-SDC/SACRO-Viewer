@@ -1,4 +1,5 @@
 module.exports = {
+  ignorePatterns: ["sacro-app/dist/**/*"],
   root: true,
   env: {
     browser: true,

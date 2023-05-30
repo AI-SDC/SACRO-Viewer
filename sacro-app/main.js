@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const { spawn } = require("child_process");
 const crypto = require("crypto");
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { app, BrowserWindow, session } = require("electron");
 const fs = require("fs");
 const http = require("http");
