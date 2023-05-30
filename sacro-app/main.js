@@ -37,20 +37,21 @@ function findAppPath() {
       "../build/x86_64-unknown-linux-gnu/release/install/sacro/",
       exe
     ),
+    path.join(
+      __dirname,
+      "../build/aarch64-apple-darwin/release/install/sacro/",
+      exe
+    ),
   ];
 
-  possibilities.map((opt) => {
-    if (fs.existsSync(opt)) {
-      console.log(`using path ${opt}`);
-      return opt;
-    }
-    return null;
-  });
+  const getPath = possibilities.filter((item) => fs.existsSync(item))[0];
 
-  console.error("Could not find sacro, checked", possibilities);
-  app.quit();
+  if (!getPath) {
+    console.error("Could not find sacro, checked", possibilities);
+    return app.quit();
+  }
 
-  return null;
+  return getPath;
 }
 
 async function startServer() {
