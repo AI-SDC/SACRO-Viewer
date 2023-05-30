@@ -1,0 +1,23 @@
+{
+  "name": "sacro-assets",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint \"./**/*.js\"",
+    "lint:fix": "eslint \"./**/*.js\" --fix"
+  },
+  "dependencies": {
+    "vite": "^4.3.9"
+  },
+  "devDependencies": {
+    "eslint": "^8.41.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1"
+  }
+}
