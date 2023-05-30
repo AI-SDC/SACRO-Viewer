@@ -134,17 +134,7 @@ run: devenv
 #     rm -rf staticfiles
 
 
-# # Install the Node.js dependencies
-# assets-install:
-#     #!/usr/bin/env bash
-#     set -eu
 
-#     # exit if lock file has not changed since we installed them. -nt == "newer than",
-#     # but we negate with || to avoid error exit code
-#     test package-lock.json -nt node_modules/.written || exit 0
-
-#     npm ci
-#     touch node_modules/.written
 
 
 # # Build the Node.js assets
@@ -185,3 +175,15 @@ electron-build:
 
 eslint:
     npm run lint
+
+# Install the Node.js dependencies
+npm-install:
+    #!/usr/bin/env bash
+    set -eu
+
+    # exit if lock file has not changed since we installed them. -nt == "newer than",
+    # but we negate with || to avoid error exit code
+    test package-lock.json -nt node_modules/.written || exit 0
+
+    npm ci
+    touch node_modules/.written
