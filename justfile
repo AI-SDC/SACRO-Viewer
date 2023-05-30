@@ -1,8 +1,19 @@
+build_target := if os_family() == "windows" {
+  "pc-windows-msvc"
+} else {
+  if os() == "macos" {
+    "apple-darwin"
+  } else {
+    "unknown-linux-gcc"
+  }
+}
+export BUILD_TARGET := build_target
+
 # just has no idiom for setting a default value for an environment variable
-# so we shell out, as we need VIRTUAL_ENV in the justfile environme
+# so we shell out, as we need VIRTUAL_ENV in the justfile environment
 
 DEFAULT_VENV_NAME := if os_family() == "unix" { ".venv" } else { ".wenv" }
-export VIRTUAL_ENV  := env_var_or_default('VIRTUAL_ENV', DEFAULT_VENV_NAME)
+export VIRTUAL_ENV := env_var_or_default('VIRTUAL_ENV', DEFAULT_VENV_NAME)
 
 export BIN := VIRTUAL_ENV + if os_family() == "unix" { "/bin" } else { "/Scripts" }
 export PIP := BIN + if os_family() == "unix" { "/python -m pip" } else { "/python.exe -m pip" }
@@ -117,47 +128,60 @@ run: devenv
     $BIN/python manage.py runserver
 
 
-# Remove built assets and collected static files
-assets-clean:
-    rm -rf assets/dist
-    rm -rf staticfiles
+# # Remove built assets and collected static files
+# assets-clean:
+#     rm -rf assets/dist
+#     rm -rf staticfiles
 
 
-# Install the Node.js dependencies
-assets-install:
-    #!/usr/bin/env bash
-    set -eu
+# # Install the Node.js dependencies
+# assets-install:
+#     #!/usr/bin/env bash
+#     set -eu
 
-    # exit if lock file has not changed since we installed them. -nt == "newer than",
-    # but we negate with || to avoid error exit code
-    test package-lock.json -nt node_modules/.written || exit 0
+#     # exit if lock file has not changed since we installed them. -nt == "newer than",
+#     # but we negate with || to avoid error exit code
+#     test package-lock.json -nt node_modules/.written || exit 0
 
-    npm ci
-    touch node_modules/.written
-
-
-# Build the Node.js assets
-assets-build:
-    #!/usr/bin/env bash
-    set -eu
-
-    # find files which are newer than dist/.written in the src directory. grep
-    # will exit with 1 if there are no files in the result.  We negate this
-    # with || to avoid error exit code
-    # we wrap the find in an if in case dist/.written is missing so we don't
-    # trigger a failure prematurely
-    if test -f assets/dist/.written; then
-        find assets/src -type f -newer assets/dist/.written | grep -q . || exit 0
-    fi
-
-    npm run build
-    touch assets/dist/.written
+#     npm ci
+#     touch node_modules/.written
 
 
-assets: assets-install assets-build
+# # Build the Node.js assets
+# assets-build:
+#     #!/usr/bin/env bash
+#     set -eu
+
+#     # find files which are newer than dist/.written in the src directory. grep
+#     # will exit with 1 if there are no files in the result.  We negate this
+#     # with || to avoid error exit code
+#     # we wrap the find in an if in case dist/.written is missing so we don't
+#     # trigger a failure prematurely
+#     if test -f assets/dist/.written; then
+#         find assets/src -type f -newer assets/dist/.written | grep -q . || exit 0
+#     fi
+
+#     npm run build
+#     touch assets/dist/.written
 
 
-assets-rebuild: assets-clean assets
+# assets: assets-install assets-build
+
+
+# assets-rebuild: assets-clean assets
 
 build:
     $BIN/pyoxidizer build --release
+
+electron-pack:
+    #!/bin/bash
+    export BUILD_DIR="build/{{arch()}}-$BUILD_TARGET/release/install/sacro"
+    npm run electron:pack
+
+electron-build:
+    #!/bin/bash
+    export BUILD_DIR="build/{{arch()}}-$BUILD_TARGET/release/install/sacro"
+    npm run electron:build
+
+eslint:
+    npm run lint

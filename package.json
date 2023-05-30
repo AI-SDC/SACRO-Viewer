@@ -2,6 +2,7 @@
   "name": "sacro",
   "version": "0.0.0",
   "private": true,
+  "main": "./sacro-app/main.js",
   "description": "SACRO Output Viewer",
   "author": "OpenSAFELY",
   "homepage": "https://github.com/opensafely-core/sacro",
@@ -11,15 +12,16 @@
     "assets:preview": "vite preview",
     "electron:dev": "electron ./sacro-app/main.js --no-sandbox",
     "electron:build": "electron-builder --projectDir ./sacro-app",
+    "electron:pack": "electron-builder --dir",
     "lint": "eslint \"./**/*.js\"",
     "lint:fix": "eslint \"./**/*.js\" --fix"
   },
   "dependencies": {
-    "electron": "^24.4.0",
     "portfinder": "^1.0.32",
     "vite": "^4.3.9"
   },
   "devDependencies": {
+    "electron": "^24.4.0",
     "electron-builder": "^24.4.0",
     "eslint": "^8.41.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -30,7 +32,8 @@
   },
   "build": {
     "directories": {
-      "output": "dist"
+      "output": "sacro-app/dist",
+      "buildResources": "sacro-app/build"
     },
     "win": {
       "target": [
