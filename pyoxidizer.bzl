@@ -87,10 +87,10 @@ def make_exe():
     # an optional fallback.
 
     # Use in-memory location for adding resources by default.
-    policy.resources_location = "in-memory"
+    # policy.resources_location = "in-memory"
 
     # Use filesystem-relative location for adding resources by default.
-    # policy.resources_location = "filesystem-relative:prefix"
+    policy.resources_location = "filesystem-relative:lib"
 
     # Attempt to add resources relative to the built binary when
     # `resources_location` fails.
@@ -190,10 +190,10 @@ def make_exe():
     # python_config.write_modules_directory_env = "/tmp/oxidized/loaded_modules"
 
     # Evaluate a string as Python code when the interpreter starts.
-    python_config.run_command = "import sacro; sacro.main()"
+    # python_config.run_command = "import sacro; sacro.run()"
 
     # Run a Python module as __main__ when the interpreter starts.
-    # python_config.run_module = "<module>"
+    python_config.run_module = "sacro"
 
     # Run a Python file when the interpreter starts.
     # python_config.run_filename = "/path/to/file"

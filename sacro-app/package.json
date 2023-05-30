@@ -19,10 +19,7 @@
     },
     "win": {
       "target": [
-        "nsis",
-        "portable",
-        "msi",
-        "zip"
+        "msi"
       ]
     },
     "linux": {
