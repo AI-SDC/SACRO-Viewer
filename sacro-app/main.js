@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { spawn } = require("child_process");
 const crypto = require("crypto");
 const { app, BrowserWindow, session } = require("electron");
@@ -10,10 +11,7 @@ const process = require("process");
 const RANDOM_SECRET = crypto.randomBytes(32).toString("hex");
 
 function findAppPath() {
-  let exe = "sacro";
-  if (process.platform === "win32") {
-    exe = "sacro.exe";
-  }
+  const exe = `sacro${process.platform === "win32" ? ".exe" : ""}`;
 
   const possibilities = [
     // in packaged app
@@ -40,14 +38,18 @@ function findAppPath() {
       exe
     ),
   ];
-  for (const path of possibilities) {
-    if (fs.existsSync(path)) {
-      console.log(`using path ${path}`);
-      return path;
+
+  possibilities.map((opt) => {
+    if (fs.existsSync(opt)) {
+      console.log(`using path ${opt}`);
+      return opt;
     }
-  }
+    return null;
+  });
+
   console.error("Could not find sacro, checked", possibilities);
   app.quit();
+
   return null;
 }
 
@@ -67,7 +69,7 @@ async function startServer() {
   const serverUrl = `http://127.0.0.1:${freePort}/`;
 
   // Spawn the server process
-  p = findAppPath();
+  const p = findAppPath();
   const serverProcess = spawn(p, {
     env: {
       SACRO_APP_TOKEN: RANDOM_SECRET,
@@ -111,11 +113,11 @@ const waitThenLoad = (serverUrl, maxWaitTime, win) => {
 
   const checkInterval = setInterval(() => {
     http
-      .get(serverUrl, (res) => {
+      .get(serverUrl, () => {
         clearInterval(checkInterval);
         win.loadURL(serverUrl);
       })
-      .on("error", (err) => {
+      .on("error", () => {
         const elapsedTime = Date.now() - startTime;
         if (elapsedTime >= maxWaitTime) {
           clearInterval(checkInterval);
@@ -127,7 +129,7 @@ const waitThenLoad = (serverUrl, maxWaitTime, win) => {
 };
 
 async function createWindow() {
-  var serverUrl = (serverUrl = process.env.SACRO_URL ?? null);
+  let serverUrl = process.env.SACRO_URL ?? null;
   let serverProcess = null;
 
   if (serverUrl === null) {
