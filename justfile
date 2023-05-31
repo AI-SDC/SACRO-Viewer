@@ -187,3 +187,22 @@ npm-install:
 
     npm ci
     touch node_modules/.written
+assets-build:
+    #!/usr/bin/env bash
+    set -eu
+
+    # find files which are newer than dist/.written in the src directory. grep
+    # will exit with 1 if there are no files in the result.  We negate this
+    # with || to avoid error exit code
+    # we wrap the find in an if in case dist/.written is missing so we don't
+    # trigger a failure prematurely
+    if test -f assets/dist/.written; then
+        find assets/src -type f -newer assets/dist/.written | grep -q . || exit 0
+    fi
+
+    npm run assets-build
+    touch assets/dist/.written
+
+# Ensure django's collectstatic is run if needed
+collectstatic: devenv
+    ./scripts/collect-me-maybe.sh $BIN/python
