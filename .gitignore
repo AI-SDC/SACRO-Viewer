@@ -8,3 +8,5 @@ __pycache__
 /build
 sacro-app/dist
 node_modules/
+assets/dist
+staticfiles/
