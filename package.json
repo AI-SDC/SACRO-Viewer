@@ -7,14 +7,14 @@
   "author": "OpenSAFELY",
   "homepage": "https://github.com/opensafely-core/sacro",
   "scripts": {
-    "assets:dev": "vite",
-    "assets:build": "vite build",
-    "assets:preview": "vite preview",
-    "electron:dev": "electron ./sacro-app/main.js --no-sandbox",
-    "electron:build": "electron-builder --projectDir ./sacro-app",
-    "electron:pack": "electron-builder --dir",
+    "assets-dev": "vite",
+    "assets-build": "vite build",
+    "assets-preview": "vite preview",
+    "electron-dev": "electron ./sacro-app/main.js --no-sandbox",
+    "electron-build": "electron-builder",
+    "electron-pack": "electron-builder --dir",
     "lint": "eslint \"./**/*.js\"",
-    "lint:fix": "eslint \"./**/*.js\" --fix"
+    "lint-fix": "eslint \"./**/*.js\" --fix"
   },
   "dependencies": {
     "portfinder": "^1.0.32",

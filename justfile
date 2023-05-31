@@ -166,12 +166,12 @@ build:
 electron-pack:
     #!/bin/bash
     export BUILD_DIR="build/{{arch()}}-$BUILD_TARGET/release/install/sacro"
-    npm run electron:pack
+    npm run electron-pack
 
 electron-build:
     #!/bin/bash
     export BUILD_DIR="build/{{arch()}}-$BUILD_TARGET/release/install/sacro"
-    npm run electron:build
+    npm run electron-build
 
 eslint:
     npm run lint
@@ -187,6 +187,10 @@ npm-install:
 
     npm ci
     touch node_modules/.written
+
+assets-dev:
+    npm run assets-dev
+
 assets-build:
     #!/usr/bin/env bash
     set -eu
