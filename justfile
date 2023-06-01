@@ -189,7 +189,7 @@ npm-install:
     touch node_modules/.written
 
 assets-dev:
-    npm run assets-dev
+    pnpm run assets-dev
 
 assets-build:
     #!/usr/bin/env bash
