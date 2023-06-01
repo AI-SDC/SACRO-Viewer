@@ -68,7 +68,7 @@ TEMPLATES = [
             ],
             "builtins": [
                 "slippers.templatetags.slippers",
-                "django_vite.templatetags.django_vite",
+                # "django_vite.templatetags.django_vite",
             ],
         },
     },
@@ -118,6 +118,7 @@ USE_TZ = True
 
 
 STATICFILES_DIRS = [
+    env.str("STATIC_ASSETS", default=os.path.join(BASE_DIR, "static")),
     env.str("BUILT_ASSETS", default=os.path.join(BASE_DIR, "assets", "dist")),
 ]
 STATIC_ROOT = env.str("STATIC_ROOT", default=os.path.join(BASE_DIR, "staticfiles"))
