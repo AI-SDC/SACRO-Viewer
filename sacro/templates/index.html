@@ -1,7 +1,65 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% #header title="SACRO Outputs Viewer" %}
-        <p>Hola mundo!</p>
-    {% /header %}
+
+
+<nav class="grid gap-y-4 bg-zinc-100">
+  <div class="container py-8 min-h-full grid gap-y-4 content-start">
+    <form action="GET">
+      <label class="flex flex-col gap-y-1" for="searchFiles">
+        <span class="sr-only">Find a file</span>
+        <input
+          class="w-full border-zinc-200 rounded text-sm"
+          id="searchFiles"
+          name="search-files"
+          placeholder="Find a file"
+          type="search"
+        >
+      </label>
+    </form>
+
+    <ul class="text-sm bg-white border border-zinc-200 rounded">
+      <li>
+        <a class="block py-1 text-blue-800 font-semibold tracking-tight px-2 hover:bg-slate-50" href="#">
+          📄 Example file
+        </a>
+      </li>
+      <li class="py-1 px-2">
+        <details class="group" open>
+          <summary class="cursor-pointer text-blue-800 font-bold tracking-tight hover:bg-slate-50">
+            <span class="group-open:hidden">📁</span>
+            <span class="hidden group-open:inline">📂</span>
+            Example folder
+          </summary>
+          <ul class="ml-2 pl-2 relative before:w-1 before:h-full before:absolute before:-left-1 before:border-l before:border-l-zinc-300">
+            <li class="relative before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300">
+              <a class="py-1 block hover:bg-slate-50 text-blue-800 font-semibold tracking-tight" href="#">📄 File in folder</a>
+            </li>
+            <li class="relative before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300">
+              <a class="py-1 block hover:bg-slate-50 text-blue-800 font-semibold tracking-tight" href="#">📄 File in folder</a>
+            </li>
+            <li class="relative before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300">
+              <a class="py-1 block hover:bg-slate-50 text-blue-800 font-semibold tracking-tight" href="#">📄 File in folder</a>
+            </li>
+            <li class="relative before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300">
+              <a class="py-1 block hover:bg-slate-50 text-blue-800 font-semibold tracking-tight" href="#">📄 File in folder</a>
+            </li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<article class="container py-8">
+  <header>
+  <h1 id="fileName">File name</h1>
+  </header>
+  <section aria-labelledby="fileName">
+    <p>File content</p>
+  </section>
+  <footer>
+    <p>File information?</p>
+  </footer>
+</article>
 {% endblock content %}
