@@ -44,15 +44,19 @@
   </div>
 </nav>
 
-<article class="container py-8">
-  <header>
-  <h1 id="fileName">File name</h1>
-  </header>
-  <section aria-labelledby="fileName">
-    <p>File content</p>
-  </section>
-  <footer>
-    <p>File information?</p>
-  </footer>
+<article class="container py-8 flex flex-col gap-y-4 lg:col-span-2">
+  {% #card title="Summary" container=True class="w-full" %}
+    {% pill variant="danger" text="Failed" class="mb-1" %}
+    <p>4 cells suppressed</p>
+  {% /card %}
+  {% #card title="Comments" container=True class="w-full" %}
+    <ul>
+      <li>Please let me have this data</li>
+      <li>4 cells were suppressed in this table</li>
+    </ul>
+  {% /card %}
+  {% #card title="File preview" container=True class="w-full" %}
+    <p>File content to go here</p>
+  {% /card %}
 </article>
 {% endblock content %}

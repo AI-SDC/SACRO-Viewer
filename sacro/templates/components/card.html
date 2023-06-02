@@ -1,0 +1,34 @@
+<section {% attrs class %} aria-labelledby="{{ title | slugify }}-title">
+  <div class="bg-white shadow">
+    {% if title or subtitle %}
+    <div class="flex flex-wrap gap-2 items-center justify-between px-4 py-2 sm:px-6 sm:py-4 sm:flex-nowrap {{ header_class }}">
+      <div>
+        {% if title %}
+        <h2 id="{{ title | slugify }}-title" class="text-xl font-semibold tracking-tight text-slate-900">
+          {{ title }}
+        </h2>
+        {% endif %}
+
+        {% if subtitle %}
+        <p class="text-slate-600 text-sm leading-tight">{{ subtitle }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if container %}
+      <div
+        class="
+          px-4 py-3 md:px-6
+          {% if title or subtitle %}border-t border-slate-200{% endif %}
+          md:py-5
+          {{ container_class }}
+        "
+      >
+    {% endif %}
+      {{ children }}
+    {% if container %}
+      </div>
+    {% endif %}
+  </div>
+</section>

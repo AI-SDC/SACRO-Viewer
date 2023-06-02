@@ -1,6 +1,8 @@
 components:
+  card: "components/card.html"
   header: "components/header.html"
   file: "components/file.html"
+  pill: "components/pill.html"
 
   icon_document_outline: "icons/document-outline.svg"
   icon_folder_outline: "icons/folder-outline.svg"
