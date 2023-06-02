@@ -18,32 +18,25 @@
       </label>
     </form>
 
-    <ul class="text-sm bg-white border border-zinc-200 rounded">
-      <li>
-        <a class="block py-1 text-blue-800 font-semibold tracking-tight px-2 hover:bg-slate-50" href="#">
-          📄 Example file
-        </a>
-      </li>
+    <ul class="text-sm bg-white border border-zinc-200 rounded py-2">
+      {% file href="#" name="File 01" class="py-1 px-2" %}
+
       <li class="py-1 px-2">
         <details class="group" open>
-          <summary class="cursor-pointer text-blue-800 font-bold tracking-tight hover:bg-slate-50">
-            <span class="group-open:hidden">📁</span>
-            <span class="hidden group-open:inline">📂</span>
+          <summary class="flex items-center gap-1 cursor-pointer text-blue-800 font-semibold tracking-tight hover:bg-slate-50">
+            <span class="group-open:hidden">
+              {% icon_folder_outline class="h-4 w-4 text-zinc-500" %}
+            </span>
+            <span class="hidden group-open:inline">
+              {% icon_folder_open_outline class="h-4 w-4 text-yellow-800" %}
+            </span>
             Example folder
           </summary>
           <ul class="ml-2 pl-2 relative before:w-1 before:h-full before:absolute before:-left-1 before:border-l before:border-l-zinc-300">
-            <li class="relative before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300">
-              <a class="py-1 block hover:bg-slate-50 text-blue-800 font-semibold tracking-tight" href="#">📄 File in folder</a>
-            </li>
-            <li class="relative before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300">
-              <a class="py-1 block hover:bg-slate-50 text-blue-800 font-semibold tracking-tight" href="#">📄 File in folder</a>
-            </li>
-            <li class="relative before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300">
-              <a class="py-1 block hover:bg-slate-50 text-blue-800 font-semibold tracking-tight" href="#">📄 File in folder</a>
-            </li>
-            <li class="relative before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300">
-              <a class="py-1 block hover:bg-slate-50 text-blue-800 font-semibold tracking-tight" href="#">📄 File in folder</a>
-            </li>
+            {% file child=True href="#" name="File 1" %}
+            {% file child=True href="#" name="File 22" %}
+            {% file child=True href="#" name="File 333" %}
+            {% file child=True href="#" name="File 4444" %}
           </ul>
         </details>
       </li>

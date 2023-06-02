@@ -1,0 +1,17 @@
+<li
+  class="
+    relative
+    {{ class }}
+    {% if child %}
+      before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300
+    {% endif %}
+  "
+>
+  <a
+    class="py-1 flex justify-start items-center gap-1 leading-none hover:bg-slate-50 text-blue-800 font-semibold tracking-tight"
+    {% attrs href %}
+  >
+    {% icon_document_outline class="h-4 w-4 text-zinc-500" %}
+    {{ name }}
+  </a>
+</li>
