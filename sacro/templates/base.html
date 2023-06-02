@@ -12,7 +12,11 @@
     {% vite_asset "assets/src/scripts/main.js" %}
   </head>
 
-  <body class="min-h-screen">
-    {% block content %}{% endblock %}
+  <body class="flex flex-col min-h-screen bg-zinc-50">
+    {% header title="SACRO Outputs Viewer" %}
+
+    <main class="grid flex-auto lg:gap-x-8 lg:grid-cols-3">
+      {% block content %}{% endblock %}
+    </main>
   </body>
 </html>

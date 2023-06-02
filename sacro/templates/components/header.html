@@ -1,16 +1,14 @@
 {% load static %}
 
-<header class="bg-white shadow-sm py-4 lg:static lg:overflow-y-visible">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="relative flex justify-between lg:gap-8 xl:grid xl:grid-cols-12">
-      <div class="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-2">
-        <div class="flex flex-shrink-0 items-center">
-          <a href="#">
-            <img class="block h-8 w-auto" src="{% static "sacro.svg" %}" alt="{{ title }} logo">
-            <span class="sr-only">{{ title }}</span>
-          </a>
-        </div>
-      </div>
-    </div>
+<header class="bg-white shadow-sm py-4">
+  <div class="container flex gap-x-4 items-center">
+    <img
+      alt="{{ title }} logo"
+      class="block h-8 w-auto"
+      src="{% static "sacro.svg" %}"
+    >
+    <span class="text-xl font-extrabold text-zinc-800 tracking-tight leading-none">
+      {{ title }}
+    </span>
   </div>
 </header>
