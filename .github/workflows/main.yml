@@ -6,30 +6,59 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
       - uses: "opensafely-core/setup-action@v1"
         with:
-          python-version: "3.11"
+          python-version: "3.10"
           install-just: true
       - name: Check formatting, linting and import sorting
         run: just check
 
-  test:
-    runs-on: ubuntu-latest
+  test-linux:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: "opensafely-core/setup-action@v1"
+        with:
+          python-version: "3.10"
+          install-just: true
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
+      - name: Run tests
+        run: just test
+      - name: Build binary
+        run: just build
+      - name: Build app
+        run: just sacro-app/build
+
+  test-windows:
+    runs-on: windows-2022
 
     steps:
       - uses: actions/checkout@v3
       - uses: "opensafely-core/setup-action@v1"
         with:
           python-version: "3.11"
-          install-just: true
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+          cache-dependency-path: "**/package-lock.json"
+      # our just setup doesn't make just available on the path
+      - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
       - name: Run tests
-#       env:  # Add environment variables required for tests
-        run: |
-          just test
+        run: just test
+      - name: Build binary
+        run: just build
+      - name: Build app
+        run: just sacro-app/build
 
   lint-dockerfile:
     runs-on: ubuntu-latest
