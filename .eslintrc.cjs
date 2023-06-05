@@ -1,4 +1,10 @@
 module.exports = {
+  ignorePatterns: [
+    "assets/dist/**/*",
+    "build/**/*",
+    "sacro-app/dist/**/*",
+    "staticfiles/**/*",
+  ],
   root: true,
   env: {
     browser: true,
