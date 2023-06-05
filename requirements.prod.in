@@ -2,7 +2,7 @@ django==4.1
 django-browser-reload
 django-extensions
 django-htmx
-django-vite==2.0.2
+django-vite
 environs
 pyoxidizer
 requests
