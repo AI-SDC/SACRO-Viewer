@@ -1,3 +1,8 @@
-fastapi
-uvicorn
 pyoxidizer
+uvicorn
+django<4.2
+django-vite
+django-htmx
+slippers
+whitenoise[brotli]
+requests
