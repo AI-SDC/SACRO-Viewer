@@ -1,8 +1,19 @@
+build_target := if os_family() == "windows" {
+  "pc-windows-msvc"
+} else {
+  if os() == "macos" {
+    "apple-darwin"
+  } else {
+    "unknown-linux-gcc"
+  }
+}
+export BUILD_TARGET := build_target
+
 # just has no idiom for setting a default value for an environment variable
-# so we shell out, as we need VIRTUAL_ENV in the justfile environme
+# so we shell out, as we need VIRTUAL_ENV in the justfile environment
 
 DEFAULT_VENV_NAME := if os_family() == "unix" { ".venv" } else { ".wenv" }
-export VIRTUAL_ENV  := env_var_or_default('VIRTUAL_ENV', DEFAULT_VENV_NAME)
+export VIRTUAL_ENV := env_var_or_default('VIRTUAL_ENV', DEFAULT_VENV_NAME)
 
 export BIN := VIRTUAL_ENV + if os_family() == "unix" { "/bin" } else { "/Scripts" }
 export PIP := BIN + if os_family() == "unix" { "/python -m pip" } else { "/python.exe -m pip" }
@@ -116,12 +127,11 @@ fix: devenv
 run: devenv
     $BIN/python manage.py runserver
 
+build:
+    $BIN/pyoxidizer build --release
 
-# Remove built assets and collected static files
-assets-clean:
-    rm -rf assets/dist
-    rm -rf staticfiles
-
+eslint:
+    npm run lint
 
 # Install the Node.js dependencies
 assets-install:
@@ -135,6 +145,10 @@ assets-install:
     npm ci
     touch node_modules/.written
 
+# Remove built assets and collected static files
+assets-clean:
+    rm -rf assets/dist
+    rm -rf staticfiles
 
 # Build the Node.js assets
 assets-build:
@@ -156,8 +170,4 @@ assets-build:
 
 assets: assets-install assets-build
 
-
 assets-rebuild: assets-clean assets
-
-build:
-    $BIN/pyoxidizer build --release
