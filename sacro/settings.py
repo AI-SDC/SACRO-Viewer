@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "sacro",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -121,5 +122,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
+# this is used by the electron app to configure a random secret token that must
+# be present in requests, to avoid localhost interception
 APP_TOKEN = os.environ.get("SACRO_APP_TOKEN")
