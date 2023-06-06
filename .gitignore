@@ -10,3 +10,5 @@ sacro-app/dist
 node_modules/
 assets/dist
 staticfiles/
+.env
+*.sqlite3

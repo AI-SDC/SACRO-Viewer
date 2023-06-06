@@ -1,0 +1,8 @@
+# Turn on debug
+DEBUG=True
+
+# A long random string
+SECRET_KEY=12345
+
+# Turn on development mode for Vite
+DJANGO_VITE_DEV_MODE=False
