@@ -23,7 +23,8 @@
       ]
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "category": "Science"
     },
     "extraResources": [
       {
