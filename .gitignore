@@ -7,3 +7,4 @@ __pycache__
 .*.sw*
 /build
 sacro-app/dist
+node_modules/
