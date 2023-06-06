@@ -1,8 +1,9 @@
 pyoxidizer
 uvicorn
 django<4.2
-django-vite
+django-extensions
 django-htmx
+django-vite
 slippers
 whitenoise[brotli]
 requests

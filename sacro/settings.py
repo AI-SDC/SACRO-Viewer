@@ -10,8 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
+import re
 from pathlib import Path
 
+from environs import Env
+
+
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,6 +39,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "sacro",
+    "django_extensions",
+    "django_vite",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -43,6 +51,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "sacro.middleware.AppTokenMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -125,3 +134,25 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # this is used by the electron app to configure a random secret token that must
 # be present in requests, to avoid localhost interception
 APP_TOKEN = os.environ.get("SACRO_APP_TOKEN")
+
+STATICFILES_DIRS = [
+    env.str("BUILT_ASSETS", default=os.path.join(BASE_DIR, "assets", "dist")),
+]
+STATIC_ROOT = env.str("STATIC_ROOT", default=os.path.join(BASE_DIR, "staticfiles"))
+STATIC_URL = "/static/"
+
+DJANGO_VITE_DEV_SERVER_PORT = 5173
+DJANGO_VITE_ASSETS_PATH = "/static/"
+DJANGO_VITE_DEV_MODE = env.bool("DJANGO_VITE_DEV_MODE", default=False)
+DJANGO_VITE_MANIFEST_PATH = os.path.join(STATIC_ROOT, "manifest.json")
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+def immutable_file_test(path, url):
+    # Match filename with 12 hex digits before the extension
+    # e.g. app.db8f2edc0c8a.js
+    return re.match(r"^.+\.[0-9a-f]{12}\..+$", url)
+
+
+WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test

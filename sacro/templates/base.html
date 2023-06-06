@@ -1,0 +1,18 @@
+{% load django_vite %}
+
+<!DOCTYPE html>
+<html lang="en" class="min-h-screen">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SACRO Outputs Viewer</title>
+
+    {% vite_hmr_client %}
+    {% vite_asset "assets/src/scripts/main.js" %}
+  </head>
+
+  <body class="min-h-screen">
+    {% block content %}{% endblock %}
+  </body>
+</html>
