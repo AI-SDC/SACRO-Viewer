@@ -1,9 +1,10 @@
-pyoxidizer
-uvicorn
 django<4.2
+django-browser-reload
 django-extensions
 django-htmx
 django-vite
-slippers
-whitenoise[brotli]
+pyoxidizer
 requests
+slippers
+uvicorn
+whitenoise[brotli]
