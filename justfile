@@ -4,7 +4,7 @@ build_target := if os_family() == "windows" {
   if os() == "macos" {
     "apple-darwin"
   } else {
-    "unknown-linux-gcc"
+    "unknown-linux-gnu"
   }
 }
 export BUILD_TARGET := build_target
