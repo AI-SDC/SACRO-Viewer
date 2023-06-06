@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "sacro",
     "django_extensions",
     "django_vite",
+    "slippers",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -73,6 +74,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+            ],
+            "builtins": [
+                "slippers.templatetags.slippers",
             ],
         },
     },
