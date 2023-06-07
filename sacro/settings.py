@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
-import re
 from pathlib import Path
 
 from environs import Env
@@ -141,24 +140,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # be present in requests, to avoid localhost interception
 APP_TOKEN = os.environ.get("SACRO_APP_TOKEN")
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
 STATICFILES_DIRS = [
-    env.str("BUILT_ASSETS", default=os.path.join(BASE_DIR, "assets", "dist")),
+    BASE_DIR / "static",
+    env.path("BUILT_ASSETS", default=BASE_DIR / "assets" / "dist"),
 ]
-STATIC_ROOT = env.str("STATIC_ROOT", default=os.path.join(BASE_DIR, "staticfiles"))
+STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "staticfiles")
 STATIC_URL = "/static/"
 
-DJANGO_VITE_DEV_SERVER_PORT = 5173
-DJANGO_VITE_ASSETS_PATH = "/static/"
+DJANGO_VITE_ASSETS_PATH = BASE_DIR / "assets" / "dist"
 DJANGO_VITE_DEV_MODE = env.bool("DJANGO_VITE_DEV_MODE", default=False)
-DJANGO_VITE_MANIFEST_PATH = os.path.join(STATIC_ROOT, "manifest.json")
+DJANGO_VITE_DEV_SERVER_PORT = 5173
+DJANGO_VITE_MANIFEST_PATH = STATIC_ROOT / "manifest.json"
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-
-def immutable_file_test(path, url):
-    # Match filename with 12 hex digits before the extension
-    # e.g. app.db8f2edc0c8a.js
-    return re.match(r"^.+\.[0-9a-f]{12}\..+$", url)
-
-
-WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
+# Insert Whitenoise Middleware.
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
