@@ -1,4 +1,5 @@
 const { app } = require("electron");
+const crypto = require("node:crypto");
 const http = require("node:http");
 
 // Wait for HTTP server to be ready with a maximum duration
@@ -22,6 +23,9 @@ const waitThenLoad = (serverUrl, maxWaitTime, win) => {
   }, 250);
 };
 
+const RANDOM_SECRET = crypto.randomBytes(32).toString("hex");
+
 module.exports = {
+  RANDOM_SECRET,
   waitThenLoad,
 };
