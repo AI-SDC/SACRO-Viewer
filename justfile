@@ -171,3 +171,7 @@ assets-build:
 assets: assets-install assets-build
 
 assets-rebuild: assets-clean assets
+
+# Ensure django's collectstatic is run if needed
+collectstatic: devenv
+    ./scripts/collect-me-maybe.sh $BIN/python

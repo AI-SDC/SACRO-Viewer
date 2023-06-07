@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+from environs import Env
+
+
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,18 +26,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-olm!y%*+rm&)1x(j!y#q#941!@83y2p^!bs@7t_*w8z3gdrn6l"
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
     "sacro",
+    "django_browser_reload",
+    "django_extensions",
+    "django_vite",
+    "slippers",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -43,12 +52,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "sacro.middleware.AppTokenMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = "sacro.urls"
@@ -64,6 +75,9 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+            ],
+            "builtins": [
+                "slippers.templatetags.slippers",
             ],
         },
     },
@@ -125,3 +139,20 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # this is used by the electron app to configure a random secret token that must
 # be present in requests, to avoid localhost interception
 APP_TOKEN = os.environ.get("SACRO_APP_TOKEN")
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    env.path("BUILT_ASSETS", default=BASE_DIR / "assets" / "dist"),
+]
+STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "staticfiles")
+STATIC_URL = "/static/"
+
+DJANGO_VITE_ASSETS_PATH = BASE_DIR / "assets" / "dist"
+DJANGO_VITE_DEV_MODE = env.bool("DJANGO_VITE_DEV_MODE", default=False)
+DJANGO_VITE_DEV_SERVER_PORT = 5173
+DJANGO_VITE_MANIFEST_PATH = STATIC_ROOT / "manifest.json"
+
+# Insert Whitenoise Middleware.
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
