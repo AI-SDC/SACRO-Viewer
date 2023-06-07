@@ -9,9 +9,13 @@
     "dev": "electron . --no-sandbox",
     "build": "electron-builder"
   },
+  "dependencies": {
+    "minimatch": "^9.0.1",
+    "portfinder": "^1.0.32"
+  },
   "devDependencies": {
-    "electron": "^24.3.0",
-    "electron-builder": "^24.4.0"
+    "electron": "^25.0.1",
+    "electron-builder": "^23.6.0"
   },
   "build": {
     "directories": {
@@ -35,9 +39,5 @@
         ]
       }
     ]
-  },
-  "dependencies": {
-    "minimatch": "^9.0.0",
-    "portfinder": "^1.0.32"
   }
 }
