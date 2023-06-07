@@ -1,59 +1,13 @@
 /* eslint-disable no-console */
-const { spawn } = require("child_process");
-const crypto = require("crypto");
-// eslint-disable-next-line import/no-extraneous-dependencies
 const { app, BrowserWindow, session } = require("electron");
-const fs = require("fs");
-const http = require("http");
-const path = require("path");
+const { spawn } = require("node:child_process");
+const crypto = require("node:crypto");
+const process = require("node:process");
 const portfinder = require("portfinder");
-const process = require("process");
+const findAppPath = require("./src/app-path");
+const { waitThenLoad } = require("./src/utils");
 
 const RANDOM_SECRET = crypto.randomBytes(32).toString("hex");
-
-function findAppPath() {
-  const exe = `sacro${process.platform === "win32" ? ".exe" : ""}`;
-
-  const possibilities = [
-    // in packaged app
-    path.join(process.resourcesPath, "sacro", exe),
-    // in development
-    path.join(
-      __dirname,
-      "../build/x86_64-pc-windows-msvc/debug/install/sacro/",
-      exe
-    ),
-    path.join(
-      __dirname,
-      "../build/x86_64-unknown-linux-gnu/debug/install/sacro/",
-      exe
-    ),
-    path.join(
-      __dirname,
-      "../build/x86_64-pc-windows-msvc/release/install/sacro/",
-      exe
-    ),
-    path.join(
-      __dirname,
-      "../build/x86_64-unknown-linux-gnu/release/install/sacro/",
-      exe
-    ),
-    path.join(
-      __dirname,
-      "../build/aarch64-apple-darwin/release/install/sacro/",
-      exe
-    ),
-  ];
-
-  const getPath = possibilities.filter((item) => fs.existsSync(item))[0];
-
-  if (!getPath) {
-    console.error("Could not find sacro, checked", possibilities);
-    return app.quit();
-  }
-
-  return getPath;
-}
 
 async function startServer() {
   let freePort = null;
@@ -108,27 +62,6 @@ async function startServer() {
     server: serverProcess,
   };
 }
-
-// Wait for HTTP server to be ready with a maximum duration
-const waitThenLoad = (serverUrl, maxWaitTime, win) => {
-  const startTime = Date.now();
-
-  const checkInterval = setInterval(() => {
-    http
-      .get(serverUrl, () => {
-        clearInterval(checkInterval);
-        win.loadURL(serverUrl);
-      })
-      .on("error", () => {
-        const elapsedTime = Date.now() - startTime;
-        if (elapsedTime >= maxWaitTime) {
-          clearInterval(checkInterval);
-          console.error("Server took too long to start.");
-          app.quit(); // TODO: show error page
-        }
-      });
-  }, 250);
-};
 
 async function createWindow() {
   let serverUrl = process.env.SACRO_URL ?? null;
