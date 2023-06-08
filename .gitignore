@@ -9,6 +9,6 @@ __pycache__
 sacro-app/dist
 node_modules/
 assets/dist
-staticfiles/
+sacro/staticfiles/
 .env
 *.sqlite3

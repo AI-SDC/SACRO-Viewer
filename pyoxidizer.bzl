@@ -20,7 +20,7 @@ def make_exe():
 
     # Enable support for non-classified "file" resources to be added to
     # resource collections.
-    # policy.allow_files = True
+    policy.allow_files = True
 
     # Control support for loading Python extensions and other shared libraries
     # from memory. This is only supported on Windows and is ignored on other
@@ -90,6 +90,7 @@ def make_exe():
     # policy.resources_location = "in-memory"
 
     # Use filesystem-relative location for adding resources by default.
+    # we need to use filesytem resources because django makes liberal use of __file__
     policy.resources_location = "filesystem-relative:lib"
 
     # Attempt to add resources relative to the built binary when
@@ -173,11 +174,11 @@ def make_exe():
 
     # Control whether `oxidized_importer` is the first importer on
     # `sys.meta_path`.
-    # python_config.oxidized_importer = False
+    python_config.oxidized_importer = False
 
     # Enable the standard path-based importer which attempts to load
     # modules from the filesystem.
-    # python_config.filesystem_importer = True
+    python_config.filesystem_importer = True
 
     # Set `sys.frozen = False`
     # python_config.sys_frozen = False
@@ -255,7 +256,7 @@ def make_exe():
     # Python packages.
     exe.add_python_resources(exe.read_package_root(
         path=".",
-        packages=["sacro"],
+        packages=["sacro",],
     ))
 
     # Discover Python files from a virtualenv and add them to our embedded
