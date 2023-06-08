@@ -15,7 +15,7 @@ const findAppPath = () => {
   ];
 
   const fileLocations = [
-    path.join(process.resourcesPath, "sacro", appExt),
+    path.join(process.resourcesPath, "app", "sacro", appExt),
     ...platformDirs.map((dir) =>
       path.join(__dirname, `../../build/${dir}/install/sacro`, appExt)
     ),
