@@ -33,7 +33,7 @@ clean:
 
 
 # ensure valid virtualenv
-virtualenv:
+virtualenv: _env
     #!/usr/bin/env bash
     # allow users to specify python version in .env
     PYTHON_VERSION=${PYTHON_VERSION:-$DEFAULT_PYTHON}
@@ -43,6 +43,11 @@ virtualenv:
 
     # ensure we have pip-tools so we can run pip-compile
     test -e $BIN/pip-compile || $PIP install pip-tools
+
+
+_env:
+    #!/usr/bin/env bash
+    test -f .env || cp .dotenv-sample .env
 
 
 _compile src dst *args: virtualenv
