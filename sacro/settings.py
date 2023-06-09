@@ -61,7 +61,7 @@ MIDDLEWARE = [
 ]
 
 # add dev tools only when needed
-if DEBUG:
+if DEBUG:  # pragma: no cover
     import importlib.util
 
     if importlib.util.find_spec("django_browser_reload"):
