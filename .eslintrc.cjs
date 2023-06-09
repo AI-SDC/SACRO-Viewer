@@ -12,7 +12,14 @@ module.exports = {
   },
   extends: ["airbnb-base", "prettier"],
   plugins: ["prettier"],
-  overrides: [],
+  overrides: [
+    {
+      files: ["sacro-app/**/*.js"],
+      rules: {
+        "no-console": ["off"],
+      },
+    },
+  ],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
@@ -35,5 +42,6 @@ module.exports = {
         },
       },
     ],
+    "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
   },
 };
