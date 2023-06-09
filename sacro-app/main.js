@@ -1,5 +1,4 @@
 const { app, BrowserWindow } = require("electron");
-const { dialog } = require("electron");
 const process = require("node:process");
 const createWindow = require("./src/create-window");
 
