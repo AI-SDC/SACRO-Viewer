@@ -28,7 +28,7 @@ jobs:
           install-just: true
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           cache: "npm"
           cache-dependency-path: "**/package-lock.json"
       - name: Run tests
@@ -48,7 +48,7 @@ jobs:
           python-version: "3.11"
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
           cache: "npm"
           cache-dependency-path: "**/package-lock.json"
       # our just setup doesn't make just available on the path

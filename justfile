@@ -133,7 +133,7 @@ run: devenv
     $BIN/python manage.py migrate
     $BIN/python manage.py runserver
 
-build:
+build: collectstatic
     $BIN/pyoxidizer build --release
 
 eslint:
@@ -157,7 +157,7 @@ assets-clean:
     rm -rf staticfiles
 
 # Build the Node.js assets
-assets-build:
+assets-build: assets-install
     #!/usr/bin/env bash
     set -eu
 
@@ -174,10 +174,10 @@ assets-build:
     touch assets/dist/.written
 
 
-assets: assets-install assets-build
+assets: assets-build
 
 assets-rebuild: assets-clean assets
 
 # Ensure django's collectstatic is run if needed
-collectstatic: devenv
+collectstatic: devenv assets
     ./scripts/collect-me-maybe.sh $BIN/python
