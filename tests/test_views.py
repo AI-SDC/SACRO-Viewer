@@ -12,4 +12,6 @@ def test_index(tmp_path):
     request = RequestFactory().get(path="/", data={"path": str(tmp_path)})
 
     response = views.index(request)
-    assert response.context_data["files"] == [str(bar), str(foo)]
+    expected = [str(bar), str(foo)]
+    expected.sort()
+    assert response.context_data["files"] == expected
