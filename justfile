@@ -33,7 +33,7 @@ clean:
 
 
 # ensure valid virtualenv
-virtualenv:
+virtualenv: _env
     #!/usr/bin/env bash
     # allow users to specify python version in .env
     PYTHON_VERSION=${PYTHON_VERSION:-$DEFAULT_PYTHON}
@@ -43,6 +43,11 @@ virtualenv:
 
     # ensure we have pip-tools so we can run pip-compile
     test -e $BIN/pip-compile || $PIP install pip-tools
+
+
+_env:
+    #!/usr/bin/env bash
+    test -f .env || cp .dotenv-sample .env
 
 
 _compile src dst *args: virtualenv
@@ -125,9 +130,10 @@ fix: devenv
 
 # Run the dev project
 run: devenv
+    $BIN/python manage.py migrate
     $BIN/python manage.py runserver
 
-build:
+build: collectstatic
     $BIN/pyoxidizer build --release
 
 eslint:
@@ -151,7 +157,7 @@ assets-clean:
     rm -rf staticfiles
 
 # Build the Node.js assets
-assets-build:
+assets-build: assets-install
     #!/usr/bin/env bash
     set -eu
 
@@ -168,10 +174,10 @@ assets-build:
     touch assets/dist/.written
 
 
-assets: assets-install assets-build
+assets: assets-build
 
 assets-rebuild: assets-clean assets
 
 # Ensure django's collectstatic is run if needed
-collectstatic: devenv
+collectstatic: devenv assets
     ./scripts/collect-me-maybe.sh $BIN/python

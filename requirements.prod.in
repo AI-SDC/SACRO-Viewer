@@ -1,9 +1,8 @@
 django<4.2
-django-browser-reload
 django-extensions
 django-htmx
 django-vite
-pyoxidizer
+environs
 requests
 slippers
 uvicorn

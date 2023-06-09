@@ -6,7 +6,9 @@
 
 black
 coverage
+django-browser-reload
 pip-tools
 pre-commit
 pytest
 ruff
+pyoxidizer

@@ -5,6 +5,7 @@
 ### Windows
 
 Python 3.10: https://www.python.org/downloads/windows/
+Node.js v20: https://github.com/Schniz/fnm
 git-bash: https://gitforwindows.org/
 just: `choco install just` (choco: https://chocolatey.org/)
 
@@ -24,6 +25,7 @@ Note: just commands will only work inside git-bash shell by default, as they ass
 Set up a local development environment with:
 ```
 just devenv
+just assets
 ```
 
 ## Tests
@@ -65,5 +67,3 @@ The sacro-app dir contains the electron and packaging config and tooling
 ```
 just sacro-app/build
 ```
-
-

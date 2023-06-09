@@ -38,7 +38,6 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "sacro",
-    "django_browser_reload",
     "django_extensions",
     "django_vite",
     "slippers",
@@ -59,8 +58,16 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
+
+# add dev tools only when needed
+if DEBUG:
+    import importlib.util
+
+    if importlib.util.find_spec("django_browser_reload"):
+        INSTALLED_APPS.insert(0, "django_browser_reload")
+        MIDDLEWARE.append("django_browser_reload.middleware.BrowserReloadMiddleware")
+
 
 ROOT_URLCONF = "sacro.urls"
 
@@ -146,7 +153,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
     env.path("BUILT_ASSETS", default=BASE_DIR / "assets" / "dist"),
 ]
-STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "staticfiles")
+# we put staticfiles inside the python module, so that its easy to bundle with pyoxidizer
+STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "sacro/staticfiles")
 STATIC_URL = "/static/"
 
 DJANGO_VITE_ASSETS_PATH = BASE_DIR / "assets" / "dist"
