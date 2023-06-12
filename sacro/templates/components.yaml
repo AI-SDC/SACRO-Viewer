@@ -1,2 +1,7 @@
 components:
   header: "components/header.html"
+
+  icon_breadcrumb_arrow: "icons/breadcrumb-arrow.svg"
+  icon_document_outline: "icons/document-outline.svg"
+  icon_folder_outline: "icons/folder-outline.svg"
+  icon_folder_open_outline: "icons/folder-open-outline.svg"
