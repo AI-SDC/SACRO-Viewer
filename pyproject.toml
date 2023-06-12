@@ -29,6 +29,7 @@ exclude = [
   "docker",
   "htmlcov",
   "venv",
+  "data",
 ]
 extend-select = [
   "A",  # flake8-builtins
