@@ -181,3 +181,13 @@ assets-rebuild: assets-clean assets
 # Ensure django's collectstatic is run if needed
 collectstatic: devenv assets
     ./scripts/collect-me-maybe.sh $BIN/python
+
+
+test-data:
+    #!/usr/bin/env bash
+    if test -f data/dataset_26_nursery.arff; then exit 0; fi
+    curl https://www.openml.org/data/download/26/dataset_26_nursery.arff -\o data/dataset_26_nursery.arff
+
+test-outputs: test-data
+    #!/usr/bin/env bash
+    $BIN/python data/test-nursery.py

@@ -12,3 +12,6 @@ assets/dist
 sacro/staticfiles/
 .env
 *.sqlite3
+data/*.arff
+outputs/*.csv
+outputs/*.json

@@ -4,6 +4,8 @@
 #
 #    pip-compile --allow-unsafe --output-file=requirements.dev.txt requirements.dev.in
 #
+acro==0.1.0
+    # via -r requirements.dev.in
 asgiref==3.7.2
     # via
     #   -c requirements.prod.txt
@@ -35,6 +37,8 @@ django==4.1.9
     #   django-browser-reload
 django-browser-reload==1.9.0
     # via -r requirements.dev.in
+et-xmlfile==1.1.0
+    # via openpyxl
 exceptiongroup==1.1.1
     # via pytest
 filelock==3.12.0
@@ -43,18 +47,36 @@ identify==2.5.24
     # via pre-commit
 iniconfig==2.0.0
     # via pytest
+lxml==4.9.2
+    # via acro
 mypy-extensions==1.0.0
     # via black
 nodeenv==1.8.0
     # via pre-commit
+numpy==1.24.3
+    # via
+    #   acro
+    #   pandas
+    #   patsy
+    #   scipy
+    #   statsmodels
+openpyxl==3.1.2
+    # via acro
 packaging==23.1
     # via
     #   -c requirements.prod.txt
     #   black
     #   build
     #   pytest
+    #   statsmodels
+pandas==2.0.2
+    # via
+    #   acro
+    #   statsmodels
 pathspec==0.11.1
     # via black
+patsy==0.5.3
+    # via statsmodels
 pip-tools==6.13.0
     # via -r requirements.dev.in
 platformdirs==3.5.1
@@ -71,16 +93,29 @@ pyproject-hooks==1.0.0
     # via build
 pytest==7.3.1
     # via -r requirements.dev.in
+python-dateutil==2.8.2
+    # via pandas
+pytz==2023.3
+    # via pandas
 pyyaml==6.0
     # via
     #   -c requirements.prod.txt
+    #   acro
     #   pre-commit
 ruff==0.0.272
     # via -r requirements.dev.in
+scipy==1.10.1
+    # via statsmodels
+six==1.16.0
+    # via
+    #   patsy
+    #   python-dateutil
 sqlparse==0.4.4
     # via
     #   -c requirements.prod.txt
     #   django
+statsmodels==0.14.0
+    # via acro
 tomli==2.0.1
     # via
     #   black
@@ -95,6 +130,7 @@ tzdata==2023.3
     # via
     #   -c requirements.prod.txt
     #   django
+    #   pandas
 virtualenv==20.23.0
     # via pre-commit
 wheel==0.40.0

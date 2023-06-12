@@ -67,3 +67,12 @@ The sacro-app dir contains the electron and packaging config and tooling
 ```
 just sacro-app/build
 ```
+
+## Generateing test outputs
+
+The script data/test-nursery.py contains code using ACRO to generate outputs from a public test dataset.
+The following command will download the dataset if needed, and run test-nursery.py against it. It will generate it's outputs in `./outputs`
+
+```
+just test-outputs
+```
