@@ -17,11 +17,9 @@ body > nav {
 
 body > aside {
   grid-column: 1;
-  scrollbar-gutter: stable;
 }
 
 body > main {
   grid-column: 2 / -1;
   padding-block: 0.5rem;
-  scrollbar-gutter: stable;
 }
