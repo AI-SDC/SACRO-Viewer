@@ -107,7 +107,7 @@ upgrade env package="": virtualenv
 
 # *args is variadic, 0 or more. This allows us to do `just test -k match`, for example.
 # Run the tests
-test *args: devenv
+test *args: devenv test-outputs
     $BIN/coverage run --module pytest {{ args }}
     $BIN/coverage report || $BIN/coverage html
 
@@ -123,9 +123,10 @@ check: black ruff
 
 
 # fix formatting and import sort ordering
-fix: devenv
+fix: devenv assets-install
     $BIN/black .
     $BIN/ruff --fix .
+    npm run lint:fix
 
 
 # Run the dev project
@@ -190,4 +191,5 @@ test-data:
 
 test-outputs: test-data
     #!/usr/bin/env bash
+    if test outputs/test_results.json -nt outputs/test-nursery.py; then exit 0; fi
     $BIN/python data/test-nursery.py
