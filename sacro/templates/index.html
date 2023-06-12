@@ -4,4 +4,9 @@
   {% #header title="SACRO Outputs Viewer" %}
     <p>Hello world!</p>
   {% /header %}
+  <ul>
+    {% for file in files %}
+    <li>{{ file }}</li>
+    {% endfor %}
+  </ul>
 {% endblock content %}

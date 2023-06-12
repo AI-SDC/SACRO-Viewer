@@ -2,8 +2,8 @@ module.exports = {
   ignorePatterns: [
     "assets/dist/**/*",
     "build/**/*",
+    "sacro/staticfiles/**/*",
     "sacro-app/dist/**/*",
-    "staticfiles/**/*",
   ],
   root: true,
   env: {

@@ -1,4 +1,6 @@
 const { BrowserWindow } = require("electron");
+const { dialog } = require("electron");
+const querystring = require("querystring");
 const startServer = require("./start-server");
 const { waitThenLoad } = require("./utils");
 
@@ -23,10 +25,18 @@ const createWindow = async () => {
     if (serverProcess !== null) serverProcess.kill();
   });
 
+  const result = await dialog.showOpenDialog({
+    title: "Choose directory with ACRO outputs",
+    properties: ["openDirectory"],
+  });
+
+  const qs = querystring.stringify({ path: result.filePaths[0] });
+  const url = `${serverUrl}?${qs}`;
+
   if (serverProcess === null) {
-    win.loadURL(serverUrl);
+    win.loadURL(url);
   } else {
-    waitThenLoad(serverUrl, 4000, win);
+    waitThenLoad(url, 4000, win);
   }
 };
 
