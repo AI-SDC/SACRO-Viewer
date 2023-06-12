@@ -1,6 +1,6 @@
 <li
   class="
-    relative
+    relative z-10
     {{ class }}
     {% if child %}
       before:h-0.5 before:w-2 before:absolute before:-left-3 before:top-1/2 before:border-t before:border-t-zinc-300
@@ -8,7 +8,7 @@
   "
 >
   <a
-    class="py-1 flex justify-start items-center gap-1 leading-none hover:bg-slate-50 text-blue-800 font-semibold tracking-tight"
+    class="py-1 px-2 flex justify-start items-center gap-1 leading-tight hover:bg-blue-100/50 text-blue-800"
     {% attrs href %}
   >
     {% icon_document_outline class="h-4 w-4 min-w-[1rem] text-zinc-500" %}
