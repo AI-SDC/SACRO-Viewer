@@ -11,6 +11,7 @@
     "lint:fix": "eslint \"./**/*.js\" --fix"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.3",
     "vite": "^4.3.9"
   },
   "devDependencies": {
