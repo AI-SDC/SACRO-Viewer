@@ -123,9 +123,10 @@ check: black ruff
 
 
 # fix formatting and import sort ordering
-fix: devenv
+fix: devenv assets-install
     $BIN/black .
     $BIN/ruff --fix .
+    npm run lint:fix
 
 
 # Run the dev project

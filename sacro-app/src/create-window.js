@@ -29,9 +29,9 @@ const createWindow = async () => {
     title: "Choose ACRO outputs json file",
     properties: ["openFile"],
     filters: [
-      {name: "ACRO Outputs", extensions: ["json", "acro"]},
-      {name: "All files", extensions: ["*"]},
-    ]
+      { name: "ACRO Outputs", extensions: ["json", "acro"] },
+      { name: "All files", extensions: ["*"] },
+    ],
   });
 
   const qs = querystring.stringify({ path: result.filePaths[0] });

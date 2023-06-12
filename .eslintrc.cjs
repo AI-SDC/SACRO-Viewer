@@ -4,6 +4,7 @@ module.exports = {
     "build/**/*",
     "sacro/staticfiles/**/*",
     "sacro-app/dist/**/*",
+    "htmlcov/**/*",
   ],
   root: true,
   env: {
