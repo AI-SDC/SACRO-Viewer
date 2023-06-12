@@ -1,4 +1,16 @@
-<header>
-  <p>{{ title }}</p>
-  {{ children }}
+{% load static %}
+
+<header class="bg-white shadow-sm py-4 border-b border-b-zinc-200">
+  <div class="container">
+    <div class="flex gap-x-4 items-center">
+      <img
+        alt="{{ title }} logo"
+        class="block h-8 w-auto"
+        src="{% static "sacro.svg" %}"
+      >
+      <span class="text-xl font-extrabold text-zinc-800 tracking-tight leading-none">
+        {{ title }}
+      </span>
+    </div>
+  </div>
 </header>
