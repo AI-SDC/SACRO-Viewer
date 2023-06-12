@@ -1,17 +1,16 @@
+import json
+from pathlib import Path
+
 from django.test import RequestFactory
 
 from sacro import views
 
 
-def test_index(tmp_path):
-    foo = tmp_path / "foo"
-    bar = tmp_path / "bar"
-    foo.touch()
-    bar.touch()
+TEST_OUTPUTS = Path("outputs/test_results.json")
 
-    request = RequestFactory().get(path="/", data={"path": str(tmp_path)})
+
+def test_index(tmp_path):
+    request = RequestFactory().get(path="/", data={"path": str(TEST_OUTPUTS)})
 
     response = views.index(request)
-    expected = [str(bar), str(foo)]
-    expected.sort()
-    assert response.context_data["files"] == expected
+    assert response.context_data["outputs"] == json.loads(TEST_OUTPUTS.read_text())

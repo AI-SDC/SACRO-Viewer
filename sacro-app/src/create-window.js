@@ -26,8 +26,12 @@ const createWindow = async () => {
   });
 
   const result = await dialog.showOpenDialog({
-    title: "Choose directory with ACRO outputs",
-    properties: ["openDirectory"],
+    title: "Choose ACRO outputs json file",
+    properties: ["openFile"],
+    filters: [
+      {name: "ACRO Outputs", extensions: ["json", "acro"]},
+      {name: "All files", extensions: ["*"]},
+    ]
   });
 
   const qs = querystring.stringify({ path: result.filePaths[0] });
