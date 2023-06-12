@@ -1,5 +1,8 @@
 components:
+  breadcrumbs: "components/breadcrumbs.html"
   header: "components/header.html"
+  file_single: "components/file-single.html"
+  files_list: "components/files-list.html"
 
   icon_breadcrumb_arrow: "icons/breadcrumb-arrow.svg"
   icon_document_outline: "icons/document-outline.svg"

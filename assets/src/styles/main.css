@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  grid-template-rows: max-content max-content auto;
+  grid-template-columns: minmax(15rem, max-content) repeat(2, 1fr);
+}
+
+body > header {
+  grid-column: 1 / -1;
+}
+
+body > nav {
+  grid-column: 1 / -1;
+}
+
+body > aside {
+  grid-column: 1;
+  scrollbar-gutter: stable;
+}
+
+body > main {
+  grid-column: 2 / -1;
+  padding-block: 0.5rem;
+  scrollbar-gutter: stable;
+}

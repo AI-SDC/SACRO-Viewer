@@ -12,7 +12,16 @@
     {% vite_asset "assets/src/scripts/main.js" %}
   </head>
 
-  <body class="min-h-screen">
-    {% block content %}{% endblock %}
+  <body class="grid h-screen overflow-hidden bg-zinc-100">
+    {% header title="SACRO Outputs Viewer" %}
+    {% breadcrumbs %}
+
+    <aside class="overflow-scroll">
+      {% files_list files=files %}
+    </aside>
+
+    <main class="container overflow-y-scroll">
+      {% block content %}{% endblock %}
+    </main>
   </body>
 </html>
