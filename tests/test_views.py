@@ -1,4 +1,8 @@
+import io
+import json
+import zipfile
 from pathlib import Path
+from urllib.parse import urlencode
 
 import pytest
 from django.http import Http404
@@ -9,6 +13,12 @@ from sacro import views
 
 TEST_PATH = Path("outputs/test_results.json")
 TEST_OUTPUTS = views.Outputs(TEST_PATH)
+
+
+def test_outputs_as_dict():
+    d = TEST_OUTPUTS.as_dict()
+    assert d["outputs"] == json.loads(TEST_PATH.read_text())
+    assert d["review_url"] == f"/review/?{urlencode({'path': TEST_PATH})}"
 
 
 def test_index(tmp_path):
@@ -41,9 +51,23 @@ def test_contents_success():
         assert response.getvalue() == Path(actual_file).read_bytes()
 
 
-def test_contents_not_in_outputs(tmp_path):
+def test_contents_not_in_outputs():
     request = RequestFactory().get(
         path="/contents/", data={"path": str(TEST_PATH), "file": "does-not-exist"}
     )
     with pytest.raises(Http404):
         views.contents(request)
+
+
+def test_review_success():
+    request = RequestFactory().post("/review", data={"path": str(TEST_PATH)})
+    response = views.review(request)
+    zf = io.BytesIO(response.getvalue())
+    with zipfile.ZipFile(zf, "r") as zip_obj:
+        assert zip_obj.testzip() is None
+        assert zip_obj.namelist() == ["test_results.json"] + [
+            Path(v["output"]).name for v in TEST_OUTPUTS.values()
+        ]
+        for output in TEST_OUTPUTS.values():
+            f = Path(output["output"])
+            assert f.read_bytes() == zip_obj.open(f.name).read()

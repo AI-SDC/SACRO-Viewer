@@ -1,4 +1,6 @@
+import io
 import json
+import zipfile
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
@@ -8,6 +10,7 @@ from django.conf import settings
 from django.http import FileResponse, Http404
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.views.decorators.http import require_http_methods
 
 
 def reverse_with_params(param_dict, *args, **kwargs):
@@ -38,7 +41,7 @@ class Outputs(dict):
         return {
             "outputs": self,
             "content_urls": self.content_urls,
-            "review_url": "",
+            "review_url": reverse_with_params({"path": str(self.path)}, "review"),
         }
 
 
@@ -59,6 +62,7 @@ def get_outputs(request):
     return Outputs(path)
 
 
+@require_http_methods(["GET"])
 def index(request):
     """Render the template with all details"""
     outputs = get_outputs(request)
@@ -67,6 +71,7 @@ def index(request):
     )
 
 
+@require_http_methods(["GET"])
 def contents(request):
     """Return file contents.
 
@@ -83,3 +88,25 @@ def contents(request):
                 raise Http404
 
     raise Http404
+
+
+@require_http_methods(["POST"])
+def review(request):
+    outputs = get_outputs(request)
+
+    in_memory_zf = io.BytesIO()
+    with zipfile.ZipFile(in_memory_zf, "w") as zip_obj:
+        # add metadata file
+        zip_obj.write(outputs.path, arcname=outputs.path.name)
+
+        # add all other files
+        for output, data in outputs.items():
+            path = Path(data["output"])
+            zip_obj.write(path, arcname=path.name)
+
+    # rewind the file stream to the start
+    in_memory_zf.seek(0)
+    # use the directory name as the files might all just be results.json
+    filename = f"{outputs.path.parent.stem}_{outputs.path.stem}.zip"
+
+    return FileResponse(in_memory_zf, as_attachment=True, filename=filename)
