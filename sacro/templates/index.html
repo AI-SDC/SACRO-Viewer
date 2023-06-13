@@ -1,5 +1,5 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <p>File content to go here</p>
+  {{ outputs|json_script:"OUTPUTS" }}
 {% endblock content %}

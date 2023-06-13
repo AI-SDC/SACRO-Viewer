@@ -9,9 +9,10 @@
 >
   <a
     class="py-1 px-2 flex justify-start items-center gap-1 leading-tight hover:bg-blue-100/50 text-blue-800"
+    data-file="link"
     {% attrs href %}
   >
     {% icon_document_outline class="h-4 w-4 min-w-[1rem] text-zinc-500" %}
-    <span class="break-all">{{ name }}</span>
+    <span class="break-all" data-file="name">{{ name }}</span>
   </a>
 </li>
