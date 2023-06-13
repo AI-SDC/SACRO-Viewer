@@ -12,8 +12,11 @@
     </span>
   </div>
   <div>
-    {% #button variant="primary" id="openModalBtn" %}
-      Approve and download
-    {% /button %}
+    <form action="/" method="post">
+      {% csrf_token %}
+      {% #button id="openModalBtn" type="submit" variant="primary" %}
+        Approve and download
+      {% /button %}
+    </form>
   </div>
 </header>
