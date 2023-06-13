@@ -15,7 +15,7 @@ def test_index(tmp_path):
     request = RequestFactory().get(path="/", data={"path": str(TEST_PATH)})
 
     response = views.index(request)
-    assert response.context_data["outputs"] == TEST_OUTPUTS
+    assert response.context_data["outputs"] == TEST_OUTPUTS.as_dict()
 
 
 @override_settings(DEBUG=True)
@@ -23,7 +23,7 @@ def test_index_no_path(tmp_path):
     request = RequestFactory().get(path="/")
 
     response = views.index(request)
-    assert response.context_data["outputs"] == TEST_OUTPUTS
+    assert response.context_data["outputs"] == TEST_OUTPUTS.as_dict()
 
 
 @override_settings(DEBUG=False)
@@ -37,12 +37,8 @@ def test_contents_success():
     for output, url in TEST_OUTPUTS.content_urls.items():
         actual_file = TEST_OUTPUTS[output]["output"]
         request = RequestFactory().get(path=url)
-
-        if Path(actual_file).exists():
-            views.contents(request)
-        else:
-            with pytest.raises(Http404):
-                views.contents(request)
+        response = views.contents(request)
+        assert response.getvalue() == Path(actual_file).read_bytes()
 
 
 def test_contents_not_in_outputs(tmp_path):

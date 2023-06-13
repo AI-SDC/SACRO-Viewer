@@ -2,7 +2,6 @@
 
 {% block content %}
   {{ outputs|json_script:"OUTPUTS" }}
-  {{ outputs.content_urls|json_script:"CONTENT_URLS" }}
   {% #header title="SACRO Outputs Viewer" %}
     <p>Hello world!</p>
   {% /header %}

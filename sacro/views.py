@@ -34,6 +34,13 @@ class Outputs(dict):
 
         return urls
 
+    def as_dict(self):
+        return {
+            "outputs": self,
+            "content_urls": self.content_urls,
+            "review_url": "",
+        }
+
 
 def get_outputs(request):
     """USe outputs path from request and load it"""
@@ -55,7 +62,9 @@ def get_outputs(request):
 def index(request):
     """Render the template with all details"""
     outputs = get_outputs(request)
-    return TemplateResponse(request, "index.html", context={"outputs": outputs})
+    return TemplateResponse(
+        request, "index.html", context={"outputs": outputs.as_dict()}
+    )
 
 
 def contents(request):
@@ -70,7 +79,7 @@ def contents(request):
         if data["output"] == file_path:
             try:
                 return FileResponse(open(file_path, "rb"))
-            except FileNotFoundError:
+            except FileNotFoundError:  # pragma: no cover
                 raise Http404
 
     raise Http404

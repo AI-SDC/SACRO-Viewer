@@ -298,7 +298,8 @@ acro.add_comments(list(acro.results.keys())[0], "6 cells were suppressed in this
 """
 print("\nUsers can add files produced by an analysis aCRO doesn't cover")
 acro.custom_output(
-    "XandY.jfif", "This output is an image showing the relationship between X and Y"
+    "data/XandY.jfif",
+    "This output is an image showing the relationship between X and Y",
 )
 
 
