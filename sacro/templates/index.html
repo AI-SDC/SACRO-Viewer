@@ -3,5 +3,15 @@
 {% block content %}
   {{ outputs|json_script:"filesData" }}
 
-  <h1>File content to go here</h1>
+  <div class="flex flex-col gap-y-4 mt-1">
+    {% #card title="File name" container=True %}
+      <p>File metadata to go here</p>
+    {% /card %}
+
+    {% #card container=True %}
+      <p>File content to go here</p>
+    {% /card %}
+  </div>
+
+  <dialog></dialog>
 {% endblock content %}
