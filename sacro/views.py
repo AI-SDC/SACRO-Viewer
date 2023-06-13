@@ -10,10 +10,10 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 
 
-def reverse_qs(qs_dict, *args, **kwargs):
+def reverse_with_params(param_dict, *args, **kwargs):
     """Wrapper for django reverse that adds query parameters"""
     url = reverse(*args, **kwargs)
-    return url + "?" + urlencode(qs_dict)
+    return url + "?" + urlencode(param_dict)
 
 
 @dataclass
@@ -29,8 +29,8 @@ class Outputs(dict):
     def content_urls(self):
         urls = {}
         for output, data in self.items():
-            qs = {"path": str(self.path), "file": data["output"]}
-            urls[output] = reverse_qs(qs, "contents")
+            params = {"path": str(self.path), "file": data["output"]}
+            urls[output] = reverse_with_params(params, "contents")
 
         return urls
 
@@ -43,15 +43,15 @@ class Outputs(dict):
 
 
 def get_outputs(request):
-    """USe outputs path from request and load it"""
-    qs_path = request.GET.get("path")
-    if qs_path is None:
+    """Use outputs path from request and load it"""
+    param_path = request.GET.get("path")
+    if param_path is None:
         if settings.DEBUG:
-            qs_path = "outputs/test_results.json"
+            param_path = "outputs/test_results.json"
         else:
             raise Http404
 
-    path = Path(qs_path)
+    path = Path(param_path)
 
     if not path.exists():  # pragma: no cover
         raise Http404
