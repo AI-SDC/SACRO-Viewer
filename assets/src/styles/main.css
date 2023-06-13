@@ -3,17 +3,18 @@
 @tailwind utilities;
 
 body {
-  grid-template-rows: max-content max-content 1fr;
-  grid-template-columns: minmax(15rem, 25rem) repeat(2, 1fr);
+  /* grid-template-rows: max-content max-content 1fr; */
+  grid-template-rows: max-content 1fr;
+  grid-template-columns: minmax(max-content, 1fr) repeat(2, 1fr);
 }
 
 body > header {
   grid-column: 1 / -1;
 }
 
-body > nav {
+/* body > nav {
   grid-column: 1 / -1;
-}
+} */
 
 body > aside {
   grid-column: 1;
