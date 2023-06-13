@@ -4,7 +4,7 @@
   {{ outputs|json_script:"filesData" }}
 
   <div class="flex flex-col gap-y-4 mt-1">
-    {% #card title="File name" container=True %}
+    {% #card title="Select a file" container=True id="openFileName" %}
       <p>File metadata to go here</p>
     {% /card %}
 
