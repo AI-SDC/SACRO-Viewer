@@ -192,4 +192,6 @@ test-data:
 test-outputs: test-data
     #!/usr/bin/env bash
     if test outputs/test_results.json -nt outputs/test-nursery.py; then exit 0; fi
+    # ACRO is additive by default
+    rm -f data/*.csv data/*.json
     $BIN/python data/test-nursery.py
