@@ -8,7 +8,7 @@ const container = document.getElementById("filesList");
 
 const handleFileClick = (e) => {
   openFile.value = e.target.textContent;
-  document.getElementById("file-name-title").textContent = openFile.value;
+  document.querySelector("#openFileName h2").textContent = openFile.value;
 };
 
 const filesData = new Map(
