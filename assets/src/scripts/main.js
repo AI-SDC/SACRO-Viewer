@@ -1,12 +1,12 @@
 import "../styles/main.css";
 
-const outputs = new Map(
-  Object.entries(JSON.parse(document.getElementById("OUTPUTS").textContent))
+const filesData = new Map(
+  Object.entries(JSON.parse(document.getElementById("filesData").textContent))
 );
 const template = document.getElementById("fileRow");
 const container = document.getElementById("filesList");
 
-outputs.forEach((values, file) => {
+filesData.forEach((values, file) => {
   const fileName = values.output.replace(/^.*[\\/]/, "");
 
   const el = template.content.firstElementChild.cloneNode(true);
