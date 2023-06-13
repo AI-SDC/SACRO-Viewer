@@ -12,9 +12,9 @@
     </span>
   </div>
   <div>
-    <form action="/" method="post">
+    <form action="/" method="post" id="approveForm">
       {% csrf_token %}
-      {% #button id="openModalBtn" type="submit" variant="primary" %}
+      {% #button disabled=True id="openModalBtn" type="submit" %}
         Approve and download
       {% /button %}
     </form>
