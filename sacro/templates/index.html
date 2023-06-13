@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {{ outputs|json_script:"OUTPUTS" }}
-  {% #header title="SACRO Outputs Viewer" %}
-    <p>Hello world!</p>
-  {% /header %}
+  {{ outputs|json_script:"filesData" }}
+
+  <div class="flex flex-col gap-y-4 mt-1">
+    {% #card title="Select a file" container=True id="openFileName" %}
+      <p>File metadata to go here</p>
+    {% /card %}
+
+    {% #card container=True %}
+      <p>File content to go here</p>
+    {% /card %}
+  </div>
 {% endblock content %}
