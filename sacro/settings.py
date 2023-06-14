@@ -150,8 +150,8 @@ APP_TOKEN = os.environ.get("SACRO_APP_TOKEN")
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    env.path("BUILT_ASSETS", default=BASE_DIR / "assets" / "dist"),
+    str(BASE_DIR / "static"),
+    str(env.path("BUILT_ASSETS", default=BASE_DIR / "assets" / "dist")),
 ]
 # we put staticfiles inside the python module, so that its easy to bundle with pyoxidizer
 STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "sacro/staticfiles")
