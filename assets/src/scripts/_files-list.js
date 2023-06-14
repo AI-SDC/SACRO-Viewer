@@ -20,14 +20,31 @@ const fileList = () => {
 
     const data = await fileLoader(openFile);
 
+    const summaryItems = metadata.summary
+      .split("; ")
+      .filter((i) => i !== " " && i.length)
+      .map((i) => `<li>${i}</li>`)
+      .join("");
+    const commentItems = metadata.comments
+      .split(", ")
+      .filter((i) => i !== " " && i.length)
+      .map((i) => `<li>${i}</li>`)
+      .join("");
+
     document.getElementById("fileMetadata").innerHTML = `
       <ul>
-        <li><strong>Summary:</strong> ${JSON.stringify(
-          metadata.summary
-        ).substring(1, metadata.summary.length + 1)}</li>
-        <li><strong>Comments:</strong> ${JSON.stringify(
+        <li class="mb-2"><strong>Summary:</strong>
+          <ul>${summaryItems}</ul>
+        </li>
+        ${
           metadata.comments
-        ).substring(1, metadata.comments.length + 1)}</li>
+            ? `
+              <li><strong>Comments:</strong>
+                <ul>${commentItems}</ul>
+              </li>
+            `
+            : ""
+        }
       </ul>
     `;
 
