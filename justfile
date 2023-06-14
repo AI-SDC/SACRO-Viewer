@@ -28,8 +28,9 @@ default:
 
 
 # clean up temporary files
-clean:
-    rm -rf .venv
+clean: assets-clean
+    rm -rf .venv .wenv
+    rm -rf test-outputs/*
 
 
 # ensure valid virtualenv
@@ -130,7 +131,7 @@ fix: devenv assets-install
 
 
 # Run the dev project
-run: devenv
+run: devenv collectstatic test-outputs
     $BIN/python manage.py migrate
     $BIN/python manage.py runserver
 
@@ -192,6 +193,6 @@ test-data:
 test-outputs: test-data
     #!/usr/bin/env bash
     if test outputs/test_results.json -nt outputs/test-nursery.py; then exit 0; fi
-    # ACRO is additive by default
+    # ACRO is additive by default, so delete before regenerating
     rm -f outputs/*
     $BIN/python data/test-nursery.py

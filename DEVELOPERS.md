@@ -35,6 +35,19 @@ just test <args>
 just run  # run python server
 ```
 
+## Test data
+
+`data/test-nursery.py` will use ACRO to generate some test outputs in `outputs/`
+
+This should be generated for you automatically by just rules, but if you need
+to manually regenerate it:
+
+```
+just clean 
+just test-outputs
+```
+
+
 ## Running the electon app
 
 You can run the development version the python webapp and then run the electron
