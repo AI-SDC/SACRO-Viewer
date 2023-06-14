@@ -2,7 +2,6 @@ components:
   breadcrumbs: "components/breadcrumbs.html"
   button: "components/button.html"
   card: "components/card.html"
-  header: "components/header.html"
   file_single: "components/file-single.html"
   files_list: "components/files-list.html"
 
