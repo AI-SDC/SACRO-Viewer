@@ -21,12 +21,13 @@ const startServer = async () => {
 
   // Spawn the server process
   const p = findAppPath();
-  const serverProcess = spawn(p, {
-    env: {
-      SACRO_APP_TOKEN: RANDOM_SECRET,
-      PORT: freePort,
-    },
-  });
+  const env = {
+    SECRET_KEY: RANDOM_SECRET,
+    SACRO_APP_TOKEN: RANDOM_SECRET,
+    PORT: freePort,
+  };
+
+  const serverProcess = spawn(p, { env });
 
   // set a cookie with the random token in
   const cookie = {
