@@ -21,7 +21,7 @@ function addCssVarColors({ addBase, theme }) {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["sacro/templates/**/*.html"],
+  content: ["sacro/templates/**/*.html", "assets/src/scripts/**/*.js"],
   theme: {
     extend: {
       container: {
