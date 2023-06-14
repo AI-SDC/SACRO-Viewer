@@ -12,20 +12,22 @@ export function csvStringToTable(csvString, el) {
     const columns = row.split(`,`); // split/separate the columns in a row
     columns.forEach((column) => {
       tableColumns +=
-        rowIndex === 0 ? `<th>${column}</th>` : `<td>${column}</td>`;
+        rowIndex === 0
+          ? `<th class="p-1">${column}</th>`
+          : `<td class="p-1">${column}</td>`;
     });
     if (rowIndex === 0) {
       tableHeader += `<tr>${tableColumns}</tr>`;
     } else {
-      tableRows += `<tr>${tableColumns}</tr>`;
+      tableRows += `<tr class="divide-x divide-gray-200 odd:bg-gray-50">${tableColumns}</tr>`;
     }
   });
 
-  table += `<table class="min-w-full divide-y divide-gray-300 text-left">`;
-  table += `<thead>`;
+  table += `<table class="min-w-full divide-y divide-gray-300 text-left text-sm text-gray-900">`;
+  table += `<thead class="font-semibold bg-gray-200">`;
   table += tableHeader;
   table += `</thead>`;
-  table += `<tbody>`;
+  table += `<tbody class="divide-y divide-gray-200">`;
   table += tableRows;
   table += `</tbody>`;
   table += `</table>`;

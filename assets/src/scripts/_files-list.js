@@ -31,8 +31,11 @@ const fileList = () => {
       </ul>
     `;
 
+    document.getElementById("fileContent").classList.remove("hidden");
+
     if (data) {
       csvStringToTable(data, document.getElementById("fileContent"));
+      document.getElementById("fileContent").classList.add("overflow-x-scroll");
     } else {
       document.getElementById("fileContent").textContent =
         "This file cannot be displayed";
