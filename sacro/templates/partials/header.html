@@ -3,20 +3,18 @@
 <header class="header">
   <div class="flex gap-x-4 items-center">
     <img
-      alt="{{ title }} logo"
+      alt="SACRO logo"
       class="block h-8 w-auto"
       src="{% static "sacro.svg" %}"
     >
     <span class="text-xl font-extrabold text-zinc-800 tracking-tight leading-none">
-      {{ title }}
+      SACRO outputs viewer
     </span>
   </div>
-  <div>
-    <form action="/" method="post" id="approveForm">
-      {% csrf_token %}
-      {% #button disabled=True id="openModalBtn" type="submit" %}
-        Approve and download
-      {% /button %}
-    </form>
-  </div>
+  <form action="/" method="post" id="approveForm">
+    {% csrf_token %}
+    {% #button disabled=True id="openModalBtn" type="submit" %}
+      Approve and download
+    {% /button %}
+  </form>
 </header>
