@@ -16,7 +16,7 @@ Then install, choosing the "Desktop Development with C++" workload.
 
 Also recommended: Windows Terminal: https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701
 
-You should reboot after installing all this, because windows.
+You should reboot after installing all this, because Windows.
 
 Note: just commands will only work inside git-bash shell by default, as they assume bash
 
@@ -37,16 +37,14 @@ just run  # run python server
 
 ## Test data
 
-`data/test-nursery.py` will use ACRO to generate some test outputs in `outputs/`
+The script `data/test-nursery.py` uses ACRO to generate outputs from a public test
+dataset. It will generate some test outputs in `outputs/`.
 
-This should be generated for you automatically by just rules, but if you need
-to manually regenerate it:
+It can be run with the following command:
 
 ```
-just clean 
 just test-outputs
 ```
-
 
 ## Running the electon app
 
@@ -59,8 +57,12 @@ export SACRO_URL=http://localhost:8000
 just sacro-app/run
 ```
 
+## Building the application
 
-## Building the python web app
+There are two stages to building the application for release. Firstly, building the executable
+and then building the Windows installer (MSI).
+
+### Building the python web app
 
 ```
 just build
@@ -68,8 +70,7 @@ just build
 
 This builds the pyoxidizer binary of the python application for the current platform.
 
-
-## Building the electron GUI app
+### Building the electron GUI app
 
 The root directory contains our python web service, and is basically the same
 as all our other web services, but with pyoxidizer.bzl build config, and a
@@ -79,13 +80,4 @@ The sacro-app dir contains the electron and packaging config and tooling
 
 ```
 just sacro-app/build
-```
-
-## Generateing test outputs
-
-The script data/test-nursery.py contains code using ACRO to generate outputs from a public test dataset.
-The following command will download the dataset if needed, and run test-nursery.py against it. It will generate it's outputs in `./outputs`
-
-```
-just test-outputs
 ```
