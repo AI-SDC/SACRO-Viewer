@@ -6,6 +6,20 @@
 # Configuration files consist of functions which define build "targets."
 # This function creates a Python executable and installs it in a destination
 # directory.
+
+
+# custom location management
+# basically, everything related to django wants to be in a filesystem
+def resource_callback(policy, resource):
+    if resource.is_stdlib:
+        if "encodings" in resource.name:
+            resource.add_location = "filesystem-relative:lib"
+        else:
+            resource.add_location = "in-memory"
+    else:
+        resource.add_location = "filesystem-relative:lib"
+
+
 def make_exe():
     # Obtain the default PythonDistribution for our build target. We link
     # this distribution into our produced executable and extract the Python
@@ -87,15 +101,18 @@ def make_exe():
     # an optional fallback.
 
     # Use in-memory location for adding resources by default.
-    # policy.resources_location = "in-memory"
+    policy.resources_location = "in-memory"
 
     # Use filesystem-relative location for adding resources by default.
     # we need to use filesytem resources because django makes liberal use of __file__
-    policy.resources_location = "filesystem-relative:lib"
+    # policy.resources_location = "filesystem-relative:lib"
 
     # Attempt to add resources relative to the built binary when
     # `resources_location` fails.
     policy.resources_location_fallback = "filesystem-relative:lib"
+
+    # register our custom policy
+    policy.register_resource_callback(resource_callback)
 
     # Clear out a fallback resource location.
     # policy.resources_location_fallback = None
@@ -174,7 +191,7 @@ def make_exe():
 
     # Control whether `oxidized_importer` is the first importer on
     # `sys.meta_path`.
-    python_config.oxidized_importer = False
+    python_config.oxidized_importer = True
 
     # Enable the standard path-based importer which attempts to load
     # modules from the filesystem.

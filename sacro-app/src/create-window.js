@@ -3,6 +3,7 @@ const { dialog } = require("electron");
 const querystring = require("querystring");
 const startServer = require("./start-server");
 const { waitThenLoad } = require("./utils");
+const os = require("os");
 
 const createWindow = async () => {
   let serverUrl = process.env.SACRO_URL;
@@ -28,6 +29,7 @@ const createWindow = async () => {
   const result = await dialog.showOpenDialog({
     title: "Choose ACRO outputs json file",
     properties: ["openFile"],
+    defaultPath: os.homedir(),
     filters: [
       { name: "ACRO Outputs", extensions: ["json", "acro"] },
       { name: "All files", extensions: ["*"] },
