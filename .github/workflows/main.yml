@@ -38,7 +38,7 @@ jobs:
       - name: Build app
         run: just sacro-app/build
 
-  test-windows:
+  build-windows:
     permissions:
       contents: write
     runs-on: windows-2022
