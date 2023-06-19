@@ -4,7 +4,10 @@ Copyright : Maha Albashir, Richard Preen, Jim Smith 2023
 """
 
 # import libraries
+import json
 import os
+from pathlib import Path
+import shutil
 
 import numpy as np
 import pandas as pd
@@ -325,3 +328,21 @@ print(
     " If they don't, the SDC analysis, and their outputs, are lost."
 )
 output = acro.finalise("test_results.json")
+
+
+### TEMPORARY WORKAROUND FOR ABSOLUTE PATHS
+
+metadata = Path("outputs/test_results.json")
+results = json.loads(metadata.read_text())
+dir = metadata.parent.absolute()
+
+for name, data in results.items():
+    src = Path(data["output"])
+    try:
+        data["output"] = str(src.relative_to(dir))
+    except ValueError:
+        new_src = dir / src.name
+        shutil.copy(src, new_src)
+        data["output"] = str(new_src.relative_to(dir))
+
+metadata.write_text(json.dumps(results, indent=2))

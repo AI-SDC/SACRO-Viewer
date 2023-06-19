@@ -45,7 +45,7 @@ def test_index_no_path_no_debug(tmp_path):
 
 def test_contents_success():
     for output, url in TEST_OUTPUTS.content_urls.items():
-        actual_file = TEST_OUTPUTS[output]["output"]
+        actual_file = TEST_PATH.parent / TEST_OUTPUTS[output]["output"]
         request = RequestFactory().get(path=url)
         response = views.contents(request)
         assert response.getvalue() == Path(actual_file).read_bytes()
@@ -53,7 +53,7 @@ def test_contents_success():
 
 def test_contents_not_in_outputs():
     request = RequestFactory().get(
-        path="/contents/", data={"path": str(TEST_PATH), "file": "does-not-exist"}
+        path="/contents/", data={"path": str(TEST_PATH), "name": "does-not-exist"}
     )
     with pytest.raises(Http404):
         views.contents(request)
@@ -68,6 +68,7 @@ def test_review_success():
         assert zip_obj.namelist() == ["test_results.json"] + [
             Path(v["output"]).name for v in TEST_OUTPUTS.values()
         ]
-        for output in TEST_OUTPUTS.values():
-            f = Path(output["output"])
-            assert f.read_bytes() == zip_obj.open(f.name).read()
+        for output, data in TEST_OUTPUTS.items():
+            zip_path = Path(data["output"]).name
+            actual_path = TEST_OUTPUTS.get_file_path(output)
+            assert actual_path.read_bytes() == zip_obj.open(zip_path).read()

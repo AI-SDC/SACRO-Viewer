@@ -1,5 +1,6 @@
 import io
 import json
+import logging
 import zipfile
 from dataclasses import dataclass
 from functools import cached_property
@@ -11,6 +12,9 @@ from django.http import FileResponse, Http404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+
+
+logger = logging.getLogger(__name__)
 
 
 def reverse_with_params(param_dict, *args, **kwargs):
@@ -32,10 +36,19 @@ class Outputs(dict):
     def content_urls(self):
         urls = {}
         for output, data in self.items():
-            params = {"path": str(self.path), "file": data["output"]}
+            params = {"path": str(self.path), "name": output}
             urls[output] = reverse_with_params(params, "contents")
 
         return urls
+
+    def get_file_path(self, name):
+        """Return absolute path to output file"""
+        path = Path(self[name]["output"])
+
+        if path.is_absolute():
+            return path
+        else:
+            return self.path.parent / path
 
     def as_dict(self):
         return {
@@ -79,15 +92,18 @@ def contents(request):
     in the json.  This prevents loading arbitrary user files over http.
     """
     outputs = get_outputs(request)
-    file_path = request.GET.get("file")
-    for output, data in outputs.items():
-        if data["output"] == file_path:
-            try:
-                return FileResponse(open(file_path, "rb"))
-            except FileNotFoundError:  # pragma: no cover
-                raise Http404
+    name = request.GET.get("name")
 
-    raise Http404
+    try:
+        file_path = outputs.get_file_path(name)
+    except KeyError:
+        logger.info(f"output {name} not found in {outputs.path}")
+        raise Http404
+
+    try:
+        return FileResponse(open(file_path, "rb"))
+    except FileNotFoundError:  # pragma: no cover
+        raise Http404
 
 
 @require_http_methods(["POST"])
@@ -100,8 +116,8 @@ def review(request):
         zip_obj.write(outputs.path, arcname=outputs.path.name)
 
         # add all other files
-        for output, data in outputs.items():
-            path = Path(data["output"])
+        for output in outputs:
+            path = outputs.get_file_path(output)
             zip_obj.write(path, arcname=path.name)
 
     # rewind the file stream to the start
