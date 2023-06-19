@@ -57,15 +57,15 @@ class Outputs(dict):
             "review_url": reverse_with_params({"path": str(self.path)}, "review"),
         }
 
+    def write(self):
+        self.path.write_text(json.dumps(self, indent=2))
 
-def get_outputs(request):
+
+def get_outputs(data):
     """Use outputs path from request and load it"""
-    param_path = request.GET.get("path")
+    param_path = data.get("path")
     if param_path is None:
-        if settings.DEBUG:
-            param_path = "outputs/test_results.json"
-        else:
-            raise Http404
+        raise Http404
 
     path = Path(param_path)
 
@@ -78,7 +78,12 @@ def get_outputs(request):
 @require_http_methods(["GET"])
 def index(request):
     """Render the template with all details"""
-    outputs = get_outputs(request)
+    # quick fix for loading data in dev w/o having to mess with paths in querystrings
+    data = request.GET
+    if "path" not in request.GET and settings.DEBUG:
+        data = {"path": "outputs/test_results.json"}
+
+    outputs = get_outputs(data)
     return TemplateResponse(
         request, "index.html", context={"outputs": outputs.as_dict()}
     )
@@ -91,7 +96,7 @@ def contents(request):
     We also require the json file and check that the requested file is present
     in the json.  This prevents loading arbitrary user files over http.
     """
-    outputs = get_outputs(request)
+    outputs = get_outputs(request.GET)
     name = request.GET.get("name")
 
     try:
@@ -108,17 +113,28 @@ def contents(request):
 
 @require_http_methods(["POST"])
 def review(request):
-    outputs = get_outputs(request)
-
+    outputs = get_outputs(request.POST)
     in_memory_zf = io.BytesIO()
     with zipfile.ZipFile(in_memory_zf, "w") as zip_obj:
         # add metadata file
         zip_obj.write(outputs.path, arcname=outputs.path.name)
+        missing = []
 
         # add all other files
         for output in outputs:
             path = outputs.get_file_path(output)
-            zip_obj.write(path, arcname=path.name)
+            if path.exists():
+                zip_obj.write(path, arcname=path.name)
+            else:
+                logger.warning("{path} does not exist. Excluding from zipfile")
+                missing.append(str(path))
+
+        if missing:
+            lines = [
+                "The following output files were not found when creating this zipfile:",
+                "",
+            ] + missing
+            zip_obj.writestr("missing-files.txt", data="\n".join(lines))
 
     # rewind the file stream to the start
     in_memory_zf.seek(0)
