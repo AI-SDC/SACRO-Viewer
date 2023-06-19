@@ -30,7 +30,7 @@ default:
 # clean up temporary files
 clean: assets-clean
     rm -rf .venv .wenv
-    rm -rf test-outputs/*
+    rm -f outputs/*
 
 
 # ensure valid virtualenv

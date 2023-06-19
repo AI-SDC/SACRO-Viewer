@@ -46,6 +46,14 @@ It can be run with the following command:
 just test-outputs
 ```
 
+However, this won't always pick up new changes. For example, if new files are
+added to the test data. In this case it may be  necessary to force removal
+of all the test data and regenerate it, by doing the following.
+```
+just clean
+just test-outputs
+```
+
 ## Running the electon app
 
 You can run the development version the python webapp and then run the electron
