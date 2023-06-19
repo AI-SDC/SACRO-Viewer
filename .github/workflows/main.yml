@@ -61,14 +61,18 @@ jobs:
         run: just build
       - name: Build app
         run: just sacro-app/build
+        # this gets us cleaner paths in our artifact
+      - name: Copy built msi
+        run: cp sacro-app/dist/SACRO*.msi .
       - name: Upload build
         if: success() && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v3
         with:
-          name: SACRO latest build with test data
+          name: SACRO-latest-windows-build
           path: |
-            sacro-app/dist/SACRO*.msi
+            SACRO*.msi
             outputs/*
+            !outputs/.keep
 
   lint-dockerfile:
     runs-on: ubuntu-latest
