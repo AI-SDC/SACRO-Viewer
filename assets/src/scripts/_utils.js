@@ -34,10 +34,9 @@ export function csvStringToTable(csvString, el) {
   el.innerHTML = table;
 }
 
-export const isCsv = (fileName) =>
-  fileName.toLowerCase().match(/.*\.(?:csv)$/i);
+export const isCsv = (ext) => ext.toLowerCase() === "csv";
 
-export const isImg = (fileName) =>
-  fileName.toLowerCase().match(/.*\.(?:gif|jpg|jpeg|png|svg)$/i);
+export const isImg = (ext) =>
+  ["gif", "jpg", "jpeg", "png", "svg"].includes(ext.toLowerCase());
 
-export const canDisplay = (fileName) => isCsv(fileName) || isImg(fileName);
+export const canDisplay = (ext) => isCsv(ext) || isImg(ext);

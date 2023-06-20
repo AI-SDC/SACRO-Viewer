@@ -12,8 +12,8 @@ async function fileLoader(openFile) {
 
   let res;
 
-  if (canDisplay(openFile.value.url)) {
-    if (isCsv(openFile.value.url)) {
+  if (canDisplay(openFile.value.ext)) {
+    if (isCsv(openFile.value.ext)) {
       res = await response.text();
     }
   }

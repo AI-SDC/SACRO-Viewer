@@ -68,10 +68,10 @@ const fileClick = async ({ fileName, metadata, url }) => {
     </ul>
   `;
 
-  if (isCsv(openFile.value.url)) {
+  if (isCsv(openFile.value.ext)) {
     const data = await fileLoader(openFile);
     createCsvTableElement(data);
-  } else if (isImg(openFile.value.url)) {
+  } else if (isImg(openFile.value.ext)) {
     createImageElement(openFile.value.url);
   } else {
     invalidFileElement();
