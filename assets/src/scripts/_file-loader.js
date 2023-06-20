@@ -16,11 +16,6 @@ async function fileLoader(openFile) {
     if (isCsv(openFile.value.url)) {
       res = await response.text();
     }
-
-    if (isImg(openFile.value.url)) {
-      const blob = await response.blob();
-      res = URL.createObjectURL(blob);
-    }
   }
 
   return res;

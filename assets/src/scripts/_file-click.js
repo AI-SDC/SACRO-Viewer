@@ -2,6 +2,8 @@ import fileLoader from "./_file-loader";
 import { openFile } from "./_signals";
 import { csvStringToTable, getFileExt, isCsv, isImg } from "./_utils";
 
+const fileContentElement = document.getElementById("fileContent");
+
 const splitTextToList = ({ splitter, text }) =>
   text
     .split(splitter)
@@ -9,20 +11,20 @@ const splitTextToList = ({ splitter, text }) =>
     .map((i) => `<li>${i}</li>`)
     .join("");
 
-const createCsvTableElement = ({ data, el }) => {
-  csvStringToTable(data, document.getElementById(el));
-  document.getElementById(el).classList.add("overflow-x-scroll");
+const createCsvTableElement = (data) => {
+  csvStringToTable(data, fileContentElement);
+  fileContentElement.classList.add("overflow-x-scroll");
 };
 
-const createImageElement = ({ data, el }) => {
+const createImageElement = (data) => {
   const img = document.createElement("img");
   img.src = data;
-  document.getElementById(el).innerHTML = "";
-  document.getElementById(el).appendChild(img);
+  fileContentElement.innerHTML = "";
+  fileContentElement.appendChild(img);
 };
 
-const invalidFileElement = ({ el }) => {
-  document.getElementById(el).textContent = "This file cannot be displayed";
+const invalidFileElement = () => {
+  fileContentElement.textContent = "This file cannot be displayed";
 };
 
 const fileClick = async ({ fileName, metadata, url }) => {
@@ -63,17 +65,15 @@ const fileClick = async ({ fileName, metadata, url }) => {
   `;
 
   // Load the file data
-  const data = await fileLoader(openFile);
-  const el = "fileContent";
-
-  document.getElementById(el).classList.remove("hidden");
+  fileContentElement.classList.remove("hidden");
 
   if (isCsv(openFile.value.url)) {
-    createCsvTableElement({ data, el });
+    const data = await fileLoader(openFile);
+    createCsvTableElement(data);
   } else if (isImg(openFile.value.url)) {
-    createImageElement({ data, el });
+    createImageElement(openFile.value.url);
   } else {
-    invalidFileElement({ el });
+    invalidFileElement();
   }
 };
 
