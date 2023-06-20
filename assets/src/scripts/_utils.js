@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 export const getFileExt = (str) => str.split(`.`).pop();
 
 export function csvStringToTable(csvString, el) {
@@ -34,3 +33,11 @@ export function csvStringToTable(csvString, el) {
 
   el.innerHTML = table;
 }
+
+export const isCsv = (fileName) =>
+  fileName.toLowerCase().match(/.*\.(?:csv)$/i);
+
+export const isImg = (fileName) =>
+  fileName.toLowerCase().match(/.*\.(?:gif|jpg|jpeg|png|svg)$/i);
+
+export const canDisplay = (fileName) => isCsv(fileName) || isImg(fileName);
