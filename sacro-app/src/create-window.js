@@ -1,9 +1,9 @@
 const { BrowserWindow } = require("electron");
 const { dialog } = require("electron");
+const os = require("os");
 const querystring = require("querystring");
 const startServer = require("./start-server");
 const { waitThenLoad } = require("./utils");
-const os = require("os");
 
 const createWindow = async () => {
   let serverUrl = process.env.SACRO_URL;
