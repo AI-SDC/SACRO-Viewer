@@ -9,6 +9,22 @@ const splitTextToList = ({ splitter, text }) =>
     .map((i) => `<li>${i}</li>`)
     .join("");
 
+const createCsvTableElement = ({ data, el }) => {
+  csvStringToTable(data, document.getElementById(el));
+  document.getElementById(el).classList.add("overflow-x-scroll");
+};
+
+const createImageElement = ({ data, el }) => {
+  const img = document.createElement("img");
+  img.src = data;
+  document.getElementById(el).innerHTML = "";
+  document.getElementById(el).appendChild(img);
+};
+
+const invalidFileElement = ({ el }) => {
+  document.getElementById(el).textContent = "This file cannot be displayed";
+};
+
 const fileClick = async ({ fileName, metadata, url }) => {
   // Set the file values
   openFile.value = {
@@ -48,19 +64,16 @@ const fileClick = async ({ fileName, metadata, url }) => {
 
   // Load the file data
   const data = await fileLoader(openFile);
-  document.getElementById("fileContent").classList.remove("hidden");
+  const el = "fileContent";
+
+  document.getElementById(el).classList.remove("hidden");
 
   if (isCsv(openFile.value.url)) {
-    csvStringToTable(data, document.getElementById("fileContent"));
-    document.getElementById("fileContent").classList.add("overflow-x-scroll");
+    createCsvTableElement({ data, el });
   } else if (isImg(openFile.value.url)) {
-    const img = document.createElement("img");
-    img.src = data;
-    document.getElementById("fileContent").innerHTML = "";
-    document.getElementById("fileContent").appendChild(img);
+    createImageElement({ data, el });
   } else {
-    document.getElementById("fileContent").textContent =
-      "This file cannot be displayed";
+    invalidFileElement({ el });
   }
 };
 

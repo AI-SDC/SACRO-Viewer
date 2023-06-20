@@ -13,8 +13,6 @@ async function fileLoader(openFile) {
   let res;
 
   if (canDisplay(openFile.value.url)) {
-    console.log(openFile.value.url);
-
     if (isCsv(openFile.value.url)) {
       res = await response.text();
     }
