@@ -44,11 +44,8 @@ class Outputs(dict):
     def get_file_path(self, name):
         """Return absolute path to output file"""
         path = Path(self[name]["output"])
-
-        if path.is_absolute():
-            return path
-        else:
-            return self.path.parent / path
+        # note: if path is absolute, this will just return path
+        return self.path.parent / path
 
     def as_dict(self):
         return {
