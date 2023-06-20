@@ -1,4 +1,4 @@
-import { canDisplay, isCsv, isImg } from "./_utils";
+import { canDisplay, isCsv } from "./_utils";
 
 async function fileLoader(openFile) {
   if (!openFile) return null;

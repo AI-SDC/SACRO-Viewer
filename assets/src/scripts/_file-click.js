@@ -47,7 +47,7 @@ const fileClick = async ({ fileName, metadata, url }) => {
   // Set the metadata
   document.getElementById("fileMetadata").innerHTML = `
     <ul>
-      <li class="mb-2"><strong>Summary:</strong>
+      <li><strong>Summary:</strong>
         <ul>${splitTextToList({
           splitter: "; ",
           text: metadata.summary,
@@ -56,13 +56,28 @@ const fileClick = async ({ fileName, metadata, url }) => {
       ${
         metadata.comments
           ? `
-            <li><strong>Comments:</strong>
+            <li class="mt-2"><strong>Comments:</strong>
               <ul>${splitTextToList({
                 splitter: ", ",
                 text: metadata.comments,
               })}</ul>
             </li>
           `
+          : ""
+      }
+      ${
+        isImg(openFile.value.ext)
+          ? `
+            <ul class="mt-2">
+              <li>
+                <strong>Status:</strong>
+                <ul>
+                  <li class="text-red-800 font-semibold py-0.5 px-1 bg-red-50 inline-block">
+                    This output has not been checked by ACRO
+                  </li>
+                </ul>
+              </li>
+            </ul>`
           : ""
       }
     </ul>
