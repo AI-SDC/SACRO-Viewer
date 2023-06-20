@@ -17,13 +17,17 @@ const createCsvTableElement = (data) => {
 };
 
 const createImageElement = (data) => {
+  fileContentElement.innerHTML = "";
+  fileContentElement.classList.remove("overflow-x-scroll");
+
   const img = document.createElement("img");
   img.src = data;
-  fileContentElement.innerHTML = "";
   fileContentElement.appendChild(img);
 };
 
 const invalidFileElement = () => {
+  fileContentElement.classList.remove("overflow-x-scroll");
+
   fileContentElement.textContent = "This file cannot be displayed";
 };
 
@@ -64,9 +68,6 @@ const fileClick = async ({ fileName, metadata, url }) => {
     </ul>
   `;
 
-  // Load the file data
-  fileContentElement.classList.remove("hidden");
-
   if (isCsv(openFile.value.url)) {
     const data = await fileLoader(openFile);
     createCsvTableElement(data);
@@ -75,6 +76,8 @@ const fileClick = async ({ fileName, metadata, url }) => {
   } else {
     invalidFileElement();
   }
+
+  return fileContentElement.classList.remove("hidden");
 };
 
 export default fileClick;
