@@ -79,7 +79,14 @@ def test_contents_not_in_outputs(test_outputs):
 
 
 def test_review_success(test_outputs):
-    request = RequestFactory().post("/review", data={"path": str(test_outputs.path)})
+    # we currently use a query param to pass the path, but this is a POST
+    # so we use a get request to build the query string url, and then POST to that
+    url = (
+        RequestFactory()
+        .get("/review", data={"path": str(test_outputs.path)})
+        .get_full_path()
+    )
+    request = RequestFactory().post(url)
     response = views.review(request)
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
@@ -96,7 +103,10 @@ def test_review_success(test_outputs):
 def test_review_missing(tmp_path):
     path = tmp_path / "results.json"
     path.write_text(json.dumps({"test": {"output": "does-not-exist"}}))
-    request = RequestFactory().post("/review", data={"path": str(path)})
+    # so we use a get request to build the query string url, and then POST to that
+    # we currently use a query param to pass the path, but this is a POST
+    url = RequestFactory().get("/review", data={"path": str(path)}).get_full_path()
+    request = RequestFactory().post(url)
     response = views.review(request)
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
