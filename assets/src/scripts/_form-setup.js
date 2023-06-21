@@ -1,9 +1,16 @@
-import { reviewUrl } from "./_data";
+import { reviewUrl, outputs } from "./_data";
 
 const formSetup = () => {
   const form = document.querySelector("#approveForm");
   const button = form.querySelector(`button[type="submit"]`);
   form.action = reviewUrl;
+
+  form.addEventListener("formdata", (ev) => {
+    // TODO: get from signal
+    for (const [output] of outputs) {
+      ev.formData.append("outputs", output);
+    }
+  });
 
   button.classList.remove(
     "cursor-not-allowed",
