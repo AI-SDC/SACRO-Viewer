@@ -110,7 +110,6 @@ def contents(request):
 
 @require_http_methods(["POST"])
 def review(request):
-    breakpoint
     # we load the path from the querystring, even though this is a post request
     outputs = get_outputs(request.GET)
     in_memory_zf = io.BytesIO()
