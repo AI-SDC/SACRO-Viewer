@@ -34,3 +34,12 @@ body > main {
   justify-content: space-between;
   padding: 1rem;
 }
+
+li.selected {
+  background-color: grey;
+
+}
+
+li.approved {
+  background-color: lightgreen;
+}

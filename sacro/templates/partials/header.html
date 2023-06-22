@@ -14,7 +14,7 @@
   <form action="/" method="post" id="approveForm">
     {% csrf_token %}
     {% #button disabled=True id="openModalBtn" type="submit" %}
-      Approve and download
+      Approve and download&nbsp;<span id="approved_count">(0 files)</span>
     {% /button %}
   </form>
 </header>
