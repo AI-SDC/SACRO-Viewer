@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 from django.conf import settings
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, HttpResponseBadRequest
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
@@ -112,15 +112,24 @@ def contents(request):
 def review(request):
     # we load the path from the querystring, even though this is a post request
     outputs = get_outputs(request.GET)
+
+    approved_outputs = request.POST.getlist("outputs")
+    if not approved_outputs:
+        return HttpResponseBadRequest("no outputs specified")
+
+    unrecognize_outputs = [o for o in approved_outputs if o not in outputs]
+    if unrecognize_outputs:
+        return HttpResponseBadRequest(f"invalid output names: {unrecognize_outputs}")
+
     in_memory_zf = io.BytesIO()
     with zipfile.ZipFile(in_memory_zf, "w") as zip_obj:
         # add metadata file
         zip_obj.write(outputs.path, arcname=outputs.path.name)
         missing = []
 
-        # add all other files
-        for output in outputs:
-            path = outputs.get_file_path(output)
+        # add approved files
+        for approved in approved_outputs:
+            path = outputs.get_file_path(approved)
             if path.exists():
                 zip_obj.write(path, arcname=path.name)
             else:

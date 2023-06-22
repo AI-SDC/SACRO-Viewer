@@ -78,15 +78,16 @@ def test_contents_not_in_outputs(test_outputs):
         views.contents(request)
 
 
-def test_review_success(test_outputs):
+def get_review_url_request(outputs_metadata, **kwargs):
     # we currently use a query param to pass the path, but this is a POST
     # so we use a get request to build the query string url, and then POST to that
-    url = (
-        RequestFactory()
-        .get("/review", data={"path": str(test_outputs.path)})
-        .get_full_path()
-    )
-    request = RequestFactory().post(url)
+    rq = RequestFactory()
+    url = rq.get("/review", data={"path": str(outputs_metadata.path)}).get_full_path()
+    return rq.post(url, data=kwargs)
+
+
+def test_review_success_all_files(test_outputs):
+    request = get_review_url_request(test_outputs, outputs=list(test_outputs))
     response = views.review(request)
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
@@ -100,13 +101,23 @@ def test_review_success(test_outputs):
             assert actual_path.read_bytes() == zip_obj.open(zip_path).read()
 
 
-def test_review_missing(tmp_path):
+def test_review_success_no_files(test_outputs):
+    request = get_review_url_request(test_outputs)
+    response = views.review(request)
+    assert response.status_code == 400
+
+
+def test_review_success_unrecognized_files(test_outputs):
+    request = get_review_url_request(test_outputs, outputs=["output-does-not-exist"])
+    response = views.review(request)
+    assert response.status_code == 400
+
+
+def test_review_missing_metadata(tmp_path):
     path = tmp_path / "results.json"
     path.write_text(json.dumps({"test": {"output": "does-not-exist"}}))
-    # so we use a get request to build the query string url, and then POST to that
-    # we currently use a query param to pass the path, but this is a POST
     url = RequestFactory().get("/review", data={"path": str(path)}).get_full_path()
-    request = RequestFactory().post(url)
+    request = RequestFactory().post(url, data={"outputs": ["test"]})
     response = views.review(request)
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
