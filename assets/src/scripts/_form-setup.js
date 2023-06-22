@@ -7,9 +7,7 @@ const formSetup = () => {
 
   form.addEventListener("formdata", (ev) => {
     // TODO: get from signal
-    for (const [output] of outputs) {
-      ev.formData.append("outputs", output);
-    }
+    outputs.forEach((_, k) => ev.formData.append("outputs", k));
   });
 
   button.classList.remove(
