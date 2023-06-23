@@ -26,13 +26,11 @@ const formSetup = () => {
   const setButtonState = (enabled) => {
     if (enabled) {
       if (button.disabled) {
-        console.log("enabling approve button");
         button.classList.remove(...disabledClasses);
         button.classList.add(...enabledClasses);
         button.disabled = false;
       }
     } else {
-      console.log("disabling approve button");
       button.classList.remove(...enabledClasses);
       button.classList.add(...disabledClasses);
       button.disabled = true;
@@ -40,7 +38,6 @@ const formSetup = () => {
   };
 
   effect(() => {
-    console.log("updating approve button text");
     const count = approvedFiles.value.length;
     counter.textContent = `(${count} file${count === 1 ? "" : "s"})`;
     setButtonState(count > 0);
