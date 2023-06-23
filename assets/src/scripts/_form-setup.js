@@ -44,7 +44,6 @@ const formSetup = () => {
   });
 
   form.addEventListener("formdata", (ev) => {
-    console.log(`adding ${approvedFiles.value.length} files to form data`);
     approvedFiles.value.forEach((output) =>
       ev.formData.append("outputs", output)
     );
