@@ -31,7 +31,7 @@ export function csvStringToTable(csvString, el) {
   table += `</tbody>`;
   table += `</table>`;
 
-  el.innerHTML = table;
+  el.innerHTML = table; // eslint-disable-line
 }
 
 export const isCsv = (ext) => ext.toLowerCase() === "csv";
