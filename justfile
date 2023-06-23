@@ -121,6 +121,7 @@ ruff *args=".": devenv
 
 # run the various dev checks but does not change any files
 check: black ruff
+    npm run lint
 
 
 # fix formatting and import sort ordering

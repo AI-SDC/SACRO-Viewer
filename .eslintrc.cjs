@@ -19,6 +19,9 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
+  settings: {
+    "import/core-modules": ["electron", "portfinder"],
+  },
   rules: {
     "prettier/prettier": "error",
     "import/order": [
