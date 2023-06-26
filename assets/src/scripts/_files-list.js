@@ -27,7 +27,6 @@ const fileList = () => {
   });
 
   effect(() => {
-    console.log(approvedFiles.value);
     outputs.forEach((_, name) => {
       const el = container.querySelector(`#list_${name}`);
       if (approvedFiles.value.includes(name)) {

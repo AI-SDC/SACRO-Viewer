@@ -108,10 +108,8 @@ const fileClick = async ({ fileName, metadata, url }) => {
 
   button.addEventListener("click", () => {
     if (approvedFiles.value.includes(fileName)) {
-      console.log(`removing ${fileName} from release`);
       approvedFiles.value = approvedFiles.value.filter((o) => o !== fileName);
     } else {
-      console.log(`approving ${fileName} from release`);
       approvedFiles.value = approvedFiles.value.concat([fileName]);
     }
     toggleButton();
