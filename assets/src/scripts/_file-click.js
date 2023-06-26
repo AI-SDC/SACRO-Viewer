@@ -4,12 +4,7 @@ import { csvStringToTable, getFileExt, isCsv, isImg } from "./_utils";
 
 const fileContentElement = document.getElementById("fileContent");
 
-const splitTextToList = ({ splitter, text }) =>
-  text
-    .split(splitter)
-    .filter((i) => i !== " " && i.length)
-    .map((i) => `<li>${i}</li>`)
-    .join("");
+const toList = ({ list }) => list.map((i) => `<li>${i}</li>`).join("");
 
 const createCsvTableElement = (data) => {
   csvStringToTable(data, fileContentElement);
@@ -35,7 +30,7 @@ const fileClick = async ({ fileName, metadata, url }) => {
   // Set the file values
   openFile.value = {
     fileName,
-    ext: getFileExt(metadata.output),
+    ext: getFileExt(metadata.path),
     url,
     metadata,
   };
@@ -49,19 +44,13 @@ const fileClick = async ({ fileName, metadata, url }) => {
   fileMetadata.innerHTML = `
     <ul>
       <li><strong>Summary:</strong>
-        <ul>${splitTextToList({
-          splitter: "; ",
-          text: metadata.summary,
-        })}</ul>
+        <ul>${toList({ list: metadata.summary })}</ul>
       </li>
       ${
         metadata.comments
           ? `
             <li class="mt-2"><strong>Comments:</strong>
-              <ul>${splitTextToList({
-                splitter: ", ",
-                text: metadata.comments,
-              })}</ul>
+              <ul>${toList({ list: metadata.comments })}</ul>
             </li>
           `
           : ""
