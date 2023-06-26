@@ -16,6 +16,7 @@ const fileList = () => {
 
     const metadata = outputs.get(fileName);
 
+    // toggle selected state for the file list
     el.addEventListener("click", () => {
       handleFileClick({ fileName, metadata, url });
       const children = [...container.children];
@@ -26,13 +27,20 @@ const fileList = () => {
     container.appendChild(el);
   });
 
+  // toggle css changes on state change
   effect(() => {
     outputs.forEach((_, name) => {
       const el = container.querySelector(`#list_${name}`);
-      if (approvedFiles.value.includes(name)) {
-        el.classList.add("approved");
+      const state = approvedFiles.value.get(name);
+      if (state === null) {
+        el.classList.add("state_unknown");
+        el.classList.remove("state_approved", "state_rejected");
+      } else if (state) {
+        el.classList.add("state_approved");
+        el.classList.remove("state_unknown", "state_rejected");
       } else {
-        el.classList.remove("approved");
+        el.classList.add("state_rejected");
+        el.classList.remove("state_unknown", "state_approved");
       }
     });
   });
