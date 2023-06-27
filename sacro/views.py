@@ -13,6 +13,8 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
+from sacro import transform
+
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +32,8 @@ class Outputs(dict):
     path: Path
 
     def __post_init__(self):
-        return self.update(json.loads(self.path.read_text()))
+        self.raw_metadata = json.loads(self.path.read_text())
+        self.update(transform.transform_acro_metadata(self.raw_metadata))
 
     @cached_property
     def content_urls(self):
@@ -43,7 +46,7 @@ class Outputs(dict):
 
     def get_file_path(self, name):
         """Return absolute path to output file"""
-        path = Path(self[name]["output"])
+        path = Path(self[name]["path"])
         # note: if path is absolute, this will just return path
         return self.path.parent / path
 
@@ -55,7 +58,7 @@ class Outputs(dict):
         }
 
     def write(self):
-        self.path.write_text(json.dumps(self, indent=2))
+        self.path.write_text(json.dumps(self.raw_metadata, indent=2))
 
 
 def get_outputs(data):
