@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from sacro import transform
-from sacro.adapters import zipfile
+from sacro.adapters import local_audit, zipfile
 
 
 logger = logging.getLogger(__name__)
@@ -128,4 +128,5 @@ def review(request):
     # use the directory name as the files might all just be results.json
     filename = f"{outputs.path.parent.stem}_{outputs.path.stem}.zip"
 
+    local_audit.log_release(approved_outputs)
     return FileResponse(in_memory_zf, as_attachment=True, filename=filename)
