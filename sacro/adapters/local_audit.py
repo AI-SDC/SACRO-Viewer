@@ -1,4 +1,5 @@
 import logging
+import os
 
 
 def make_logger():
@@ -16,6 +17,6 @@ def make_logger():
 logger = make_logger()
 
 
-def log_release(outputs):
+def log_release(outputs, username):
     for output in outputs:
-        logger.info(f"File released: {output}")
+        logger.info(f"File released by {username}: {output}")

@@ -1,3 +1,4 @@
+import getpass
 import json
 import logging
 from dataclasses import dataclass
@@ -128,5 +129,7 @@ def review(request):
     # use the directory name as the files might all just be results.json
     filename = f"{outputs.path.parent.stem}_{outputs.path.stem}.zip"
 
-    local_audit.log_release(approved_outputs)
+    username = getpass.getuser()
+    local_audit.log_release(approved_outputs, username)
+
     return FileResponse(in_memory_zf, as_attachment=True, filename=filename)
