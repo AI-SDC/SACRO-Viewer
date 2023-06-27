@@ -94,3 +94,8 @@ def test_status_parsing():
     transformed = transform.transform_acro_metadata({"test": {"summary": "review"}})
     assert transformed["test"]["status"] == "review"
     assert transformed["test"]["summary"] == []
+
+
+def test_comment_parsing():
+    transformed = transform.transform_acro_metadata({"test": {"comments": ",1,,2,"}})
+    assert transformed["test"]["comments"] == ["1", "2"]
