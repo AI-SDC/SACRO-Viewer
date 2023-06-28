@@ -4,27 +4,23 @@ import handleFileClick from "./_file-click";
 import { approvedFiles } from "./_signals";
 
 const fileList = () => {
-  const template = document.getElementById("fileRow");
   const container = document.getElementById("filesList");
 
+  // add click handler to each list item
   contentUrls.forEach((url, fileName) => {
-    const el = template.content.firstElementChild.cloneNode(true);
-
-    el.querySelector(`[data-file="name"]`).textContent = fileName;
-    el.querySelector(`[data-file="link"]`).href = `#${url}`;
-    el.id = `list_${fileName}`;
-
+    const el = document.getElementById(`list_${fileName}`)
     const metadata = outputs.get(fileName);
 
     // toggle selected state for the file list
     el.addEventListener("click", () => {
       handleFileClick({ fileName, metadata, url });
-      const children = [...container.children];
-      children.forEach((e) => e.classList.remove("selected"));
+
+      // clear selected class from all items in the list
+      [...container.children].forEach((e) => e.classList.remove("selected"));
+
+      // set selected class on this list item
       el.classList.add("selected");
     });
-
-    container.appendChild(el);
   });
 
   // toggle css changes on state change

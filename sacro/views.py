@@ -85,7 +85,12 @@ def index(request):
 
     outputs = get_outputs(data)
     return TemplateResponse(
-        request, "index.html", context={"outputs": outputs.as_dict()}
+        request,
+        "index.html",
+        context={
+            "content_urls": outputs.content_urls,
+            "outputs": outputs.as_dict(),
+        },
     )
 
 

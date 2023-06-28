@@ -35,9 +35,18 @@
 
     <aside class="overflow-y-scroll bg-white border-r border-zinc-200 py-2">
       <ul class="text-sm h-full" id="filesList">
-        <template id="fileRow">
-          {% file_single %}
-        </template>
+        {% for name, url in content_urls.items %}
+        <li id="list_{{ name }}" class="relative z-10">
+          <a
+            class="py-1 px-2 flex justify-start items-center gap-1 leading-tight hover:bg-blue-100/50 text-blue-800"
+            data-file="link"
+            href="#{{ url }}"
+          >
+            {% icon_document_outline class="h-4 w-4 min-w-[1rem] text-zinc-500" %}
+            <span class="break-all" data-file="name">{{ name }}</span>
+          </a>
+        </li>
+        {% endfor %}
       </ul>
     </aside>
 
