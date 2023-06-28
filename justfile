@@ -191,7 +191,7 @@ test-data:
     if test -f data/dataset_26_nursery.arff; then exit 0; fi
     curl https://www.openml.org/data/download/26/dataset_26_nursery.arff -\o data/dataset_26_nursery.arff
 
-test-outputs: test-data
+test-outputs: test-data devenv
     #!/usr/bin/env bash
     if test outputs/results.json -nt data/test-nursery.py; then exit 0; fi
     # ACRO is additive by default, so delete before regenerating

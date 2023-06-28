@@ -28,12 +28,14 @@ const formSetup = () => {
         button.classList.remove(...disabledClasses);
         button.classList.add(...enabledClasses);
         button.disabled = false;
+        button.setAttribute("title", "");
       }
     } else {
       // disable
       if (!button.disabled) button.classList.remove(...enabledClasses);
       button.classList.add(...disabledClasses);
       button.disabled = true;
+      button.setAttribute("title", "You must approve or reject all outputs");
     }
   };
 
