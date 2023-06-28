@@ -34,7 +34,11 @@
     </header>
 
     <aside class="overflow-y-scroll bg-white border-r border-zinc-200 py-2">
-      {% files_list files=files %}
+      <ul class="text-sm h-full" id="filesList">
+        <template id="fileRow">
+          {% file_single %}
+        </template>
+      </ul>
     </aside>
 
     <main class="container overflow-y-scroll">
