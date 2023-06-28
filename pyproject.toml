@@ -3,6 +3,13 @@ branch = true
 dynamic_context = "test_function"
 omit = [
   ".venv/*",
+  "sacro/__main__.py",
+  "sacro/asgi.py",
+  "sacro/middleware.py",
+]
+source = [
+  "sacro",
+  "tests",
 ]
 
 [tool.coverage.report]
