@@ -44,7 +44,7 @@ const fileClick = async ({ fileName, metadata, url }) => {
   fileMetadata.innerHTML = `
     <ul>
       <li><strong>Summary:</strong>
-        <ul>${toList({ list: metadata.summary })}</ul>
+        <ul>${metadata.summary}</ul>
       </li>
       ${
         metadata.comments
