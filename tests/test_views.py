@@ -12,7 +12,7 @@ from django.test import RequestFactory, override_settings
 from sacro import transform, views
 
 
-TEST_PATH = Path("outputs/test_results.json")
+TEST_PATH = Path("outputs/results.json")
 
 
 @pytest.fixture
@@ -64,7 +64,10 @@ def test_contents_success(test_outputs):
 def test_contents_absolute(test_outputs):
     # convert to absolute file paths
     for value in test_outputs.raw_metadata.values():
-        value["output"] = str(test_outputs.path.parent / value["output"])
+        for output in value["output"]:
+            value["output"] = [
+                str(test_outputs.path.parent / output) for output in value["output"]
+            ]
     test_outputs.write()
 
     for output, url in test_outputs.content_urls.items():
@@ -96,7 +99,7 @@ def test_review_success_all_files(test_outputs):
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
         assert zip_obj.testzip() is None
-        assert zip_obj.namelist() == ["test_results.json"] + [
+        assert zip_obj.namelist() == ["results.json"] + [
             Path(v["path"]).name for v in test_outputs.values()
         ]
         for output, data in test_outputs.items():
@@ -119,7 +122,7 @@ def test_review_success_unrecognized_files(test_outputs):
 
 def test_review_missing_metadata(tmp_path):
     path = tmp_path / "results.json"
-    path.write_text(json.dumps({"test": {"output": "does-not-exist"}}))
+    path.write_text(json.dumps({"test": {"output": ["does-not-exist"]}}))
     url = RequestFactory().get("/review", data={"path": str(path)}).get_full_path()
     request = RequestFactory().post(url, data={"outputs": ["test"]})
     response = views.review(request)

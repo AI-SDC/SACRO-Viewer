@@ -81,7 +81,7 @@ def index(request):
     # quick fix for loading data in dev w/o having to mess with paths in querystrings
     data = request.GET
     if "path" not in request.GET and settings.DEBUG:
-        data = {"path": "outputs/test_results.json"}
+        data = {"path": "outputs/results.json"}
 
     outputs = get_outputs(data)
     return TemplateResponse(

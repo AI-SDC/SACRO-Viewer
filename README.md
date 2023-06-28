@@ -38,7 +38,7 @@ If you don't have any, you can use the test outputs we have included in the
 downloaded zip to get started with.
 
 Navigate to and select the `.json` file in the ACRO `outputs` directory (`results.json` by
-default). If  you are using the test outputs, it is `outputs\test_results.json`.
+default). If  you are using the test outputs, it is `outputs\results.json`.
 
 In the appliction, you should now see the list of outputs on the left, and can
 select each one to view it.

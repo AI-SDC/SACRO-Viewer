@@ -113,7 +113,7 @@ You can double click on the MSI, found in `sacro-app/dist`, to install it, which
 a file dialog. You may need to click various Windows dialogs to approve the
 install.
 
-Navigate to the `outputs` directory and choose `test_results.json`. You should
+Navigate to the `outputs` directory and choose `results.json`. You should
 now be able to see the outputs rendered in the app.
 
 You can click on the `Approve and Download` button to download the files.

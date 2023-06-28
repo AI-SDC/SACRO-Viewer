@@ -90,6 +90,11 @@ print(
     " standard tabulation routines from the pandas package."
 )
 
+
+def last_output():
+    return acro.results.get_index(-1).uid
+
+
 """
 Pandas crosstab
  This is an example of crosstab using pandas.
@@ -108,9 +113,9 @@ ACRO crosstab
 """
 print("\nNow the same crosstab call using the ACRO interface")
 safe_table = acro.crosstab(df.recommend, df.parents)
-acro.rename_output(list(acro.results.keys())[-1], "crosstab_fail")
-acro.add_comments(list(acro.results.keys())[0], "Please let me have this table!")
-acro.add_comments(list(acro.results.keys())[0], "6 cells were suppressed in this table")
+acro.rename_output(last_output(), "crosstab_fail")
+acro.add_comments(last_output(), "Please let me have this table!")
+acro.add_comments(last_output(), "6 cells were suppressed in this table")
 print("\nand this is the researchers output")
 print(safe_table)
 
@@ -123,7 +128,7 @@ print(
     "\nIllustration of crosstab using an aggregation function " "- mean in this case."
 )
 safe_table = acro.crosstab(df.recommend, df.parents, values=df.children, aggfunc="mean")
-acro.rename_output(list(acro.results.keys())[-1], "crosstab_fail_2")
+acro.rename_output(last_output(), "crosstab_fail_2")
 print("\nand this is the researchers output")
 print(safe_table)
 
@@ -151,7 +156,7 @@ print("\nIllustration of using the acro version of pandas pivot table")
 table = acro.pivot_table(
     df, index=["parents"], values=["children"], aggfunc=["mean", "std"]
 )
-acro.rename_output(list(acro.results.keys())[-1], "pivot_table_success")
+acro.rename_output(last_output(), "pivot_table_success")
 print("\nand this is the researchers output")
 print(table)
 
@@ -206,7 +211,7 @@ x = new_df["children"]
 x = add_constant(x)
 print("\nOrdinary Least Squares Regression")
 results = acro.ols(y, x)
-acro.rename_output(list(acro.results.keys())[-1], "ols_pass")
+acro.rename_output(last_output(), "ols_pass")
 print("\nand this is the researchers output")
 print(results.summary())
 
@@ -218,7 +223,7 @@ i.e. from a formula and dataframe using ACRO
 """
 print("\nAnd same, but  passing a formula instead of two arrays")
 results = acro.olsr(formula="recommend ~ children", data=new_df)
-acro.rename_output(list(acro.results.keys())[-1], "olsr_pass")
+acro.rename_output(last_output(), "olsr_pass")
 print("\nand this is the researchers output")
 print(results.summary())
 
@@ -237,7 +242,7 @@ x = new_df["children"]
 x = add_constant(x)
 print("\n Example of a probit regression")
 results = acro.probit(y, x)
-acro.rename_output(list(acro.results.keys())[-1], "probit_pass")
+acro.rename_output(last_output(), "probit_pass")
 print("\nand this is the researchers output")
 print(results.summary())
 
@@ -248,7 +253,7 @@ This is an example of logistic regression using ACRO using the statmodels functi
 """
 print("\n Example of a logit regression")
 results = acro.logit(y, x)
-acro.rename_output(list(acro.results.keys())[-1], "logit_pass")
+acro.rename_output(last_output(), "logit_pass")
 print("\nand this is the researchers output")
 print(results.summary())
 
@@ -302,7 +307,7 @@ acro.custom_output(
     "data/XandY.jfif",
     "This output is an image showing the relationship between X and Y",
 )
-acro.rename_output(list(acro.results.keys())[-1], "custom_jfif")
+acro.rename_output(last_output(), "custom_jfif")
 
 
 """
@@ -312,7 +317,7 @@ acro.custom_output(
     "data/XandY.png",
     "This output is an image showing the relationship between X and Y in a PNG format",
 )
-acro.rename_output(list(acro.results.keys())[-1], "custom_png")
+acro.rename_output(last_output(), "custom_png")
 
 
 """
@@ -327,22 +332,4 @@ print(
     "\nUsers MUST call finalise to send their outputs to the checkers"
     " If they don't, the SDC analysis, and their outputs, are lost."
 )
-output = acro.finalise("test_results.json")
-
-
-### TEMPORARY WORKAROUND FOR ABSOLUTE PATHS
-
-metadata = Path("outputs/test_results.json")
-results = json.loads(metadata.read_text())
-dir = metadata.parent.absolute()
-
-for name, data in results.items():
-    src = Path(data["output"])
-    try:
-        data["output"] = str(src.relative_to(dir))
-    except ValueError:
-        new_src = dir / src.name
-        shutil.copy(src, new_src)
-        data["output"] = str(new_src.relative_to(dir))
-
-metadata.write_text(json.dumps(results, indent=2))
+output = acro.finalise("outputs", "json")
