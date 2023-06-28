@@ -1,5 +1,4 @@
 components:
-  breadcrumbs: "components/breadcrumbs.html"
   button: "components/button.html"
   card: "components/card.html"
   file_single: "components/file-single.html"
