@@ -1,36 +1,36 @@
 import { effect } from "@preact/signals";
-import { contentUrls, outputs } from "./_data";
+import { outputs } from "./_data";
 import handleFileClick from "./_file-click";
 import { approvedFiles } from "./_signals";
 
 const fileList = () => {
-  const template = document.getElementById("fileRow");
   const container = document.getElementById("filesList");
+  const children = [...container.children];
 
-  contentUrls.forEach((url, fileName) => {
-    const el = template.content.firstElementChild.cloneNode(true);
-
-    el.querySelector(`[data-file="name"]`).textContent = fileName;
-    el.querySelector(`[data-file="link"]`).href = `#${url}`;
-    el.id = `list_${fileName}`;
-
+  // add click handler to each list item
+  children.forEach((el) => {
+    const fileName = el.id;
     const metadata = outputs.get(fileName);
+
+    // get the URL and strip off the leading #
+    const url = el.firstElementChild.href.replace("#", "");
 
     // toggle selected state for the file list
     el.addEventListener("click", () => {
       handleFileClick({ fileName, metadata, url });
-      const children = [...container.children];
+
+      // clear selected class from all items in the list
       children.forEach((e) => e.classList.remove("selected"));
+
+      // set selected class on this list item
       el.classList.add("selected");
     });
-
-    container.appendChild(el);
   });
 
   // toggle css changes on state change
   effect(() => {
     outputs.forEach((_, name) => {
-      const el = container.querySelector(`#list_${name}`);
+      const el = container.querySelector(`#${name}`);
       const state = approvedFiles.value.get(name);
       if (state === null) {
         el.classList.add("state_unknown");

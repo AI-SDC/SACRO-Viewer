@@ -1,13 +1,65 @@
-{% extends "base.html" %}
+{% load django_vite %}
+{% load static %}
 
-{% block content %}
-  {{ outputs|json_script:"filesData" }}
+<!DOCTYPE html>
+<html lang="en" class="min-h-screen">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <div class="flex flex-col gap-y-4 mt-1">
-    {% #card title="Select a file" container=True id="openFileName" container_id="fileMetadata" %}
-    {% /card %}
+    <title>SACRO Outputs Viewer</title>
 
-    {% #card container=True container_id="fileContent" %}
-    {% /card %}
-  </div>
-{% endblock content %}
+    {% vite_hmr_client %}
+    {% vite_asset "assets/src/scripts/main.js" %}
+  </head>
+
+  <body class="grid h-screen overflow-hidden bg-zinc-100">
+    <header class="header">
+      <div class="flex gap-x-4 items-center">
+        <img
+          alt="SACRO logo"
+          class="block h-8 w-auto"
+          src="{% static "sacro.svg" %}"
+        >
+        <span class="text-xl font-extrabold text-zinc-800 tracking-tight leading-none">
+          SACRO outputs viewer
+        </span>
+      </div>
+      <form action="/" method="post" id="approveForm">
+        {% csrf_token %}
+        {% #button disabled=True id="openModalBtn" type="submit" %}
+          Release and download
+        {% /button %}
+      </form>
+    </header>
+
+    <aside class="overflow-y-scroll bg-white border-r border-zinc-200 py-2">
+      <ul class="text-sm h-full" id="filesList">
+        {% for name, url in content_urls.items %}
+        <li id="{{ name }}" class="relative z-10">
+          <a
+            class="py-1 px-2 flex justify-start items-center gap-1 leading-tight hover:bg-blue-100/50 text-blue-800"
+            data-file="link"
+            href="#{{ url }}"
+          >
+            {% icon_document_outline class="h-4 w-4 min-w-[1rem] text-zinc-500" %}
+            <span class="break-all" data-file="name">{{ name }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+    <main class="container overflow-y-scroll">
+      {{ outputs|json_script:"filesData" }}
+
+      <div class="flex flex-col gap-y-4 mt-1">
+        {% #card title="Select a file" container=True id="openFileName" container_id="fileMetadata" %}
+        {% /card %}
+
+        {% #card container=True container_id="fileContent" %}
+        {% /card %}
+      </div>
+    </main>
+  </body>
+</html>

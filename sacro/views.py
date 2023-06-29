@@ -53,7 +53,6 @@ class Outputs(dict):
     def as_dict(self):
         return {
             "outputs": self,
-            "content_urls": self.content_urls,
             "review_url": reverse_with_params({"path": str(self.path)}, "review"),
         }
 
@@ -85,7 +84,12 @@ def index(request):
 
     outputs = get_outputs(data)
     return TemplateResponse(
-        request, "index.html", context={"outputs": outputs.as_dict()}
+        request,
+        "index.html",
+        context={
+            "content_urls": outputs.content_urls,
+            "outputs": outputs.as_dict(),
+        },
     )
 
 
