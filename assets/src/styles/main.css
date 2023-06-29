@@ -40,6 +40,10 @@ li.selected {
 
 }
 
-li.approved {
+li.state_approved {
   background-color: lightgreen;
+}
+
+li.state_rejected {
+  background-color: lightcoral;
 }

@@ -1,11 +1,10 @@
 import { effect } from "@preact/signals";
 import { reviewUrl } from "./_data";
-import { approvedFiles } from "./_signals";
+import { approvedFiles, isReviewComplete } from "./_signals";
 
 const formSetup = () => {
   const form = document.querySelector("#approveForm");
   const button = form.querySelector(`button[type="submit"]`);
-  const counter = button.querySelector("#approved_count");
   form.action = reviewUrl;
 
   const enabledClasses = [
@@ -29,24 +28,28 @@ const formSetup = () => {
         button.classList.remove(...disabledClasses);
         button.classList.add(...enabledClasses);
         button.disabled = false;
+        button.setAttribute("title", "");
       }
     } else {
-      button.classList.remove(...enabledClasses);
+      // disable
+      if (!button.disabled) button.classList.remove(...enabledClasses);
       button.classList.add(...disabledClasses);
       button.disabled = true;
+      button.setAttribute("title", "You must approve or reject all outputs");
     }
   };
 
-  effect(() => {
-    const count = approvedFiles.value.length;
-    counter.textContent = `(${count} file${count === 1 ? "" : "s"})`;
-    setButtonState(count > 0);
-  });
+  setButtonState(false);
+
+  effect(() => setButtonState(isReviewComplete()));
 
   form.addEventListener("formdata", (ev) => {
-    approvedFiles.value.forEach((output) =>
-      ev.formData.append("outputs", output)
-    );
+    console.log(`adding ${approvedFiles.value.size} files to form data`);
+    approvedFiles.value.forEach((state, name) => {
+      if (state) {
+        ev.formData.append("outputs", name);
+      }
+    });
   });
 };
 
