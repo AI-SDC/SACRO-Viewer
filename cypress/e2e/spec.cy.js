@@ -24,7 +24,11 @@ describe('template spec', () => {
     cy.wait('@records').its('request').then((req) => {
       cy.request(req)
         .then(({ body, headers }) => {
-          expect(headers).to.have.property('content-type', 'application/x-zip-compressed')
+          const { "content-type": contentType } = headers;
+          expect(contentType).to.be.oneOf([
+            "application/x-zip-compressed",
+            "application/zip"
+          ]);
       })
     })
   })
