@@ -44,7 +44,6 @@ const formSetup = () => {
   effect(() => setButtonState(isReviewComplete()));
 
   form.addEventListener("formdata", (ev) => {
-    console.log(`adding ${approvedFiles.value.size} files to form data`);
     approvedFiles.value.forEach((state, name) => {
       if (state) {
         ev.formData.append("outputs", name);
