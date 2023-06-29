@@ -14,3 +14,9 @@ sacro/staticfiles/
 *.sqlite3
 data/*.arff
 outputs/*
+
+# Cypress
+cypress/results/*
+cypress/reports/*
+cypress/screenshots/*
+cypress/videos/*
