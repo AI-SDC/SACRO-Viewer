@@ -36,7 +36,7 @@
     <aside class="overflow-y-scroll bg-white border-r border-zinc-200 py-2">
       <ul class="text-sm h-full" id="filesList">
         {% for name, url in content_urls.items %}
-        <li id="list_{{ name }}" class="relative z-10">
+        <li id="{{ name }}" class="relative z-10">
           <a
             class="py-1 px-2 flex justify-start items-center gap-1 leading-tight hover:bg-blue-100/50 text-blue-800"
             data-file="link"

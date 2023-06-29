@@ -53,7 +53,6 @@ class Outputs(dict):
     def as_dict(self):
         return {
             "outputs": self,
-            "content_urls": self.content_urls,
             "review_url": reverse_with_params({"path": str(self.path)}, "review"),
         }
 

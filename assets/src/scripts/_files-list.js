@@ -1,22 +1,26 @@
 import { effect } from "@preact/signals";
-import { contentUrls, outputs } from "./_data";
+import { outputs } from "./_data";
 import handleFileClick from "./_file-click";
 import { approvedFiles } from "./_signals";
 
 const fileList = () => {
   const container = document.getElementById("filesList");
+  const children = [...container.children];
 
   // add click handler to each list item
-  contentUrls.forEach((url, fileName) => {
-    const el = document.getElementById(`list_${fileName}`)
+  children.forEach((el) => {
+    const fileName = el.id;
     const metadata = outputs.get(fileName);
+
+    // get the URL and strip off the leading #
+    const url = el.firstElementChild.href.replace("#", "");
 
     // toggle selected state for the file list
     el.addEventListener("click", () => {
       handleFileClick({ fileName, metadata, url });
 
       // clear selected class from all items in the list
-      [...container.children].forEach((e) => e.classList.remove("selected"));
+      children.forEach((e) => e.classList.remove("selected"));
 
       // set selected class on this list item
       el.classList.add("selected");
@@ -26,7 +30,7 @@ const fileList = () => {
   // toggle css changes on state change
   effect(() => {
     outputs.forEach((_, name) => {
-      const el = container.querySelector(`#list_${name}`);
+      const el = container.querySelector(`#${name}`);
       const state = approvedFiles.value.get(name);
       if (state === null) {
         el.classList.add("state_unknown");
