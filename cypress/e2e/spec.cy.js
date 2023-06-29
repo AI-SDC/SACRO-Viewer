@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
-describe("template spec", () => {
+describe("Approve all files and download ZIP", () => {
   it("passes", () => {
     cy.visit("http://localhost:8000");
     cy.get('[data-cy="filesList"] li').each(($el, index, $list) => {
       cy.wrap($el).click();
       cy.get('[data-cy="approve"]').click();
     });
+
     // prepare for form submission that returns back a file
     // https://on.cypress.io/intercept
     cy.intercept(
