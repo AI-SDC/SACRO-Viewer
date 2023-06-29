@@ -2,8 +2,7 @@ import { defineConfig } from "cypress";
 
 export default defineConfig({
   e2e: {
-    setupNodeEvents(on, config) { // eslint-disable-line
-      // implement node event listeners here
-    },
+    // eslint-disable-next-line no-unused-vars
+    setupNodeEvents(on, config) {},
   },
 });
