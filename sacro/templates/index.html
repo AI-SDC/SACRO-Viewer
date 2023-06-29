@@ -34,7 +34,7 @@
     </header>
 
     <aside class="overflow-y-scroll bg-white border-r border-zinc-200 py-2">
-      <ul class="text-sm h-full" id="filesList">
+      <ul class="text-sm h-full" id="filesList" data-cy="filesList">
         {% for name, url in content_urls.items %}
         <li id="{{ name }}" class="relative z-10">
           <a
