@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint \"./assets/src/scripts\" \"./sacro-app\" \"./*.{cjs,js}\"",
+    "lint": "eslint \"./assets/src/scripts\" \"./sacro-app\" \"./cypress\" \"./*.{cjs,js}\"",
     "lint:fix": "npm run lint -- --fix",
     "cypress:open": "cypress open --e2e",
     "cypress:run": "cypress run --spec 'cypress/e2e/spec.cy.js'"
