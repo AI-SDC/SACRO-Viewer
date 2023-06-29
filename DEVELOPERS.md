@@ -77,6 +77,26 @@ export SACRO_URL=http://localhost:8000
 just sacro-app/run
 ```
 
+### Testing the electron app
+
+Semi-automated testing can be done locally using Cypress, via spec files written in javascript.
+
+Cypress expects a server to be running, so you'll need to have run `just run` before any of the following steps.
+
+Then you can start running the tests using this command:
+
+```
+npm run cypress:open
+```
+
+Cypress can be run in headless mode, which could be used in CI in future. This automatically produces a video on each run and provides screenshots of any errors.
+
+To run in headless mode:
+
+```
+npm run cypress:run
+```
+
 ## Building the application
 
 There are two stages to building the application for release. Firstly, building the executable
