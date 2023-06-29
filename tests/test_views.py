@@ -133,3 +133,13 @@ def test_review_missing_metadata(tmp_path):
         contents = zip_obj.open("missing-files.txt").read().decode("utf8")
         assert "were not found" in contents
         assert "does-not-exist" in contents
+
+
+def test_review_success_logs_audit_trail(test_outputs, mocker):
+    mocked_local_audit = mocker.patch("sacro.views.local_audit")
+    request = get_review_url_request(test_outputs, outputs=list(test_outputs))
+
+    response = views.review(request)
+
+    assert response.status_code == 200
+    mocked_local_audit.log_release.assert_called_once()

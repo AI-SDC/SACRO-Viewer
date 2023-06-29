@@ -1,7 +1,6 @@
-import io
+import getpass
 import json
 import logging
-import zipfile
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
@@ -14,6 +13,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
 from sacro import transform
+from sacro.adapters import local_audit, zipfile
 
 
 logger = logging.getLogger(__name__)
@@ -124,31 +124,12 @@ def review(request):
     if unrecognize_outputs:
         return HttpResponseBadRequest(f"invalid output names: {unrecognize_outputs}")
 
-    in_memory_zf = io.BytesIO()
-    with zipfile.ZipFile(in_memory_zf, "w") as zip_obj:
-        # add metadata file
-        zip_obj.write(outputs.path, arcname=outputs.path.name)
-        missing = []
+    in_memory_zf = zipfile.create(outputs, approved_outputs)
 
-        # add approved files
-        for approved in approved_outputs:
-            path = outputs.get_file_path(approved)
-            if path.exists():
-                zip_obj.write(path, arcname=path.name)
-            else:
-                logger.warning("{path} does not exist. Excluding from zipfile")
-                missing.append(str(path))
-
-        if missing:
-            lines = [
-                "The following output files were not found when creating this zipfile:",
-                "",
-            ] + missing
-            zip_obj.writestr("missing-files.txt", data="\n".join(lines))
-
-    # rewind the file stream to the start
-    in_memory_zf.seek(0)
     # use the directory name as the files might all just be results.json
     filename = f"{outputs.path.parent.stem}_{outputs.path.stem}.zip"
+
+    username = getpass.getuser()
+    local_audit.log_release(approved_outputs, username)
 
     return FileResponse(in_memory_zf, as_attachment=True, filename=filename)
