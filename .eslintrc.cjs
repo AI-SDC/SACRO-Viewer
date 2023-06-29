@@ -5,8 +5,8 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ["airbnb-base", "prettier"],
-  plugins: ["prettier"],
+  extends: ["airbnb-base", "prettier", "plugin:cypress/recommended"],
+  plugins: ["prettier", "cypress"],
   overrides: [
     {
       files: ["sacro-app/**/*.js"],
