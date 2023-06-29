@@ -20,3 +20,6 @@ cypress/results/*
 cypress/reports/*
 cypress/screenshots/*
 cypress/videos/*
+
+# Audit log
+sacro/audit.log
