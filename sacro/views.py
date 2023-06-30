@@ -83,11 +83,25 @@ def index(request):
         data = {"path": "outputs/results.json"}
 
     outputs = get_outputs(data)
+
+    # build up all the bits we need for sidebar's context as a single list
+    files = [
+        {
+            "name": name,
+            "status": data["status"],
+            "type": f"{data['properties'].get('method', '')} {data['type']}".strip(),
+            "url": reverse_with_params(
+                {"path": str(outputs.path), "name": name}, "contents"
+            ),
+        }
+        for name, data in outputs.items()
+    ]
+
     return TemplateResponse(
         request,
         "index.html",
         context={
-            "content_urls": outputs.content_urls,
+            "files": files,
             "outputs": outputs.as_dict(),
         },
     )

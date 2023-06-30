@@ -34,17 +34,79 @@
     </header>
 
     <aside class="overflow-y-scroll bg-white border-r border-zinc-200 py-2">
-      <ul class="text-sm h-full" id="filesList" data-cy="filesList">
-        {% for name, url in content_urls.items %}
-        <li id="{{ name }}" class="relative z-10">
-          <a
-            class="py-1 px-2 flex justify-start items-center gap-1 leading-tight hover:bg-blue-100/50 text-blue-800"
-            data-file="link"
-            href="#{{ url }}"
-          >
-            {% icon_document_outline class="h-4 w-4 min-w-[1rem] text-zinc-500" %}
-            <span class="break-all" data-file="name">{{ name }}</span>
-          </a>
+      <h2 id="fileListHeader" class="sr-only">File list</h2>
+      <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of files" id="filesList" data-cy="filesList">
+        {% for file in files %}
+        <li
+          aria-label="File: {{ file.name }}"
+          class="
+            relative group py-0.5 px-1 hover:bg-slate-50
+            {% if file.status == "fail" %}
+            text-red-800
+            {% elif file.status == "pass" %}
+            text-blue-800
+            {% elif file.status == "review" %}
+            text-fuchsia-900
+            {% endif %}
+
+            data-[review-status=approved]:bg-green-100/50
+            data-[review-status=rejected]:bg-red-100/50
+          "
+
+          data-file-name="{{ file.name }}"
+          data-review-status="none"
+        >
+          <dl class="flex flex-row gap-x-2 items-center" aria-label="File information">
+            <div class="order-2">
+              <dt class="sr-only">File name:</dt>
+              <dd>
+                <a
+                  href="#{{ file.url }}"
+                  class="
+                    before:absolute before:inset-0 before:w-full before:h-full before:z-0
+                  "
+                >
+                  <span class="z-10 relative">
+                    {{ file.name }}
+                  </span>
+                </a>
+              </dd>
+            </div>
+            <div class="order-1">
+              <dt class="sr-only">ACRO status:</dt>
+              <dd>
+                <span class="sr-only">{{ file.status }}</span>
+                {% if file.status == "fail" %}
+                {% icon_file_x class="h-5 w-5 stroke-red-700" %}
+                {% elif file.status == "pass" %}
+                {% icon_file class="h-5 w-5 stroke-blue-700" %}
+                {% elif file.status == "review" %}
+                {% icon_file_unknown class="h-5 w-5 stroke-fuchsia-700" %}
+                {% endif %}
+              </dd>
+            </div>
+            <div class="order-3 ml-auto">
+              <dt class="sr-only">File type:</dt>
+              <dd>{{ file.type }}</dd>
+            </div>
+            <div class="order-4">
+              <dt class="sr-only">Review status:</dt>
+              <dd>
+                <span class="hidden group-data-[review-status=none]:block">
+                  <span class="sr-only">Not yet reviewed</span>
+                  <svg class="h-5 w-5"></svg>
+                </span>
+                <span class="hidden group-data-[review-status=approved]:block">
+                  <span class="sr-only">Approved</span>
+                  {% icon_check class="h-5 w-5 text-green-600" %}
+                </span>
+                <span class="hidden group-data-[review-status=rejected]:block">
+                  <span class="sr-only">Rejected</span>
+                  {% icon_x_mark class="h-5 w-5 text-red-600" %}
+                </span>
+              </dd>
+            </div>
+          </dl>
         </li>
         {% endfor %}
       </ul>

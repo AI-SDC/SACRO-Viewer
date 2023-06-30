@@ -36,14 +36,5 @@ body > main {
 }
 
 li.selected {
-  background-color: grey;
-
-}
-
-li.state_approved {
-  background-color: lightgreen;
-}
-
-li.state_rejected {
-  background-color: lightcoral;
+  background-color: lightgrey;
 }

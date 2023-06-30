@@ -3,6 +3,12 @@ components:
   card: "components/card.html"
 
   icon_breadcrumb_arrow: "icons/breadcrumb-arrow.svg"
+  icon_check: "icons/check.svg"
   icon_document_outline: "icons/document-outline.svg"
-  icon_folder_outline: "icons/folder-outline.svg"
+  icon_file: "icons/file.svg"
+  icon_file_unknown: "icons/file-unknown.svg"
+  icon_file_x: "icons/file-x.svg"
   icon_folder_open_outline: "icons/folder-open-outline.svg"
+  icon_folder_outline: "icons/folder-outline.svg"
+  icon_x_mark: "icons/x-mark.svg"
+  icon_question_mark_circle: "icons/question-mark-circle.svg"
