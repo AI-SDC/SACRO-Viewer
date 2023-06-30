@@ -89,13 +89,9 @@ const fileClick = async ({ fileName, metadata, url }) => {
   const resetButton = fileMetadata.querySelector("button.reset");
   const rejectButton = fileMetadata.querySelector("button.reject");
 
-  approveButton.addEventListener("click", () =>
-    setReviewState(fileName, "approved")
-  );
-  resetButton.addEventListener("click", () => setReviewState(fileName, "none"));
-  rejectButton.addEventListener("click", () =>
-    setReviewState(fileName, "rejected")
-  );
+  approveButton.addEventListener("click", () => setReviewState(fileName, true));
+  resetButton.addEventListener("click", () => setReviewState(fileName, null));
+  rejectButton.addEventListener("click", () => setReviewState(fileName, false));
 
   if (isCsv(openFile.value.ext)) {
     const data = await fileLoader(openFile);

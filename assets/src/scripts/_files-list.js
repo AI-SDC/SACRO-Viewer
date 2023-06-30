@@ -30,10 +30,13 @@ const fileList = () => {
     effect(() => {
       outputs.forEach((_, name) => {
         const state = approvedFiles.value.get(name);
-        if (state === null) return;
 
         if (fileName === name) {
-          el.setAttribute("data-review-status", state);
+          if (state === null) {
+            el.setAttribute("data-review-status", "none");
+          } else {
+            el.setAttribute("data-review-status", state);
+          }
         }
       });
     });

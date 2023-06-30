@@ -49,8 +49,8 @@
             text-fuchsia-900
             {% endif %}
 
-            data-[review-status=approved]:bg-green-100/50
-            data-[review-status=rejected]:bg-red-100/50
+            data-[review-status=true]:bg-green-100/50
+            data-[review-status=false]:bg-red-100/50
           "
 
           data-file-name="{{ file.name }}"
@@ -96,11 +96,11 @@
                   <span class="sr-only">Not yet reviewed</span>
                   <svg class="h-5 w-5"></svg>
                 </span>
-                <span class="hidden group-data-[review-status=approved]:block">
+                <span class="hidden group-data-[review-status=true]:block">
                   <span class="sr-only">Approved</span>
                   {% icon_check class="h-5 w-5 text-green-600" %}
                 </span>
-                <span class="hidden group-data-[review-status=rejected]:block">
+                <span class="hidden group-data-[review-status=false]:block">
                   <span class="sr-only">Rejected</span>
                   {% icon_x_mark class="h-5 w-5 text-red-600" %}
                 </span>
