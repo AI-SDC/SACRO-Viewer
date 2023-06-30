@@ -13,7 +13,7 @@ const fileList = () => {
     const metadata = outputs.get(fileName);
 
     // get the URL and strip off the leading #
-    const url = el.firstElementChild.href.replace("#", "");
+    const url = el.firstElementChild.getAttribute("href").replace("#", "");
 
     // toggle selected state for the file list
     el.addEventListener("click", () => {
