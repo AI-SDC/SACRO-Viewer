@@ -4,8 +4,14 @@ from pathlib import Path
 import structlog
 
 
-def get_filename():
+def get_log_filename():
     filename = Path(os.getenv("APPDATA", ".")) / "SACRO" / "error.log"
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    return str(filename)
+
+
+def get_audit_filename():
+    filename = Path(os.getenv("APPDATA", ".")) / "SACRO" / "audit.log"
     filename.parent.mkdir(parents=True, exist_ok=True)
     return str(filename)
 
@@ -60,14 +66,20 @@ logging_config_dict = {
             "level": "DEBUG",
             "class": "logging.FileHandler",
             "formatter": "fileformatter",
-            "filename": get_filename(),
+            "filename": get_log_filename(),
+        },
+        "audit_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "formatter": "fileformatter",
+            "filename": get_audit_filename(),
         },
     },
     "root": {"handlers": ["console", "file"], "level": "WARNING"},
     "loggers": {
         "django": {
             "handlers": ["console", "file"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "level": "INFO",
             "propagate": False,
         },
         "uvicorn": {
@@ -80,7 +92,7 @@ logging_config_dict = {
             "level": "INFO",
             "propagate": False,
         },
-        "sacro": {"handlers": ["console", "file"], "level": "WARN", "propagate": False},
-        "audit": {"handlers": ["console", "file"], "level": "WARN", "propagate": False},
+        "sacro": {"handlers": ["console", "file"], "level": "INFO", "propagate": False},
+        "audit": {"handlers": ["audit_file"], "level": "INFO", "propagate": False},
     },
 }
