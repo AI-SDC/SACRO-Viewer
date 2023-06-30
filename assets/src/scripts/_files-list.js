@@ -5,43 +5,40 @@ import { approvedFiles } from "./_signals";
 
 const fileList = () => {
   const container = document.getElementById("filesList");
-  const children = [...container.children];
+  const fileListItems = [...container.querySelectorAll("li")];
 
   // add click handler to each list item
-  children.forEach((el) => {
-    const fileName = el.id;
+  fileListItems.forEach((el) => {
+    const fileName = el.getAttribute("data-file-name");
     const metadata = outputs.get(fileName);
 
     // get the URL and strip off the leading #
-    const url = el.firstElementChild.getAttribute("href").replace("#", "");
+    const url = el.querySelector("a").getAttribute("href").replace("#/", "");
 
     // toggle selected state for the file list
     el.addEventListener("click", () => {
       handleFileClick({ fileName, metadata, url });
 
       // clear selected class from all items in the list
-      children.forEach((e) => e.classList.remove("selected"));
+      fileListItems.forEach((e) => e.classList.remove("bg-blue-50"));
 
       // set selected class on this list item
-      el.classList.add("selected");
+      el.classList.add("bg-blue-50");
     });
-  });
 
-  // toggle css changes on state change
-  effect(() => {
-    outputs.forEach((_, name) => {
-      const el = container.querySelector(`#${name}`);
-      const state = approvedFiles.value.get(name);
-      if (state === null) {
-        el.classList.add("state_unknown");
-        el.classList.remove("state_approved", "state_rejected");
-      } else if (state) {
-        el.classList.add("state_approved");
-        el.classList.remove("state_unknown", "state_rejected");
-      } else {
-        el.classList.add("state_rejected");
-        el.classList.remove("state_unknown", "state_approved");
-      }
+    // toggle icon changes on state change
+    effect(() => {
+      outputs.forEach((_, name) => {
+        const state = approvedFiles.value.get(name);
+
+        if (fileName === name) {
+          if (state === null) {
+            el.setAttribute("data-review-status", "none");
+          } else {
+            el.setAttribute("data-review-status", state);
+          }
+        }
+      });
     });
   });
 };
