@@ -40,7 +40,7 @@ const fileClick = async ({ fileName, metadata, url }) => {
     openFile.value.fileName;
 
   // Create a human readable date from the timestamp
-  const createdAt = new Date(metadata.timestamp).toLocaleDateString(undefined, {
+  const createdAt = new Date(metadata.timestamp).toLocaleDateString("en-GB", {
     year: "numeric",
     month: "long",
     day: "numeric",
