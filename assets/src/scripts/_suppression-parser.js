@@ -29,13 +29,14 @@ function cellBorder({ outcome }) {
   getInfo.map(({ column, row, comment }) => {
     const tableRow = tableBody.children[row];
     const tableCell = tableRow.children[column];
-    tableCell.classList.add(
+    tableCell.innerHTML = comment;
+
+    return tableCell.classList.add(
       "bg-red-50",
       "!border",
       "!border-red-600",
       "text-red-900"
     );
-    tableCell.innerHTML = comment;
   });
 }
 

@@ -1,6 +1,6 @@
 import fileLoader from "./_file-loader";
 import { openFile, setReviewState } from "./_signals";
-import { cellBorder, suppressionParser } from "./_suppression-parser";
+import { cellBorder } from "./_suppression-parser";
 import { csvStringToTable, getFileExt, isCsv, isImg } from "./_utils";
 
 const fileContentElement = document.getElementById("fileContent");
