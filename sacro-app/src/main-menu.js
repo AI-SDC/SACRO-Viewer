@@ -1,7 +1,6 @@
 const { Menu, app } = require("electron");
 
-// const isMac = process.platform === 'darwin'
-const menuTemplate = [
+const menuItems = [
   {
     label: "File",
     submenu: [
@@ -46,4 +45,13 @@ const menuTemplate = [
   },
 ];
 
-module.exports.mainMenu = Menu.buildFromTemplate(menuTemplate);
+if (process.platform === "darwin") {
+  menuItems.unshift({
+    label: "SACRO",
+    submenu: [
+      { label: "Quit", accelerator: "CmdOrCtrl+Q", click: () => app.quit() },
+    ],
+  });
+}
+
+module.exports.mainMenu = Menu.buildFromTemplate(menuItems);
