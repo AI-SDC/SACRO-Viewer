@@ -43,12 +43,12 @@ const formSetup = () => {
 
   effect(() => setButtonState(isReviewComplete()));
 
-  form.addEventListener("formdata", (ev) => {
-    approvedFiles.value.forEach((state, name) => {
-      if (state) {
-        ev.formData.append("outputs", name);
-      }
-    });
+  form.addEventListener("formdata", (e) => {
+    const reviewedApprovedFiles = Object.keys(approvedFiles.value).filter(
+      (key) => approvedFiles.value[key]?.approved === true
+    );
+
+    reviewedApprovedFiles.map((file) => e.formData.append("outputs", file));
   });
 };
 
