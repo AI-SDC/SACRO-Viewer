@@ -10,7 +10,7 @@ const fileList = () => {
   // add click handler to each list item
   fileListItems.forEach((el) => {
     const fileName = el.getAttribute("data-file-name");
-    const metadata = outputs.get(fileName);
+    const metadata = outputs[fileName];
 
     // get the URL and strip off the leading #
     const url = el.querySelector("a").getAttribute("href").replace("#/", "");
@@ -28,10 +28,10 @@ const fileList = () => {
 
     // toggle icon changes on state change
     effect(() => {
-      outputs.forEach((_, name) => {
-        const state = approvedFiles.value.get(name);
+      Object.keys(outputs).forEach((file) => {
+        if (fileName === file) {
+          const state = approvedFiles.value[file]?.approved;
 
-        if (fileName === name) {
           if (state === null) {
             el.setAttribute("data-review-status", "none");
           } else {
@@ -39,6 +39,8 @@ const fileList = () => {
           }
         }
       });
+
+      return null;
     });
   });
 };
