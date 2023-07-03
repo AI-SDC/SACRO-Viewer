@@ -85,16 +85,27 @@ def test_contents_not_in_outputs(test_outputs):
         views.contents(request)
 
 
-def get_review_url_request(outputs_metadata, **kwargs):
+def get_review_url_request(outputs_metadata, review_data):
     # we currently use a query param to pass the path, but this is a POST
     # so we use a get request to build the query string url, and then POST to that
     rq = RequestFactory()
     url = rq.get("/review", data={"path": str(outputs_metadata.path)}).get_full_path()
-    return rq.post(url, data=kwargs)
+    data = {}
+    if review_data:
+        data["review"] = json.dumps(review_data)
+    return rq.post(url, data=data)
 
 
-def test_review_success_all_files(test_outputs):
-    request = get_review_url_request(test_outputs, outputs=list(test_outputs))
+@pytest.fixture
+def review_data(test_outputs):
+    return {k: {"state": False, "comments": ""} for k in test_outputs.keys()}
+
+
+def test_review_success_all_files(test_outputs, review_data):
+    # approve all files
+    for k, v in review_data.items():
+        v["state"] = True
+    request = get_review_url_request(test_outputs, review_data)
     response = views.review(request)
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
@@ -108,14 +119,15 @@ def test_review_success_all_files(test_outputs):
             assert actual_path.read_bytes() == zip_obj.open(zip_path).read()
 
 
-def test_review_success_no_files(test_outputs):
-    request = get_review_url_request(test_outputs)
+def test_review_success_no_files(test_outputs, review_data):
+    request = get_review_url_request(test_outputs, None)
     response = views.review(request)
     assert response.status_code == 400
 
 
 def test_review_success_unrecognized_files(test_outputs):
-    request = get_review_url_request(test_outputs, outputs=["output-does-not-exist"])
+    bad_data = {"output-does-not-exist": {"state": True}}
+    request = get_review_url_request(test_outputs, bad_data)
     response = views.review(request)
     assert response.status_code == 400
 
@@ -123,8 +135,9 @@ def test_review_success_unrecognized_files(test_outputs):
 def test_review_missing_metadata(tmp_path):
     path = tmp_path / "results.json"
     path.write_text(json.dumps({"test": {"output": ["does-not-exist"]}}))
+    review_data = {"test": {"state": True}}
     url = RequestFactory().get("/review", data={"path": str(path)}).get_full_path()
-    request = RequestFactory().post(url, data={"outputs": ["test"]})
+    request = RequestFactory().post(url, data={"review": json.dumps(review_data)})
     response = views.review(request)
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
@@ -135,9 +148,9 @@ def test_review_missing_metadata(tmp_path):
         assert "does-not-exist" in contents
 
 
-def test_review_success_logs_audit_trail(test_outputs, mocker):
+def test_review_success_logs_audit_trail(test_outputs, review_data, mocker):
     mocked_local_audit = mocker.patch("sacro.views.local_audit")
-    request = get_review_url_request(test_outputs, outputs=list(test_outputs))
+    request = get_review_url_request(test_outputs, review_data)
 
     response = views.review(request)
 

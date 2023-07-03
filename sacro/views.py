@@ -134,9 +134,12 @@ def review(request):
     # we load the path from the querystring, even though this is a post request
     outputs = get_outputs(request.GET)
 
-    approved_outputs = request.POST.getlist("outputs")
-    if not approved_outputs:
-        return HttpResponseBadRequest("no outputs specified")
+    raw_json = request.POST.get("review")
+    if not raw_json:
+        return HttpResponseBadRequest("no review data ")
+
+    review = json.loads(raw_json)
+    approved_outputs = [k for k, v in review.items() if v["state"] is True]
 
     unrecognize_outputs = [o for o in approved_outputs if o not in outputs]
     if unrecognize_outputs:

@@ -43,12 +43,19 @@ const formSetup = () => {
 
   effect(() => setButtonState(isReviewComplete()));
 
-  form.addEventListener("formdata", (e) => {
-    const reviewedApprovedFiles = Object.keys(approvedFiles.value).filter(
-      (key) => approvedFiles.value[key]?.approved === true
+  form.addEventListener("formdata", (ev) => {
+    const data = Object.fromEntries(
+      [...approvedFiles.value.keys()].map((i) => [
+        i,
+        {
+          state: approvedFiles.value[i].approved,
+          comment: "",
+        },
+      ])
     );
-
-    reviewedApprovedFiles.map((file) => e.formData.append("outputs", file));
+    // serialize the review state as a JSON string in the form submission
+    // We tunnel JSON via default form encoding because of Django CSRF, mainly
+    ev.formData.set("review", JSON.stringify(data));
   });
 };
 
