@@ -45,10 +45,10 @@ const formSetup = () => {
 
   form.addEventListener("formdata", (ev) => {
     const data = Object.fromEntries(
-      [...approvedFiles.value.keys()].map((i) => [
-        i,
+      Object.keys(approvedFiles.value).map((output) => [
+        output,
         {
-          state: approvedFiles.value[i].approved,
+          state: approvedFiles.value[output].approved,
           comment: "",
         },
       ])
