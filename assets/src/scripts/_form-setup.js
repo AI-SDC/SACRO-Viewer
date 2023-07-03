@@ -1,11 +1,9 @@
 import { effect } from "@preact/signals";
-import { reviewUrl } from "./_data";
 import { approvedFiles, fileComments, isReviewComplete } from "./_signals";
 
 const formSetup = () => {
   const form = document.querySelector("#approveForm");
   const button = form.querySelector(`button[type="submit"]`);
-  form.action = reviewUrl;
 
   const enabledClasses = [
     "bg-blue-600",

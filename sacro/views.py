@@ -51,10 +51,7 @@ class Outputs(dict):
         return self.path.parent / path
 
     def as_dict(self):
-        return {
-            "outputs": self,
-            "review_url": reverse_with_params({"path": str(self.path)}, "review"),
-        }
+        return {"outputs": self}
 
     def write(self):
         self.path.write_text(json.dumps(self.raw_metadata, indent=2))
@@ -97,12 +94,15 @@ def index(request):
         for name, data in outputs.items()
     ]
 
+    review_url = reverse_with_params({"path": str(outputs.path)}, "review")
+
     return TemplateResponse(
         request,
         "index.html",
         context={
             "files": files,
             "outputs": outputs.as_dict(),
+            "review_url": review_url,
         },
     )
 

@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { outputs } from "./_data";
+import outputs from "./_data";
 
 // Store the file currently visible in the preview
 const openFile = signal();

@@ -25,7 +25,7 @@
           SACRO outputs viewer
         </span>
       </div>
-      <form action="/" method="post" id="approveForm">
+      <form action="{{ review_url }}" method="post" id="approveForm">
         {% csrf_token %}
         {% #button disabled=True id="openModalBtn" type="submit" %}
           Release and download

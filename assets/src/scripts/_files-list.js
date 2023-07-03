@@ -1,5 +1,5 @@
 import { effect } from "@preact/signals";
-import { outputs } from "./_data";
+import outputs from "./_data";
 import handleFileClick from "./_file-click";
 import { approvedFiles } from "./_signals";
 
