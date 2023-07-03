@@ -1,37 +1,40 @@
+import htm from "htm";
+import Papa from "papaparse";
+import vhtml from "vhtml";
+
 export const getFileExt = (str) => str.split(`.`).pop();
 
 export function csvStringToTable(csvString, el) {
-  const rows = csvString.trim().split(/\r?\n|\r/); // Regex to split/separate the CSV rows
-  let table = ``;
-  let tableRows = ``;
-  let tableHeader = ``;
+  const html = htm.bind(vhtml);
+  const csvToJson = Papa.parse(csvString).data;
 
-  rows.forEach((row, rowIndex) => {
-    let tableColumns = ``;
-    const columns = row.split(`,`); // split/separate the columns in a row
-    columns.forEach((column) => {
-      tableColumns +=
-        rowIndex === 0
-          ? `<th class="p-1">${column}</th>`
-          : `<td class="p-1">${column}</td>`;
-    });
-    if (rowIndex === 0) {
-      tableHeader += `<tr>${tableColumns}</tr>`;
-    } else {
-      tableRows += `<tr class="divide-x divide-gray-200 odd:bg-gray-50">${tableColumns}</tr>`;
-    }
-  });
+  const bodyCell = (row) =>
+    row.map((cell) => html`<td class="p-1">${cell}</td>`);
+  const bodyRows = csvToJson.map((row, i) =>
+    i > 0
+      ? html`<tr class="divide-x divide-gray-200 odd:bg-gray-50">
+          ${bodyCell(row)}
+        </tr>`
+      : ``
+  );
 
-  table += `<table class="min-w-full divide-y divide-gray-300 text-left text-sm text-gray-900">`;
-  table += `<thead class="font-semibold bg-gray-200">`;
-  table += tableHeader;
-  table += `</thead>`;
-  table += `<tbody class="divide-y divide-gray-200">`;
-  table += tableRows;
-  table += `</tbody>`;
-  table += `</table>`;
+  const table = html`
+    <table
+      id="csvTable"
+      class="min-w-full divide-y divide-gray-300 text-left text-sm text-gray-900"
+    >
+      <thead class="font-semibold bg-gray-200">
+        <tr>
+          ${csvToJson[0].map((cell) => html`<th>${cell}</th>`)}
+        </tr>
+      </thead>
+      <tbody id="csvBody" class="divide-y divide-gray-200">
+        ${bodyRows}
+      </tbody>
+    </table>
+  `;
 
-  el.innerHTML = table; // eslint-disable-line
+  el.innerHTML = table; // eslint-disable-line no-param-reassign
 }
 
 export const isCsv = (ext) => ext.toLowerCase() === "csv";
