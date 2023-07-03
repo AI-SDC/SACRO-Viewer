@@ -5,12 +5,23 @@ import { outputs } from "./_data";
 // Store the file currently visible in the preview
 const openFile = signal();
 
+// initially empty file comments
+const fileComments = signal(
+  Object.fromEntries(Object.keys(outputs).map((output) => [output, ""]))
+);
+
 // Set each output approval status to null
 const approvedFiles = signal(
   Object.fromEntries(
-    Object.entries(outputs).map(([key]) => [key, { approved: null }])
+    Object.entries(outputs).map(([output]) => [output, { approved: null }])
   )
 );
+
+const setComment = (name, comment) => {
+  const newState = { ...fileComments.value };
+  newState[name] = comment;
+  fileComments.value = newState;
+};
 
 const setReviewState = (name, state) => {
   approvedFiles.value = {
@@ -27,4 +38,11 @@ const isReviewComplete = () => {
   return allFilesReviewed;
 };
 
-export { openFile, approvedFiles, setReviewState, isReviewComplete };
+export {
+  openFile,
+  fileComments,
+  approvedFiles,
+  setReviewState,
+  setComment,
+  isReviewComplete,
+};

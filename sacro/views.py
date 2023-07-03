@@ -138,12 +138,13 @@ def review(request):
     if not raw_json:
         return HttpResponseBadRequest("no review data ")
 
-    review = json.loads(raw_json)
-    approved_outputs = [k for k, v in review.items() if v["state"] is True]
+    review_data = json.loads(raw_json)
 
-    unrecognize_outputs = [o for o in approved_outputs if o not in outputs]
-    if unrecognize_outputs:
-        return HttpResponseBadRequest(f"invalid output names: {unrecognize_outputs}")
+    approved_outputs = [k for k, v in review_data.items() if v["state"] is True]
+
+    unrecognized_outputs = [o for o in approved_outputs if o not in outputs]
+    if unrecognized_outputs:
+        return HttpResponseBadRequest(f"invalid output names: {unrecognized_outputs}")
 
     in_memory_zf = zipfile.create(outputs, approved_outputs)
 
@@ -151,6 +152,6 @@ def review(request):
     filename = f"{outputs.path.parent.stem}_{outputs.path.stem}.zip"
 
     username = getpass.getuser()
-    local_audit.log_release(approved_outputs, username)
+    local_audit.log_release(review_data, username)
 
     return FileResponse(in_memory_zf, as_attachment=True, filename=filename)
