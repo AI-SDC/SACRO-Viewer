@@ -39,12 +39,24 @@ const fileClick = async ({ fileName, metadata, url }) => {
   document.querySelector("#openFileName h2").textContent =
     openFile.value.fileName;
 
+  // Create a human readable date from the timestamp
+  const createdAt = new Date(metadata.timestamp).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+
   // Set the metadata
   const fileMetadata = document.getElementById("fileMetadata");
   fileMetadata.innerHTML = `
     <ul>
       <li><strong>Summary:</strong>
         <ul>${metadata.summary}</ul>
+      </li>
+      <li class="mt-2"><strong>Created:</strong>
+        <ul title="${metadata.timestamp}">${createdAt}</ul>
       </li>
       ${
         metadata.comments
