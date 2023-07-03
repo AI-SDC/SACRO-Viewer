@@ -1,3 +1,8 @@
+import htm from "htm";
+import vhtml from "vhtml";
+
+const html = htm.bind(vhtml);
+
 const indexOfAll = (arr, val) =>
   arr.reduce((acc, el, i) => (el !== val ? [...acc, i] : acc), []);
 
@@ -29,7 +34,12 @@ function cellBorder({ outcome }) {
   getInfo.map(({ column, row, comment }) => {
     const tableRow = tableBody.children[row];
     const tableCell = tableRow.children[column];
-    tableCell.innerHTML = comment;
+
+    tableCell.innerHTML = comment
+      .split("; ")
+      .filter((i) => i !== "")
+      .map((i) => html`<span class="block">${i}</span>`)
+      .join("");
 
     return tableCell.classList.add(
       "bg-red-50",
