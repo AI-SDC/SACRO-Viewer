@@ -14,3 +14,10 @@ app.on("window-all-closed", () => {
   // convention on macos is to leave the app running when you close the window
   if (process.platform !== "darwin") app.quit();
 });
+
+app.setAboutPanelOptions({
+  applicationName: "SACRO",
+  applicationVersion: `Version: ${app.getVersion()}`,
+  credits: "By OpenSAFELY",
+  iconPath: "build/icon.png",
+});

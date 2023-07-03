@@ -1,7 +1,9 @@
-const { BrowserWindow } = require("electron");
+const { BrowserWindow, Menu } = require("electron");
 const { dialog } = require("electron");
+const process = require("node:process");
 const os = require("os");
 const querystring = require("querystring");
+const { mainMenu } = require("./main-menu");
 const startServer = require("./start-server");
 const { waitThenLoad } = require("./utils");
 
@@ -45,5 +47,7 @@ const createWindow = async () => {
     waitThenLoad(url, 4000, win);
   }
 };
+
+Menu.setApplicationMenu(mainMenu);
 
 module.exports = createWindow;
