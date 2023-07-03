@@ -1,5 +1,6 @@
 import fileLoader from "./_file-loader";
 import { openFile, setReviewState } from "./_signals";
+import { cellBorder, suppressionParser } from "./_suppression-parser";
 import { csvStringToTable, getFileExt, isCsv, isImg } from "./_utils";
 
 const fileContentElement = document.getElementById("fileContent");
@@ -108,6 +109,7 @@ const fileClick = async ({ fileName, metadata, url }) => {
   if (isCsv(openFile.value.ext)) {
     const data = await fileLoader(openFile);
     createCsvTableElement(data);
+    cellBorder({ outcome: openFile.value.metadata.outcome });
   } else if (isImg(openFile.value.ext)) {
     createImageElement(openFile.value.url);
   } else {
