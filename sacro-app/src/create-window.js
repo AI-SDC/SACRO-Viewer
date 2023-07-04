@@ -46,6 +46,10 @@ const createWindow = async () => {
   } else {
     waitThenLoad(url, 4000, win);
   }
+
+  if (process.env.DEBUG) {
+    win.webContents.openDevTools();
+  }
 };
 
 Menu.setApplicationMenu(mainMenu);
