@@ -7,12 +7,21 @@ const openFile = signal();
 
 const csvData = signal();
 
+// initially empty file comments
+const fileComments = signal(
+  Object.fromEntries(Object.keys(outputs).map((output) => [output, ""]))
+);
+
 // Set each output approval status to null
 const approvedFiles = signal(
   Object.fromEntries(
-    Object.entries(outputs).map(([key]) => [key, { approved: null }])
+    Object.entries(outputs).map(([output]) => [output, { approved: null }])
   )
 );
+
+const setComment = (name, comment) => {
+  fileComments.value = { ...fileComments.value, [name]: comment };
+};
 
 const setReviewState = (name, state) => {
   approvedFiles.value = {
@@ -29,4 +38,12 @@ const isReviewComplete = () => {
   return allFilesReviewed;
 };
 
-export { approvedFiles, csvData, isReviewComplete, openFile, setReviewState };
+export {
+  csvData,
+  openFile,
+  fileComments,
+  approvedFiles,
+  setReviewState,
+  setComment,
+  isReviewComplete,
+};
