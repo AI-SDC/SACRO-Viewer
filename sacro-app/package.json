@@ -11,6 +11,7 @@
     "build": "electron-builder"
   },
   "dependencies": {
+    "electron-log": "^4.4.8",
     "minimatch": "^9.0.1",
     "portfinder": "^1.0.32"
   },
