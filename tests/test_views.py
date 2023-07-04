@@ -110,7 +110,7 @@ def test_review_success_all_files(test_outputs, review_data):
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
         assert zip_obj.testzip() is None
-        assert zip_obj.namelist() == ["results.json"] + [
+        assert zip_obj.namelist() == [
             Path(v["path"]).name for v in test_outputs.values()
         ]
         for output, data in test_outputs.items():
@@ -142,7 +142,7 @@ def test_review_missing_metadata(tmp_path):
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
         assert zip_obj.testzip() is None
-        assert zip_obj.namelist() == ["results.json", "missing-files.txt"]
+        assert zip_obj.namelist() == ["missing-files.txt"]
         contents = zip_obj.open("missing-files.txt").read().decode("utf8")
         assert "were not found" in contents
         assert "does-not-exist" in contents

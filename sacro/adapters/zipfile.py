@@ -9,8 +9,6 @@ logger = logging.getLogger(__name__)
 def create(outputs, approved_outputs):
     in_memory_zf = io.BytesIO()
     with zipfile.ZipFile(in_memory_zf, "w") as zip_obj:
-        # add metadata file
-        zip_obj.write(outputs.path, arcname=outputs.path.name)
         missing = []
 
         # add approved files
