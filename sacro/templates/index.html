@@ -122,11 +122,31 @@
     </main>
 
     {% #modal id="submitModal" title="Release and download" subtitle='<span class="count"></span> files are ready to be released' %}
+      <p>Record your assessment of the whole release request below.</p>
+      <p>
+        For example, if there are disclosivity concerns that span multiple
+        outputs, or if significant changes are needed to the whole study before
+        it can be released.
+      </p>
+
+      <div class="">
+        <textarea name="comment"
+          class="
+            my-1 block w-full rounded-md border-slate-300 text-slate-900 shadow-sm resize-none
+            sm:text-sm
+            focus:border-oxford-500 focus:ring-oxford-500
+            invalid:border-bn-ribbon-600 invalid:ring-bn-ribbon-600 invalid:ring-1
+          "
+          id="id_comment"
+          type="text"
+        ></textarea>
+      </div>
+
       <p>Click the button below to download a zip file of the files you have approved.</p>
 
       <form action="{{ review_url }}" method="post" id="approveForm">
         {% csrf_token %}
-        {% #button type="submit" variant="success" %}
+        {% #button type="submit" disabled=True %}
           Submit
         {% /button %}
       </form>
