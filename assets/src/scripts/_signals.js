@@ -4,8 +4,6 @@ import { outputs } from "./_data";
 // Store the file currently visible in the preview
 const openFile = signal();
 
-const csvData = signal();
-
 // initially empty file comments
 const fileComments = signal(
   Object.fromEntries(Object.keys(outputs).map((output) => [output, ""]))
@@ -39,7 +37,6 @@ const isReviewComplete = () => {
 
 export {
   approvedFiles,
-  csvData,
   fileComments,
   openFile,
   isReviewComplete,

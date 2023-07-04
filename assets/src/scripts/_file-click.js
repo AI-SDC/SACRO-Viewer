@@ -1,16 +1,11 @@
-import { addSuppressionComments } from "./_cell-suppression";
 import fileLoader from "./_file-loader";
-import { openFile, fileComments, setReviewState, setComment } from "./_signals";
-import { csvStringToTable, getFileExt, isCsv, isImg } from "./_utils";
+import { fileComments, openFile, setComment, setReviewState } from "./_signals";
+import tableBuilder from "./_table-builder";
+import { getFileExt, isCsv, isImg } from "./_utils";
 
 const fileContentElement = document.getElementById("fileContent");
 
 const toList = ({ list }) => list.map((i) => `<li>${i}</li>`).join("");
-
-const createCsvTableElement = (data) => {
-  csvStringToTable(data, fileContentElement);
-  fileContentElement.classList.add("overflow-x-scroll");
-};
 
 const createImageElement = (data) => {
   fileContentElement.innerHTML = "";
@@ -187,8 +182,12 @@ const fileClick = async ({ fileName, metadata, url }) => {
 
   if (isCsv(openFile.value.ext)) {
     const data = await fileLoader(openFile);
-    createCsvTableElement(data);
-    addSuppressionComments({ outcome: openFile.value.metadata.outcome });
+    tableBuilder({
+      csvString: data,
+      el: fileContentElement,
+      outcome: openFile.value.metadata.outcome,
+    });
+    fileContentElement.classList.add("overflow-x-scroll");
   } else if (isImg(openFile.value.ext)) {
     createImageElement(openFile.value.url);
   } else {
