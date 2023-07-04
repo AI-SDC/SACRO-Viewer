@@ -55,14 +55,14 @@ export function setElementText(element, text) {
 export function toggleParentVisibility(element, parent, setState) {
   const parentEl = document
     .querySelector(`[data-sacro-el="${element}"]`)
-    .closest(parent);
+    ?.closest(parent);
 
-  if (setState === "show") {
+  if (parentEl && setState === "show") {
     parentEl.removeAttribute("hidden");
     parentEl.classList.remove("hidden");
   }
 
-  if (setState === "hide") {
+  if (parentEl && setState === "hide") {
     parentEl.setAttribute("hidden", true);
     parentEl.classList.add("hidden");
   }
