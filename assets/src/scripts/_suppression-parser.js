@@ -1,7 +1,4 @@
-import htm from "htm";
-import vhtml from "vhtml";
-
-const html = htm.bind(vhtml);
+import { html } from "./_utils";
 
 const indexOfAll = (arr, val) =>
   arr.reduce((acc, el, i) => (el !== val ? [...acc, i] : acc), []);

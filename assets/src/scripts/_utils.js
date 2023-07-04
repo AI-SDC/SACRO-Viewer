@@ -3,10 +3,11 @@ import Papa from "papaparse";
 import vhtml from "vhtml";
 import { csvData } from "./_signals";
 
+export const html = htm.bind(vhtml);
+
 export const getFileExt = (str) => str.split(`.`).pop();
 
 export function csvStringToTable(csvString, el) {
-  const html = htm.bind(vhtml);
   const csvToJson = Papa.parse(csvString).data;
   csvData.value = csvToJson;
 
