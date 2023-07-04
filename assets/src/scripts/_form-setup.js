@@ -1,6 +1,6 @@
 import { effect } from "@preact/signals";
 import { reviewUrl } from "./_data";
-import { approvedFiles, isReviewComplete } from "./_signals";
+import { approvedFiles, fileComments, isReviewComplete } from "./_signals";
 
 const formSetup = () => {
   const form = document.querySelector("#approveForm");
@@ -49,7 +49,7 @@ const formSetup = () => {
         output,
         {
           state: approvedFiles.value[output].approved,
-          comment: "",
+          comment: fileComments.value[output],
         },
       ])
     );

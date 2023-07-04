@@ -98,7 +98,7 @@ def get_review_url_request(outputs_metadata, review_data):
 
 @pytest.fixture
 def review_data(test_outputs):
-    return {k: {"state": False, "comments": ""} for k in test_outputs.keys()}
+    return {k: {"state": False, "comments": "comment"} for k in test_outputs.keys()}
 
 
 def test_review_success_all_files(test_outputs, review_data):
