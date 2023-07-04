@@ -12,11 +12,11 @@
   },
   "dependencies": {
     "electron-log": "^4.4.8",
-    "minimatch": "^9.0.1",
+    "minimatch": "^9.0.2",
     "portfinder": "^1.0.32"
   },
   "devDependencies": {
-    "electron": "^25.0.1",
+    "electron": "^25.2.0",
     "electron-builder": "^23.6.0"
   },
   "build": {
