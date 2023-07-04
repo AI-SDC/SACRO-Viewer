@@ -50,8 +50,8 @@ const createWindow = async () => {
   if (process.env.DEBUG) {
     win.webContents.openDevTools();
   }
-};
 
-Menu.setApplicationMenu(mainMenu);
+  Menu.setApplicationMenu(mainMenu(serverUrl));
+};
 
 module.exports = createWindow;
