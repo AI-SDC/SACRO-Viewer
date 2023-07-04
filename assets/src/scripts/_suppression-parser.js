@@ -1,3 +1,4 @@
+import { csvData } from "./_signals";
 import { html } from "./_utils";
 
 const indexOfAll = (arr, val) =>
@@ -6,11 +7,12 @@ const indexOfAll = (arr, val) =>
 function suppressionParser({ outcome }) {
   const cellData = [];
 
-  Object.keys(outcome).map((key, i) => {
+  Object.keys(outcome).map((key) => {
     const rows = indexOfAll(Object.values(outcome[key]), "ok");
+    const column = csvData.value[0].findIndex((val) => val === key);
 
     const colData = rows.map((row) => ({
-      column: i + 1,
+      column,
       row,
       comment: Object.values(outcome[key])[row],
     }));
