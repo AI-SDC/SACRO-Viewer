@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { signal } from "@preact/signals";
 import { outputs } from "./_data";
 
@@ -39,11 +38,11 @@ const isReviewComplete = () => {
 };
 
 export {
-  csvData,
-  openFile,
-  fileComments,
   approvedFiles,
-  setReviewState,
-  setComment,
+  csvData,
+  fileComments,
+  openFile,
   isReviewComplete,
+  setComment,
+  setReviewState,
 };

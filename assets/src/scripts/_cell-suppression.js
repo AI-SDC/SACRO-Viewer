@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { csvData } from "./_signals";
 import { html } from "./_utils";
 
@@ -23,7 +24,7 @@ function suppressionParser({ outcome }) {
   return cellData.flatMap((x) => x);
 }
 
-function cellBorder({ outcome }) {
+function addSuppressionComments({ outcome }) {
   const getInfo = suppressionParser({ outcome });
   if (!getInfo.length) return;
 
@@ -49,4 +50,4 @@ function cellBorder({ outcome }) {
   });
 }
 
-export { cellBorder, suppressionParser };
+export { addSuppressionComments };
