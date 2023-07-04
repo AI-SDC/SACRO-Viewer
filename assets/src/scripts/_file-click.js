@@ -1,26 +1,11 @@
-import fileLoader from "./_file-loader";
+import {
+  createImageElement,
+  createTableElement,
+  fileContentElement,
+  invalidFileElement,
+} from "./_file-elements";
 import { fileComments, openFile, setComment, setReviewState } from "./_signals";
-import tableBuilder from "./_table-builder";
-import { getFileExt, isCsv, isImg } from "./_utils";
-
-const fileContentElement = document.getElementById("fileContent");
-
-const toList = ({ list }) => list.map((i) => `<li>${i}</li>`).join("");
-
-const createImageElement = (data) => {
-  fileContentElement.innerHTML = "";
-  fileContentElement.classList.remove("overflow-x-scroll");
-
-  const img = document.createElement("img");
-  img.src = data;
-  fileContentElement.appendChild(img);
-};
-
-const invalidFileElement = () => {
-  fileContentElement.classList.remove("overflow-x-scroll");
-
-  fileContentElement.textContent = "This file cannot be displayed";
-};
+import { getFileExt, html, isCsv, isImg } from "./_utils";
 
 const fileClick = async ({ fileName, metadata, url }) => {
   // Set the file values
@@ -53,46 +38,67 @@ const fileClick = async ({ fileName, metadata, url }) => {
   const rejectButtonStyles =
     "bg-red-600 text-white hover:bg-red-700 focus:bg-red-700 focus:ring-red-500 focus:ring-offset-white";
 
-  fileMetadata.innerHTML = `
+  console.log({ metadata });
+
+  fileMetadata.innerHTML = html`
     <ul>
-      <li><strong>Summary:</strong>
-        <ul>${metadata.summary}</ul>
+      <li>
+        <strong>Summary:</strong>
+        <ul>
+          ${metadata.summary}
+        </ul>
       </li>
-      <li class="mt-2"><strong>Created:</strong>
-        <ul title="${metadata.timestamp}">${createdAt}</ul>
+      <li class="mt-2">
+        <strong>Created:</strong>
+        <ul title="${metadata.timestamp}">
+          ${createdAt}
+        </ul>
       </li>
-      ${
-        metadata.comments
-          ? `
-            <li class="mt-2"><strong>Comments:</strong>
-              <ul>${toList({ list: metadata.comments })}</ul>
+      ${metadata.comments.length
+        ? html`
+            <li class="mt-2">
+              <strong>Comments:</strong>
+              <ul>
+                ${metadata.comments.map((i) => html`<li>${i}</li>`)}
+              </ul>
             </li>
           `
-          : ""
-      }
-      ${
-        isImg(openFile.value.ext)
-          ? `
-            <ul class="mt-2">
-              <li>
-                <strong>Status:</strong>
-                <ul>
-                  <li class="text-red-800 font-semibold py-0.5 px-1 bg-red-50 inline-block">
-                    This output has not been checked by ACRO
-                  </li>
-                </ul>
-              </li>
-            </ul>`
-          : ""
-      }
+        : null}
+      ${isImg(openFile.value.ext)
+        ? html`<ul class="mt-2">
+            <li>
+              <strong>Status:</strong>
+              <ul>
+                <li
+                  class="text-red-800 font-semibold py-0.5 px-1 bg-red-50 inline-block"
+                >
+                  This output has not been checked by ACRO
+                </li>
+              </ul>
+            </li>
+          </ul>`
+        : ""}
       <li>
         <ul class="mt-2">
           <li>
             <strong>Review:</strong>
             <div class="flex flex-row">
-              <button class="approve inline-flex items-center justify-center rounded-l-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${approveButtonStyles}" data-cy="approve">Approve</button>
-              <button class="reset inline-flex items-center justify-center shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium bg-slate-600 text-white hover:bg focus:bg-slate-500 focus:ring-slate-400 focus:ring-offset-white">Reset</button>
-              <button class="reject inline-flex items-center justify-center rounded-r-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${rejectButtonStyles}">Reject</button>
+              <button
+                class="approve inline-flex items-center justify-center rounded-l-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${approveButtonStyles}"
+                data-cy="approve"
+              >
+                Approve
+              </button>
+              <button
+                class="reset inline-flex items-center justify-center shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium bg-slate-600 text-white hover:bg focus:bg-slate-500 focus:ring-slate-400 focus:ring-offset-white"
+              >
+                Reset
+              </button>
+              <button
+                class="reject inline-flex items-center justify-center rounded-r-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${rejectButtonStyles}"
+              >
+                Reject
+              </button>
             </div>
           </li>
           <li class="mt-2">
@@ -113,7 +119,9 @@ const fileClick = async ({ fileName, metadata, url }) => {
               name="comments"
               id="comments"
               type="text"
-            >${fileComments.value[fileName]}</textarea>
+            >
+${fileComments.value[fileName]}</textarea
+            >
           </li>
         </ul>
       </li>
@@ -181,13 +189,7 @@ const fileClick = async ({ fileName, metadata, url }) => {
   });
 
   if (isCsv(openFile.value.ext)) {
-    const data = await fileLoader(openFile);
-    tableBuilder({
-      csvString: data,
-      el: fileContentElement,
-      outcome: openFile.value.metadata.outcome,
-    });
-    fileContentElement.classList.add("overflow-x-scroll");
+    createTableElement(openFile);
   } else if (isImg(openFile.value.ext)) {
     createImageElement(openFile.value.url);
   } else {
