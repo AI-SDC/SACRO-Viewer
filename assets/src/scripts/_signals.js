@@ -5,6 +5,8 @@ import { outputs } from "./_data";
 // Store the file currently visible in the preview
 const openFile = signal();
 
+const csvData = signal();
+
 // Set each output approval status to null
 const approvedFiles = signal(
   Object.fromEntries(
@@ -27,4 +29,4 @@ const isReviewComplete = () => {
   return allFilesReviewed;
 };
 
-export { openFile, approvedFiles, setReviewState, isReviewComplete };
+export { approvedFiles, csvData, isReviewComplete, openFile, setReviewState };
