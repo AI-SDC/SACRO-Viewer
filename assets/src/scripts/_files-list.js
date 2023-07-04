@@ -1,6 +1,6 @@
 import { effect } from "@preact/signals";
 import { outputs } from "./_data";
-import handleFileClick from "./_file-click";
+import fileClick from "./_file-click";
 import { approvedFiles } from "./_signals";
 
 const fileList = () => {
@@ -17,7 +17,7 @@ const fileList = () => {
 
     // toggle selected state for the file list
     el.addEventListener("click", () => {
-      handleFileClick({ fileName, metadata, url });
+      fileClick({ fileName, metadata, url });
 
       // clear selected class from all items in the list
       fileListItems.forEach((e) => e.classList.remove("bg-blue-50"));

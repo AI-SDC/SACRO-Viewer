@@ -44,3 +44,26 @@ export function setElementHTML(element, code) {
 export function setElementText(element, text) {
   document.querySelector(`[data-sacro-el="${element}"]`).innerText = text;
 }
+
+/**
+ * Show or hide the parent element of a SACRO element
+ *
+ * @param {string} element - data attribute name used in the template
+ * @param {Node} parent - parent element node name to find
+ * @param {('show'|'hide')} setState - set if the element is shown or hidden
+ */
+export function toggleParentVisibility(element, parent, setState) {
+  const parentEl = document
+    .querySelector(`[data-sacro-el="${element}"]`)
+    .closest(parent);
+
+  if (setState === "show") {
+    parentEl.removeAttribute("hidden");
+    parentEl.classList.remove("hidden");
+  }
+
+  if (setState === "hide") {
+    parentEl.setAttribute("hidden", true);
+    parentEl.classList.add("hidden");
+  }
+}

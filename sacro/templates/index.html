@@ -115,9 +115,73 @@
     <main class="container overflow-y-scroll">
       {{ outputs|json_script:"filesData" }}
 
-      <div class="flex flex-col gap-y-4 mt-1">
-        {% #card title="Select a file" container=True id="openFileName" container_id="fileMetadata" %}
-        {% /card %}
+      <div class="flex flex-col gap-y-2 mt-1">
+        <h1
+          class="text-2xl font-semibold tracking-tight text-slate-900"
+          data-sacro-el="fileTitle"
+        >
+          Select a file
+        </h1>
+
+        <details open class="bg-white border p-2" hidden>
+          <summary class="text-lg font-semibold">Output</summary>
+          <ul class="flex flex-col gap-y-2">
+            <li>
+              <strong>File names:</strong>
+              <span data-sacro-el="fileDetailsFileNames"></span>
+            </li>
+            <li>
+              <strong>Created at:</strong>
+              <span data-sacro-el="fileCreatedDate"></span>
+            </li>
+          </ul>
+        </details>
+
+        <details open class="bg-white border p-2" hidden>
+          <summary class="text-lg font-semibold">ACRO status</summary>
+          <ul>
+            <li>
+              <strong>Status:</strong>
+              <span data-sacro-el="fileDetailsStatus"></span>
+            </li>
+            <li>
+              <strong>Summary:</strong>
+              <ul class="list-disc ml-5" data-sacro-el="fileDetailsSummary"></ul>
+            </li>
+          </ul>
+        </details>
+
+        <details open class="bg-white border p-2" hidden>
+          <summary class="text-lg font-semibold">Comments</summary>
+          <ul data-sacro-el="fileDetailsComments" class="list-disc ml-4">
+          </ul>
+        </details>
+
+        <details open class="bg-white border p-2" hidden>
+          <summary class="text-lg font-semibold">Review</summary>
+          <form data-sacro-el="fileDetailsReviewForm" action="GET">
+            <fieldset class="flex flex-col">
+              <legend class="font-semibold text-sm">Select a review status</legend>
+
+              <div class="flex flex-row">
+                <label class="min-w-[8ch] flex w-fit-content" for="approved">
+                  <input class="sr-only" type="radio" name="fileReviewStatus" id="approved">
+                  <span class="mx-auto">Approve</span>
+                </label>
+                <label class="min-w-[8ch] flex w-fit-content" for="rejected">
+                  <input class="sr-only" type="radio" name="fileReviewStatus" id="rejected">
+                  <span class="mx-auto">Reject</span>
+                </label>
+                <button class="ml-4" type="button">Reset review status</button>
+              </div>
+            </fieldset>
+
+            <div class="flex flex-col mt-4">
+              <label for="fileReviewComments">Add reasons for selected review status</label>
+              <textarea name="fileReviewComments" id="fileReviewComments" rows="4"></textarea>
+            </div>
+          </form>
+        </details>
 
         {% #card container=True container_id="fileContent" %}
         {% /card %}
