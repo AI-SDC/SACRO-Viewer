@@ -18,9 +18,7 @@ const approvedFiles = signal(
 );
 
 const setComment = (name, comment) => {
-  const newState = { ...fileComments.value };
-  newState[name] = comment;
-  fileComments.value = newState;
+  fileComments.value = { ...fileComments.value, [name]: comment };
 };
 
 const setReviewState = (name, state) => {

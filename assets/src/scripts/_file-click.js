@@ -93,23 +93,30 @@ const fileClick = async ({ fileName, metadata, url }) => {
         <ul class="mt-2">
           <li>
             <strong>Review:</strong>
-            <ul>
-              <button class="approve inline-flex items-center justify-center rounded-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${approveButtonStyles}" data-cy="approve">Approve</button>
-              <button class="reset inline-flex items-center justify-center rounded-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium bg-slate-600 text-white hover:bg focus:bg-slate-500 focus:ring-slate-400 focus:ring-offset-white">Reset</button>
-              <button class="reject inline-flex items-center justify-center rounded-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${rejectButtonStyles}">Reject</button>
-            </ul>
+            <div class="flex flex-row">
+              <button class="approve inline-flex items-center justify-center rounded-l-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${approveButtonStyles}" data-cy="approve">Approve</button>
+              <button class="reset inline-flex items-center justify-center shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium bg-slate-600 text-white hover:bg focus:bg-slate-500 focus:ring-slate-400 focus:ring-offset-white">Reset</button>
+              <button class="reject inline-flex items-center justify-center rounded-r-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${rejectButtonStyles}">Reject</button>
+            </div>
           </li>
-          <li>
-            <label for="comments">Review comments on ${fileName}:</label>
-          </li>
-          <li>
-            <textarea type="text" name="comments"
-            class="
-              comments
-              mt-1 block w-full rounded-md border-slate-300 text-slate-900 shadow-sm
-              sm:text-sm
-              focus:border-oxford-500 focus:ring-oxford-500
-              invalid:border-bn-ribbon-600 invalid:ring-bn-ribbon-600 invalid:ring-1"
+          <li class="mt-2">
+            <label
+              class="inline-block font-semibold text-slate-900 cursor-pointer"
+              for="comments"
+            >
+              Review comments on ${fileName}:
+            </label>
+            <textarea
+              class="
+                comments
+                mt-1 block w-full rounded-md border-slate-300 text-slate-900 shadow-sm resize-none
+                sm:text-sm
+                focus:border-oxford-500 focus:ring-oxford-500
+                invalid:border-bn-ribbon-600 invalid:ring-bn-ribbon-600 invalid:ring-1
+              "
+              name="comments"
+              id="comments"
+              type="text"
             >${fileComments.value[fileName]}</textarea>
           </li>
         </ul>
