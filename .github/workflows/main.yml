@@ -22,7 +22,7 @@ jobs:
             package-lock.json
             sacro-app/package-lock.json
       - name: Install dependencies
-        run: npm install eslint
+        run: npm ci && cd sacro-app && npm ci
       - name: Check formatting, linting and import sorting
         run: just check
 
