@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { outputs } from "./_data";
+import outputs from "./_data";
 
 // Signal for the currently visible output
 export const openFile = signal();

@@ -1,49 +1,16 @@
-import { effect } from "@preact/signals";
-import { reviewUrl } from "./_data";
-import { approvedFiles, fileComments, isReviewComplete } from "./_signals";
+import { approvedFiles, fileComments } from "./_signals";
 
 const formSetup = () => {
-  const form = document.querySelector("#approveForm");
-  const button = form.querySelector(`button[type="submit"]`);
-  form.action = reviewUrl;
+  const modal = document.querySelector("#submitModal");
+  const submit = modal.querySelector(`#approveForm button[type="submit"]`);
 
-  const enabledClasses = [
-    "bg-blue-600",
-    "text-white",
-    "hover:bg-blue-700",
-    "focus:bg-blue-700",
-    "focus:ring-blue-500",
-    "focus:ring-offset-white",
-  ];
+  // close the modal
+  modal.querySelector(".cancel").addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
 
-  const disabledClasses = [
-    "cursor-not-allowed",
-    "bg-slate-300",
-    "text-slate-800",
-  ];
-
-  const setButtonState = (enabled) => {
-    if (enabled) {
-      if (button.disabled) {
-        button.classList.remove(...disabledClasses);
-        button.classList.add(...enabledClasses);
-        button.disabled = false;
-        button.setAttribute("title", "");
-      }
-    } else {
-      // disable
-      if (!button.disabled) button.classList.remove(...enabledClasses);
-      button.classList.add(...disabledClasses);
-      button.disabled = true;
-      button.setAttribute("title", "You must approve or reject all outputs");
-    }
-  };
-
-  setButtonState(false);
-
-  effect(() => setButtonState(isReviewComplete()));
-
-  form.addEventListener("formdata", (ev) => {
+  // update the form with approved files data before its submitted
+  document.querySelector("#approveForm").addEventListener("formdata", (ev) => {
     const data = Object.fromEntries(
       Object.keys(approvedFiles.value).map((output) => [
         output,
@@ -57,6 +24,42 @@ const formSetup = () => {
     // We tunnel JSON via default form encoding because of Django CSRF, mainly
     ev.formData.set("review", JSON.stringify(data));
   });
+
+  const activeStyles = [
+    "bg-green-600",
+    "focus:ring-green-500",
+    "focus:ring-offset-white",
+    "hover:bg-green-700",
+    "text-white",
+  ];
+  const disabledStyles = [
+    "bg-slate-300",
+    "cursor-not-allowed",
+    "text-slate-800",
+  ];
+
+  // enable the submit button once the comment box has content
+  modal.querySelector("#id_comment").addEventListener("keyup", (e) => {
+    // if no comment, ensure button disabled. Other was ensure is enabled
+    if (e.target.value.trim() === "") {
+      // ensure button is disabled
+      if (!submit.disabled) {
+        submit.disabled = true; // eslint-disable-line no-param-reassign
+        submit.classList.add(...disabledStyles);
+        submit.classList.remove(...activeStyles);
+        submit.setAttribute("title", "You must enter a comment first");
+      }
+    } else if (submit.disabled) {
+      // make sure button is enabled
+      submit.disabled = false; // eslint-disable-line no-param-reassign
+      submit.classList.remove(...disabledStyles);
+      submit.classList.add(...activeStyles);
+      submit.setAttribute("title", "");
+    }
+  });
+
+  // FIXME: what to do on submit?
+  submit.addEventListener("click", () => {});
 };
 
 export default formSetup;

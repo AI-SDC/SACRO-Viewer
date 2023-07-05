@@ -28,7 +28,6 @@ def test_outputs_as_dict(test_outputs):
     assert list(d["outputs"].items()) == list(
         transform.transform_acro_metadata(raw).items()
     )
-    assert d["review_url"] == f"/review/?{urlencode({'path': test_outputs.path})}"
 
 
 def test_index(test_outputs):
@@ -36,6 +35,10 @@ def test_index(test_outputs):
 
     response = views.index(request)
     assert response.context_data["outputs"] == test_outputs.as_dict()
+    assert (
+        response.context_data["review_url"]
+        == f"/review/?{urlencode({'path': test_outputs.path})}"
+    )
 
 
 @override_settings(DEBUG=True)
