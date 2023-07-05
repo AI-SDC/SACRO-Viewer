@@ -72,7 +72,7 @@ jobs:
       - name: Copy built msi
         run: cp sacro-app/dist/SACRO*.msi .
       - name: Upload build
-        if: success() && github.ref == 'refs/heads/main'
+        if: success()
         uses: actions/upload-artifact@v3
         with:
           name: SACRO-latest-windows-build
