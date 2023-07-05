@@ -159,8 +159,8 @@ const fileClick = async ({ outputName, metadata, url }) => {
 
   const btnStyles = {
     default: `inline-flex items-center justify-center shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium`,
-    primary: `bg-blue-600 text-white border border-blue-600 hover:bg-blue-700 focus:bg-blue-700 focus:ring-blue-500 focus:ring-offset-white`,
-    primaryOutline: `bg-transparent border border-blue-700 text-blue-700 hover:bg-blue-100 focus:bg-blue-100 focus:ring-blue-500 focus:ring-offset-white`,
+    success: `bg-green-600 text-white border border-green-600 hover:bg-green-700 focus:bg-green-700 focus:ring-green-500 focus:ring-offset-white`,
+    successOutline: `bg-transparent border border-green-700 text-green-700 hover:bg-green-100 focus:bg-green-100 focus:ring-green-500 focus:ring-offset-white`,
     // secondary: ``,
     secondaryOutline: `bg-transparent border border-slate-400/75 text-slate-700 !shadow-none hover:bg-slate-200 focus:bg-slate-200 focus:ring-slate-500 focus:ring-offset-white`,
     warning: `bg-red-600 text-white border border-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-white`,
@@ -176,8 +176,8 @@ const fileClick = async ({ outputName, metadata, url }) => {
           class="
             ${btnStyles.default}
             ${approvedFiles.value[openOutput].approved === true
-            ? btnStyles.primary
-            : btnStyles.primaryOutline}
+            ? btnStyles.success
+            : btnStyles.successOutline}
             rounded-l-md
             approve
           "
@@ -261,6 +261,13 @@ ${fileComments.value[openOutput]}</textarea
           .split(" ")
           .map((style) => button.classList.add(style));
         button.setAttribute("title", "You must enter a comment first");
+
+        approvedFiles.value = {
+          ...approvedFiles.value,
+          [openOutput]: {
+            approved: null,
+          },
+        };
       }
     } else if (button.disabled) {
       // make sure button is enabled
@@ -295,21 +302,28 @@ ${fileComments.value[openOutput]}</textarea
 
   approveButton.addEventListener("click", () => {
     setReviewState(openOutput, true);
-    btnStyles.primaryOutline
+    btnStyles.successOutline
       .split(" ")
       .map((style) => approveButton.classList.remove(style));
-    btnStyles.primary
+    btnStyles.success
       .split(" ")
       .map((style) => approveButton.classList.add(style));
+
+    btnStyles.warning
+      .split(" ")
+      .map((style) => rejectButton.classList.remove(style));
+    btnStyles.warningOutline
+      .split(" ")
+      .map((style) => rejectButton.classList.add(style));
   });
 
   resetButton.addEventListener("click", () => {
     setReviewState(openOutput, null);
 
-    btnStyles.primary
+    btnStyles.success
       .split(" ")
       .map((style) => approveButton.classList.remove(style));
-    btnStyles.primaryOutline
+    btnStyles.successOutline
       .split(" ")
       .map((style) => approveButton.classList.add(style));
 
@@ -330,6 +344,13 @@ ${fileComments.value[openOutput]}</textarea
     btnStyles.warning
       .split(" ")
       .map((style) => rejectButton.classList.add(style));
+
+    btnStyles.success
+      .split(" ")
+      .map((style) => approveButton.classList.remove(style));
+    btnStyles.successOutline
+      .split(" ")
+      .map((style) => approveButton.classList.add(style));
   });
 
   commentInput.addEventListener("keyup", () => {
