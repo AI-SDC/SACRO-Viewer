@@ -1,6 +1,8 @@
 const { Menu, dialog, app, BrowserWindow } = require("electron");
 const log = require("electron-log");
+const fs = require("fs");
 const os = require("node:os");
+const nodePath = require("path");
 const querystring = require("querystring");
 
 const mainMenu = (serverUrl) => {
@@ -84,6 +86,20 @@ const mainMenu = (serverUrl) => {
       ],
     });
   }
+
+  let buildDate = "Not defined";
+  const buildDateFile = nodePath.join(__dirname, "../build_date.txt");
+  if (fs.existsSync(buildDateFile)) {
+    buildDate = fs.readFileSync(buildDateFile);
+    buildDate = `${buildDate}`.trim();
+  }
+
+  app.setAboutPanelOptions({
+    applicationName: "SACRO",
+    applicationVersion: `Version ${app.getVersion()} (Build ${buildDate})`,
+    credits: "By OpenSAFELY",
+    iconPath: "build/icon.png",
+  });
 
   return Menu.buildFromTemplate(menuItems);
 };
