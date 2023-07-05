@@ -84,16 +84,18 @@ const fileClick = async ({ outputName, metadata, url }) => {
     setElementText("fileType", `${method ?? ""} ${type}`);
   }
 
-  if (summary) {
-    toggleParentVisibility("fileDetailsStatus", "div", "show");
+  const statusStyles = (status) => {
+    if (status === "Pass") return `bg-green-100 text-green-900`;
+    if (status === "Fail") return `bg-red-100 text-red-900`;
+    return `bg-yellow-100 text-yellow-900`;
+  };
 
+  toggleParentVisibility("fileDetailsStatus", "div", "show");
+
+  if (summary) {
     const splitSummary = summary.split("; ").filter((i) => i !== "");
-    const status = capitalise(splitSummary[0]);
-    const statusStyles = () => {
-      if (status === "Pass") return `bg-green-100 text-green-800`;
-      if (status === "Fail") return `bg-red-100 text-red-800`;
-      return `bg-yellow-100 text-yellow-800`;
-    };
+    const status =
+      splitSummary[0] !== "review" ? capitalise(splitSummary[0]) : "Unknown";
     const statusInfo = splitSummary.filter((item, i) => item !== "" && i !== 0);
 
     /**
@@ -101,11 +103,12 @@ const fileClick = async ({ outputName, metadata, url }) => {
      */
     setElementHTML(
       "fileDetailsStatus",
-      `<span class="inline-flex items-center rounded-md px-2 py-0.5 font-medium ${statusStyles()}">${status}</span>`
+      `<span class="inline-flex items-center rounded-md px-2 py-0.5 font-medium ${statusStyles(
+        status
+      )}">${status}</span>`
     );
 
     if (splitSummary.length > 1) {
-      toggleParentVisibility("fileDetailsSummary", "div", "show");
       /**
        * Show the remaining summary information
        */
@@ -113,11 +116,15 @@ const fileClick = async ({ outputName, metadata, url }) => {
         "fileDetailsSummary",
         `(${statusInfo.map((item) => `<span>${item}</span>`).join(", ")})`
       );
-    } else {
-      toggleParentVisibility("fileDetailsSummary", "div", "hide");
     }
   } else {
-    toggleParentVisibility("fileDetailsStatus", "div", "hide");
+    toggleParentVisibility("fileDetailsStatus", "div", "show");
+    setElementHTML(
+      "fileDetailsStatus",
+      `<span class="inline-flex items-center rounded-md px-2 py-0.5 font-medium ${statusStyles(
+        "unknown"
+      )}">Unknown</span>`
+    );
   }
 
   /**
