@@ -4,7 +4,13 @@ import {
   fileContentElement,
   invalidFileElement,
 } from "./_file-elements";
-import { fileComments, openFile, setComment, setReviewState } from "./_signals";
+import {
+  approvedFiles,
+  fileComments,
+  openFile,
+  setComment,
+  setReviewState,
+} from "./_signals";
 import {
   capitalise,
   getFileExt,
@@ -151,21 +157,15 @@ const fileClick = async ({ outputName, metadata, url }) => {
   // Set the metadata
   const fileMetadata = document.getElementById("fileMetadata");
 
-  // define active button styles
-  const approveButtonStyles =
-    "bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-700 focus:ring-blue-500 focus:ring-offset-white";
-  const rejectButtonStyles =
-    "bg-red-600 text-white hover:bg-red-700 focus:bg-red-700 focus:ring-red-500 focus:ring-offset-white";
-
   const btnStyles = {
     default: `inline-flex items-center justify-center shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium`,
-    primary: `bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-700 focus:ring-blue-500 focus:ring-offset-white`,
+    primary: `bg-blue-600 text-white border border-blue-600 hover:bg-blue-700 focus:bg-blue-700 focus:ring-blue-500 focus:ring-offset-white`,
     primaryOutline: `bg-transparent border border-blue-700 text-blue-700 hover:bg-blue-100 focus:bg-blue-100 focus:ring-blue-500 focus:ring-offset-white`,
     // secondary: ``,
     secondaryOutline: `bg-transparent border border-slate-400/75 text-slate-700 !shadow-none hover:bg-slate-200 focus:bg-slate-200 focus:ring-slate-500 focus:ring-offset-white`,
-    warning: `bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 focus:ring-offset-white`,
+    warning: `bg-red-600 text-white border border-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-white`,
     warningOutline: `bg-transparent border border-red-700 text-red-700 hover:bg-red-100 focus:bg-red-100 focus:ring-red-500 focus:ring-offset-white`,
-    disabled: `cursor-not-allowed bg-slate-300 text-slate-800`,
+    disabled: `cursor-not-allowed !bg-slate-300 !text-slate-800 !border-slate-400`,
     notDisabled: `hover:shadow-lg focus:outline-none focus:ring-current`,
   };
 
@@ -175,10 +175,11 @@ const fileClick = async ({ outputName, metadata, url }) => {
         <button
           class="
             ${btnStyles.default}
-            ${btnStyles.primaryOutline}
+            ${approvedFiles.value[openOutput].approved === true
+            ? btnStyles.primary
+            : btnStyles.primaryOutline}
             rounded-l-md
             approve
-            ${approveButtonStyles}
           "
           data-sacro-el="fileDetailsBtnApprove"
           data-cy="approve"
@@ -199,9 +200,11 @@ const fileClick = async ({ outputName, metadata, url }) => {
         <button
           class="
             ${btnStyles.default}
-            ${btnStyles.warningOutline}
+            ${approvedFiles.value[openOutput].approved === false
+            ? btnStyles.warning
+            : btnStyles.warningOutline}
+            ${btnStyles.notDisabled}
             reject rounded-r-md
-            ${rejectButtonStyles}
           "
           data-sacro-el="fileDetailsBtnReject"
         >
@@ -245,29 +248,29 @@ ${fileComments.value[openOutput]}</textarea
     `[data-sacro-el="fileDetailsTextareaComments"]`
   );
 
-  const checkComment = (button, activeStyles, comment) => {
+  const checkComment = (button, comment) => {
     // if no comment, ensure button disabled. Other was ensure is enabled
     if (comment.trim() === "") {
       // ensure button is disabled
       if (!button.disabled) {
         button.disabled = true; // eslint-disable-line no-param-reassign
-        button.classList.add(
-          "cursor-not-allowed",
-          "bg-slate-300",
-          "text-slate-800"
-        );
-        button.classList.remove(...activeStyles.split(/ +/));
+        btnStyles.notDisabled
+          .split(" ")
+          .map((style) => button.classList.remove(style));
+        btnStyles.disabled
+          .split(" ")
+          .map((style) => button.classList.add(style));
         button.setAttribute("title", "You must enter a comment first");
       }
     } else if (button.disabled) {
       // make sure button is enabled
       button.disabled = false; // eslint-disable-line no-param-reassign
-      button.classList.remove(
-        "cursor-not-allowed",
-        "bg-slate-300",
-        "text-slate-800"
-      );
-      button.classList.add(...activeStyles.split(/ +/));
+      btnStyles.disabled
+        .split(" ")
+        .map((style) => button.classList.remove(style));
+      btnStyles.notDisabled
+        .split(" ")
+        .map((style) => button.classList.add(style));
       button.setAttribute("title", "");
     }
   };
@@ -276,31 +279,63 @@ ${fileComments.value[openOutput]}</textarea
 
   if (metadata.status === "review") {
     // custom outputs require a comment either way
-    requireCommentButtons.push([approveButton, approveButtonStyles]);
-    requireCommentButtons.push([rejectButton, rejectButtonStyles]);
+    requireCommentButtons.push(approveButton);
+    requireCommentButtons.push(rejectButton);
   } else if (metadata.status === "fail") {
     // if ACRO passed, require a comment to approve it
-    requireCommentButtons.push([approveButton, approveButtonStyles]);
+    requireCommentButtons.push(approveButton);
   } else if (metadata.status === "pass") {
     // if ACRO passed, require a comment to reject it
-    requireCommentButtons.push([rejectButton, rejectButtonStyles]);
+    requireCommentButtons.push(rejectButton);
   }
 
-  requireCommentButtons.forEach(([b, cls]) =>
-    checkComment(b, cls, commentInput.value)
+  requireCommentButtons.forEach((button) =>
+    checkComment(button, commentInput.value)
   );
 
-  approveButton.addEventListener("click", () =>
-    setReviewState(openOutput, true)
-  );
-  resetButton.addEventListener("click", () => setReviewState(openOutput, null));
-  rejectButton.addEventListener("click", () =>
-    setReviewState(openOutput, false)
-  );
+  approveButton.addEventListener("click", () => {
+    setReviewState(openOutput, true);
+    btnStyles.primaryOutline
+      .split(" ")
+      .map((style) => approveButton.classList.remove(style));
+    btnStyles.primary
+      .split(" ")
+      .map((style) => approveButton.classList.add(style));
+  });
+
+  resetButton.addEventListener("click", () => {
+    setReviewState(openOutput, null);
+
+    btnStyles.primary
+      .split(" ")
+      .map((style) => approveButton.classList.remove(style));
+    btnStyles.primaryOutline
+      .split(" ")
+      .map((style) => approveButton.classList.add(style));
+
+    btnStyles.warning
+      .split(" ")
+      .map((style) => rejectButton.classList.remove(style));
+    btnStyles.warningOutline
+      .split(" ")
+      .map((style) => rejectButton.classList.add(style));
+  });
+
+  rejectButton.addEventListener("click", () => {
+    setReviewState(openOutput, false);
+
+    btnStyles.warningOutline
+      .split(" ")
+      .map((style) => rejectButton.classList.remove(style));
+    btnStyles.warning
+      .split(" ")
+      .map((style) => rejectButton.classList.add(style));
+  });
+
   commentInput.addEventListener("keyup", () => {
     setComment(openOutput, commentInput.value);
-    requireCommentButtons.forEach(([b, cls]) =>
-      checkComment(b, cls, commentInput.value)
+    requireCommentButtons.forEach((button) =>
+      checkComment(button, commentInput.value)
     );
   });
 
