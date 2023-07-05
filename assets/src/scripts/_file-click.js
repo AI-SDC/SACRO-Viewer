@@ -116,6 +116,8 @@ const fileClick = async ({ outputName, metadata, url }) => {
         "fileDetailsSummary",
         `(${statusInfo.map((item) => `<span>${item}</span>`).join(", ")})`
       );
+    } else {
+      setElementText("fileDetailsSummary", ``);
     }
   } else {
     toggleParentVisibility("fileDetailsStatus", "div", "show");
