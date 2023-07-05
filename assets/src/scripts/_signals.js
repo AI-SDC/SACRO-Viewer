@@ -1,45 +1,49 @@
 import { signal } from "@preact/signals";
 import { outputs } from "./_data";
 
-// Store the file currently visible in the preview
-const openFile = signal();
+// Signal for the currently visible output
+export const openFile = signal();
 
-// initially empty file comments
-const fileComments = signal(
+// Signal for file comments, initial state is an empty string
+// for each output
+export const fileComments = signal(
   Object.fromEntries(Object.keys(outputs).map((output) => [output, ""]))
 );
 
-// Set each output approval status to null
-const approvedFiles = signal(
+// Signal for the approval state, initial approval status for each output
+// is null
+export const approvedFiles = signal(
   Object.fromEntries(
     Object.entries(outputs).map(([output]) => [output, { approved: null }])
   )
 );
 
-const setComment = (name, comment) => {
+/**
+ * @param {string} name
+ * @param {string} comment
+ */
+export function setComment(name, comment) {
   fileComments.value = { ...fileComments.value, [name]: comment };
-};
+}
 
-const setReviewState = (name, state) => {
+/**
+ * @param {string} name
+ * @param {boolean | null} state
+ */
+export function setReviewState(name, state) {
   approvedFiles.value = {
     ...approvedFiles.value,
     [name]: { ...approvedFiles.value[name], approved: state },
   };
-};
+}
 
-const isReviewComplete = () => {
+/**
+ * @returns boolean | null
+ */
+export function isReviewComplete() {
   const allFilesReviewed = !Object.values(approvedFiles.value).filter(
     (item) => item.approved === null
   ).length;
 
   return allFilesReviewed;
-};
-
-export {
-  approvedFiles,
-  fileComments,
-  openFile,
-  isReviewComplete,
-  setComment,
-  setReviewState,
-};
+}
