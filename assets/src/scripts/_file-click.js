@@ -35,7 +35,7 @@ function statusStyles(status) {
   return `bg-yellow-100 text-yellow-900`;
 }
 
-function checkComment(button, comment, openOutput) {
+function checkComment(button, comment) {
   // if no comment, ensure button disabled. Other was ensure is enabled
   if (comment.trim() === "") {
     // ensure button is disabled
@@ -46,13 +46,6 @@ function checkComment(button, comment, openOutput) {
         .map((style) => button.classList.remove(style));
       btnStyles.disabled.split(" ").map((style) => button.classList.add(style));
       button.setAttribute("title", "You must enter a comment first");
-
-      approvedFiles.value = {
-        ...approvedFiles.value,
-        [openOutput]: {
-          approved: null,
-        },
-      };
     }
   } else if (button.disabled) {
     // make sure button is enabled
@@ -266,7 +259,7 @@ ${fileComments.value[openOutput]}</textarea
   }
 
   requireCommentButtons.forEach((button) =>
-    checkComment(button, commentInput.value, openOutput)
+    checkComment(button, commentInput.value)
   );
 
   approveButton.addEventListener("click", () => {
@@ -290,7 +283,7 @@ ${fileComments.value[openOutput]}</textarea
   commentInput.addEventListener("keyup", () => {
     setComment(openOutput, commentInput.value);
     requireCommentButtons.forEach((button) =>
-      checkComment(button, commentInput.value, openOutput)
+      checkComment(button, commentInput.value)
     );
   });
 
