@@ -14,6 +14,7 @@ import {
 } from "./_signals";
 import {
   capitalise,
+  formatDate,
   getFileExt,
   html,
   isCsv,
@@ -32,23 +33,6 @@ function statusStyles(status) {
   if (status === "Pass") return `bg-green-100 text-green-900`;
   if (status === "Fail") return `bg-red-100 text-red-900`;
   return `bg-yellow-100 text-yellow-900`;
-}
-
-/**
- * Convert date string to standard en-GB format
- * @param {Date} date - valid ISO date string
- * @returns string
- */
-function formatDate(date) {
-  const jsDate = new Date(date);
-
-  return jsDate.toLocaleDateString("en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
 }
 
 function checkComment(button, comment, openOutput) {
@@ -175,9 +159,7 @@ const fileClick = async ({ outputName, metadata, url }) => {
     toggleParentVisibility("fileDetailsStatus", "div", "show");
     setElementHTML(
       "fileDetailsStatus",
-      `<span class="inline-flex items-center rounded-md px-2 py-0.5 font-medium ${statusStyles(
-        "unknown"
-      )}">Unknown</span>`
+      `<span class="inline-flex items-center rounded-md px-2 py-0.5 font-medium ${statusStyles()}">Unknown</span>`
     );
     setElementText("fileDetailsSummary", ``);
   }
@@ -207,39 +189,26 @@ const fileClick = async ({ outputName, metadata, url }) => {
     <div>
       <div class="flex flex-row">
         <button
-          class="
-            ${btnStyles.default}
-            ${approvedFiles.value[openOutput].approved === true
+          class="${btnStyles.default} ${approvedFiles.value[openOutput]
+            .approved === true
             ? btnStyles.success
-            : btnStyles.successOutline}
-            rounded-l-md
-            approve
-          "
+            : btnStyles.successOutline} rounded-l-md"
           data-sacro-el="fileDetailsBtnApprove"
           data-cy="approve"
         >
           Approve
         </button>
         <button
-          class="
-            ${btnStyles.default}
-            ${btnStyles.secondaryOutline}
-            ${btnStyles.notDisabled}
-            reset border-l-0 border-r-0
-          "
+          class="${btnStyles.default} ${btnStyles.secondaryOutline} ${btnStyles.notDisabled} border-x-0"
           data-sacro-el="fileDetailsBtnReset"
         >
           Reset
         </button>
         <button
-          class="
-            ${btnStyles.default}
-            ${approvedFiles.value[openOutput].approved === false
+          class="${btnStyles.default} ${approvedFiles.value[openOutput]
+            .approved === false
             ? btnStyles.warning
-            : btnStyles.warningOutline}
-            ${btnStyles.notDisabled}
-            reject rounded-r-md
-          "
+            : btnStyles.warningOutline} ${btnStyles.notDisabled} rounded-r-md"
           data-sacro-el="fileDetailsBtnReject"
         >
           Reject

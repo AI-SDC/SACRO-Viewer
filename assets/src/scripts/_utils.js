@@ -67,3 +67,20 @@ export function toggleParentVisibility(element, parent, setState) {
     parentEl.classList.add("hidden");
   }
 }
+
+/**
+ * Convert date string to standard en-GB format
+ * @param {Date} date - valid ISO date string
+ * @returns string
+ */
+export function formatDate(date) {
+  const jsDate = new Date(date);
+
+  return jsDate.toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+}
