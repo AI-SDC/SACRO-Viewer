@@ -1,5 +1,6 @@
 {
-  "name": "SACRO",
+  "name": "@opensafely/sacro",
+  "productName": "SACRO",
   "version": "0.1.0",
   "main": "main.js",
   "description": "SACRO Output Viewer",
