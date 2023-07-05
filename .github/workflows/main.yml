@@ -49,6 +49,31 @@ jobs:
       - name: Build app
         run: just sacro-app/build
 
+  test-windows:
+    runs-on: windows-2022
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: "opensafely-core/setup-action@v1"
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          cache: "npm"
+          cache-dependency-path: |
+            **/package-lock.json
+            sacro-app/package-lock.json
+      # our just setup doesn't make just available on the path
+      - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
+      - name: Run tests
+        run: just test
+      - name: Cypress run
+        uses: cypress-io/github-action@d69252d52b9a31bad4f418f05ba2bc83687a02eb #v5.8.3
+        with:
+          start: just run
+          wait-on: "http://localhost:8000/"
+
   build-windows:
     permissions:
       contents: write
@@ -68,8 +93,6 @@ jobs:
             sacro-app/package-lock.json
       # our just setup doesn't make just available on the path
       - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
-      - name: Run tests
-        run: just test
       - name: Build binary
         run: just build
       - name: Build app
