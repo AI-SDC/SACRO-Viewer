@@ -1,6 +1,7 @@
 components:
   button: "components/button.html"
   card: "components/card.html"
+  header: "components/header.html"
   modal: "components/modal.html"
 
   icon_breadcrumb_arrow: "icons/breadcrumb-arrow.svg"

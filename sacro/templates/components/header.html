@@ -1,0 +1,15 @@
+{% load static %}
+
+<header class="header">
+  <div class="flex gap-x-4 items-center">
+    <img
+      alt="SACRO logo"
+      class="block h-8 w-auto"
+      src="{% static "sacro.svg" %}"
+    >
+    <span class="text-xl font-extrabold text-zinc-800 tracking-tight leading-none">
+      SACRO Outputs Viewer
+    </span>
+  </div>
+  {{ children }}
+</header>
