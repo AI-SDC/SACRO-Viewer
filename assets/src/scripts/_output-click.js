@@ -113,9 +113,11 @@ const outputClick = async ({ outputName, metadata, url }) => {
     );
   }
 
+  toggleParentVisibility("outputType", "div", "show");
   if (method) {
-    toggleParentVisibility("outputType", "div", "show");
     setElementText("outputType", `${method ?? ""} ${type}`);
+  } else {
+    setElementText("outputType", "Unknown");
   }
 
   toggleParentVisibility("outputDetailsStatus", "div", "show");
