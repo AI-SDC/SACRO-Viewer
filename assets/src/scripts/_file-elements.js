@@ -4,7 +4,7 @@ import tableBuilder from "./_table-builder";
 
 export const fileContentElement = document.getElementById("fileContent");
 
-export async function createTableElement(file, output) {
+export async function createTableElement(file) {
   const data = await fileLoader(file);
 
   tableBuilder({

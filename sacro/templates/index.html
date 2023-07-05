@@ -33,7 +33,7 @@
       </form>
     </header>
 
-    <aside class="overflow-y-scroll bg-white border-r border-zinc-200 py-2">
+    <aside class="overflow-y-auto bg-white border-r border-zinc-200 py-2">
       <h2 id="fileListHeader" class="sr-only">File list</h2>
       <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of files" id="filesList" data-cy="filesList">
         {% for file in files %}
@@ -115,82 +115,51 @@
     <main class="container overflow-y-scroll">
       {{ outputs|json_script:"filesData" }}
 
-      <div class="flex flex-col gap-y-2 mt-1">
-        <h1
-          class="text-2xl font-semibold tracking-tight text-slate-900"
-          data-sacro-el="fileTitle"
-        >
-          Select a file
-        </h1>
+      <div class="grid gap-y-4">
+        <div class="overflow-hidden bg-white shadow">
+          <div class="p-4">
+            <h1 class="text-xl font-semibold leading-7 text-gray-900" data-sacro-el="fileTitle">
+              Select a file
+            </h1>
+          </div>
+          <div class="border-t border-gray-100">
+            <dl class="divide-y divide-gray-100">
+              <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+                <dt class="text-sm font-medium text-gray-900">Created at</dt>
+                <dd class="text-sm leading-6 text-gray-700 col-span-3" data-sacro-el="fileCreatedDate"></dd>
+              </div>
+              <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+                <dt class="text-sm font-medium text-gray-900">File type</dt>
+                <dd class="text-sm leading-6 text-gray-700 col-span-3" data-sacro-el="fileType"></dd>
+              </div>
+              <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+                <dt class="text-sm font-medium text-gray-900">ACRO status</dt>
+                <dd class="text-sm leading-6 text-gray-700 col-span-3">
+                  <span class="block" data-sacro-el="fileDetailsStatus"></span>
+                  <span data-sacro-el="fileDetailsSummary"></span>
+                </dd>
+              </div>
+              <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+                <dt class="text-sm font-medium text-gray-900">Comments</dt>
+                <dd class="text-sm leading-6 text-gray-700 col-span-3">
+                  <ul data-sacro-el="fileDetailsComments" class="list-disc ml-4">
+                  </ul>
+                </dd>
+              </div>
+              <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+                <dt class="text-sm font-medium text-gray-900">Review</dt>
+                <dd class="text-sm leading-6 text-gray-700 col-span-3">
+                  <span data-sacro-el="fileDetailsReviewForm" id="fileMetadata"></span>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
 
-        <details open class="bg-white border p-2" hidden>
-          <summary class="text-lg font-semibold">Output</summary>
-          <ul class="flex flex-col gap-y-2">
-            <li>
-              <strong>File names:</strong>
-              <span data-sacro-el="fileDetailsFileNames"></span>
-            </li>
-            <li>
-              <strong>Created at:</strong>
-              <span data-sacro-el="fileCreatedDate"></span>
-            </li>
-          </ul>
-        </details>
-
-        <details open class="bg-white border p-2" hidden>
-          <summary class="text-lg font-semibold">ACRO status</summary>
-          <ul>
-            <li>
-              <strong>Status:</strong>
-              <span data-sacro-el="fileDetailsStatus"></span>
-            </li>
-            <li>
-              <strong>Summary:</strong>
-              <ul class="list-disc ml-5" data-sacro-el="fileDetailsSummary"></ul>
-            </li>
-          </ul>
-        </details>
-
-        <details open class="bg-white border p-2" hidden>
-          <summary class="text-lg font-semibold">Comments</summary>
-          <ul data-sacro-el="fileDetailsComments" class="list-disc ml-4">
-          </ul>
-        </details>
-
-        <details class="bg-white border p-2" open hidden>
-          <summary class="text-lg font-semibold">Review</summary>
-          <div id="fileMetadata" data-sacro-el="fileDetailsReviewForm"></div>
-        </details>
-
-        {# <details open class="bg-white border p-2" hidden> #}
-          {# <summary class="text-lg font-semibold">Review</summary> #}
-          {# <form data-sacro-el="fileDetailsReviewForm" action="GET"> #}
-            {# <fieldset class="flex flex-col"> #}
-              {# <legend class="font-semibold text-sm">Select a review status</legend> #}
-              {#  #}
-              {# <div class="flex flex-row"> #}
-                {# <label class="min-w-[8ch] flex w-fit-content" for="approved"> #}
-                  {# <input class="sr-only" type="radio" name="fileReviewStatus" id="approved"> #}
-                  {# <span class="mx-auto">Approve</span> #}
-                {# </label> #}
-                {# <label class="min-w-[8ch] flex w-fit-content" for="rejected"> #}
-                  {# <input class="sr-only" type="radio" name="fileReviewStatus" id="rejected"> #}
-                  {# <span class="mx-auto">Reject</span> #}
-                {# </label> #}
-                {# <button class="ml-4" type="button">Reset review status</button> #}
-              {# </div> #}
-            {# </fieldset> #}
-            {#  #}
-            {# <div class="flex flex-col mt-4"> #}
-              {# <label for="fileReviewComments">Add reasons for selected review status</label> #}
-              {# <textarea name="fileReviewComments" id="fileReviewComments" rows="4"></textarea> #}
-            {# </div> #}
-          {# </form> #}
-        {# </details> #}
-
-        {% #card container=True container_id="fileContent" %}
+        {% #card title="Select a file" container=True container_id="fileContent" class="hidden" %}
         {% /card %}
       </div>
+
     </main>
   </body>
 </html>

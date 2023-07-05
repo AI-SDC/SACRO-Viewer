@@ -27,33 +27,41 @@ const fileClick = async ({ outputName, metadata, url }) => {
 
   const {
     outputName: openOutput,
-    metadata: { comments, output, summary, timestamp },
+    metadata: {
+      comments,
+      output,
+      summary,
+      timestamp,
+      type,
+      properties: { method },
+    },
   } = openFile.value;
 
-  toggleParentVisibility("fileDetailsReviewForm", "details", "show");
+  /**
+   * Show the file viewer
+   */
+  document
+    .getElementById("select-a-file-title")
+    .closest("section")
+    .classList.remove("hidden");
 
   /**
-   * Set the file name
+   * Set the page name
    */
-  setElementText("fileTitle", openFile.value.outputName);
+  toggleParentVisibility("fileTitle", "h1", "show");
+  setElementText("fileTitle", openOutput);
 
   /**
-   * List the files included in the current output
+   * Set the file title
    */
-  if (output) {
-    toggleParentVisibility("fileDetailsFileNames", "details", "show");
-
-    setElementHTML(
-      "fileDetailsFileNames",
-      output.map((fileName) => `<li>${fileName}</li>`).join("")
-    );
-  }
+  // eslint-disable-next-line prefer-destructuring
+  document.getElementById("select-a-file-title").innerText = output[0];
 
   /**
    * Display the created at date
    */
   if (timestamp) {
-    toggleParentVisibility("fileCreatedDate", "details", "show");
+    toggleParentVisibility("fileCreatedDate", "div", "show");
 
     const createdAt = new Date(timestamp).toLocaleDateString("en-GB", {
       year: "numeric",
@@ -71,46 +79,64 @@ const fileClick = async ({ outputName, metadata, url }) => {
     );
   }
 
+  if (method) {
+    toggleParentVisibility("fileType", "div", "show");
+    setElementText("fileType", `${method ?? ""} ${type}`);
+  }
+
   if (summary) {
-    toggleParentVisibility("fileDetailsStatus", "details", "show");
+    toggleParentVisibility("fileDetailsStatus", "div", "show");
+
+    const splitSummary = summary.split("; ").filter((i) => i !== "");
+    const status = capitalise(splitSummary[0]);
+    const statusStyles = () => {
+      if (status === "Pass") return `bg-green-100 text-green-800`;
+      if (status === "Fail") return `bg-red-100 text-red-800`;
+      return `bg-yellow-100 text-yellow-800`;
+    };
+    const statusInfo = splitSummary.filter((item, i) => item !== "" && i !== 0);
 
     /**
      * Split the metadata summary to show the overall file status
      */
-    setElementText("fileDetailsStatus", capitalise(summary.split("; ")[0]));
+    setElementHTML(
+      "fileDetailsStatus",
+      `<span class="inline-flex items-center rounded-md px-2 py-0.5 font-medium ${statusStyles()}">${status}</span>`
+    );
 
-    if (summary.split("; ").filter((i) => i !== "").length > 1) {
-      toggleParentVisibility("fileDetailsSummary", "li", "show");
+    if (splitSummary.length > 1) {
+      toggleParentVisibility("fileDetailsSummary", "div", "show");
       /**
        * Show the remaining summary information
        */
       setElementHTML(
         "fileDetailsSummary",
-        summary
-          .split("; ")
-          .filter((i) => i !== "")
-          .map((item, i) => (i > 0 ? `<li>${item}</li>` : null))
-          .join("")
+        `(${statusInfo.map((item) => `<span>${item}</span>`).join(", ")})`
       );
     } else {
-      toggleParentVisibility("fileDetailsSummary", "li", "hide");
+      toggleParentVisibility("fileDetailsSummary", "div", "hide");
     }
   } else {
-    toggleParentVisibility("fileDetailsStatus", "details", "hide");
+    toggleParentVisibility("fileDetailsStatus", "div", "hide");
   }
 
   /**
    * Show the comments summary information
    */
   if (comments.length) {
-    toggleParentVisibility("fileDetailsComments", "details", "show");
+    toggleParentVisibility("fileDetailsComments", "div", "show");
     setElementHTML(
       "fileDetailsComments",
       comments.map((item) => `<li>${item}</li>`).join("")
     );
   } else {
-    toggleParentVisibility("fileDetailsComments", "details", "hide");
+    toggleParentVisibility("fileDetailsComments", "div", "hide");
   }
+
+  /**
+   * Set up the review form
+   */
+  toggleParentVisibility("fileDetailsReviewForm", "div", "show");
 
   // Set the metadata
   const fileMetadata = document.getElementById("fileMetadata");
@@ -121,62 +147,93 @@ const fileClick = async ({ outputName, metadata, url }) => {
   const rejectButtonStyles =
     "bg-red-600 text-white hover:bg-red-700 focus:bg-red-700 focus:ring-red-500 focus:ring-offset-white";
 
+  const btnStyles = {
+    default: `inline-flex items-center justify-center shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium`,
+    primary: `bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-700 focus:ring-blue-500 focus:ring-offset-white`,
+    primaryOutline: `bg-transparent border border-blue-700 text-blue-700 hover:bg-blue-100 focus:bg-blue-100 focus:ring-blue-500 focus:ring-offset-white`,
+    // secondary: ``,
+    secondaryOutline: `bg-transparent border border-slate-400/75 text-slate-700 !shadow-none hover:bg-slate-200 focus:bg-slate-200 focus:ring-slate-500 focus:ring-offset-white`,
+    warning: `bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 focus:ring-offset-white`,
+    warningOutline: `bg-transparent border border-red-700 text-red-700 hover:bg-red-100 focus:bg-red-100 focus:ring-red-500 focus:ring-offset-white`,
+    disabled: `cursor-not-allowed bg-slate-300 text-slate-800`,
+    notDisabled: `hover:shadow-lg focus:outline-none focus:ring-current`,
+  };
+
   fileMetadata.innerHTML = html`
-    <ul>
-      <li>
-        <ul class="mt-2">
-          <li>
-            <strong>Review:</strong>
-            <div class="flex flex-row">
-              <button
-                class="approve inline-flex items-center justify-center rounded-l-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${approveButtonStyles}"
-                data-cy="approve"
-              >
-                Approve
-              </button>
-              <button
-                class="reset inline-flex items-center justify-center shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium bg-slate-600 text-white hover:bg focus:bg-slate-500 focus:ring-slate-400 focus:ring-offset-white"
-              >
-                Reset
-              </button>
-              <button
-                class="reject inline-flex items-center justify-center rounded-r-md shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium ${rejectButtonStyles}"
-              >
-                Reject
-              </button>
-            </div>
-          </li>
-          <li class="mt-2">
-            <label
-              class="inline-block font-semibold text-slate-900 cursor-pointer"
-              for="comments"
-            >
-              Review comments on ${openOutput}:
-            </label>
-            <textarea
-              class="
-                  comments
-                  mt-1 block w-full rounded-md border-slate-300 text-slate-900 shadow-sm resize-none
-                  sm:text-sm
-                  focus:border-oxford-500 focus:ring-oxford-500
-                  invalid:border-bn-ribbon-600 invalid:ring-bn-ribbon-600 invalid:ring-1
-                "
-              name="comments"
-              id="comments"
-              type="text"
-            >
-  ${fileComments.value[openOutput]}</textarea
-            >
-          </li>
-        </ul>
-      </li>
-    </ul>
+    <div>
+      <div class="flex flex-row">
+        <button
+          class="
+            ${btnStyles.default}
+            ${btnStyles.primaryOutline}
+            rounded-l-md
+            approve
+            ${approveButtonStyles}
+          "
+          data-sacro-el="fileDetailsBtnApprove"
+          data-cy="approve"
+        >
+          Approve
+        </button>
+        <button
+          class="
+            ${btnStyles.default}
+            ${btnStyles.secondaryOutline}
+            ${btnStyles.notDisabled}
+            reset border-l-0 border-r-0
+          "
+          data-sacro-el="fileDetailsBtnReset"
+        >
+          Reset
+        </button>
+        <button
+          class="
+            ${btnStyles.default}
+            ${btnStyles.warningOutline}
+            reject rounded-r-md
+            ${rejectButtonStyles}
+          "
+          data-sacro-el="fileDetailsBtnReject"
+        >
+          Reject
+        </button>
+      </div>
+      <label
+        class="mt-2 inline-block font-semibold text-slate-900 cursor-pointer"
+        for="comments"
+      >
+        Review comments on ${openOutput}:
+      </label>
+      <textarea
+        class="
+          comments
+          mt-1 mb-2 block w-full rounded-md border-slate-300 text-slate-900 shadow-sm resize-none
+          sm:text-sm
+          focus:border-oxford-500 focus:ring-oxford-500
+          invalid:border-bn-ribbon-600 invalid:ring-bn-ribbon-600 invalid:ring-1
+        "
+        data-sacro-el="fileDetailsTextareaComments"
+        name="comments"
+        id="comments"
+        type="text"
+      >
+${fileComments.value[openOutput]}</textarea
+      >
+    </div>
   `;
 
-  const approveButton = fileMetadata.querySelector("button.approve");
-  const resetButton = fileMetadata.querySelector("button.reset");
-  const rejectButton = fileMetadata.querySelector("button.reject");
-  const commentInput = fileMetadata.querySelector("textarea.comments");
+  const approveButton = fileMetadata.querySelector(
+    `[data-sacro-el="fileDetailsBtnApprove"]`
+  );
+  const resetButton = fileMetadata.querySelector(
+    `[data-sacro-el="fileDetailsBtnReset"]`
+  );
+  const rejectButton = fileMetadata.querySelector(
+    `[data-sacro-el="fileDetailsBtnReject"]`
+  );
+  const commentInput = fileMetadata.querySelector(
+    `[data-sacro-el="fileDetailsTextareaComments"]`
+  );
 
   const checkComment = (button, activeStyles, comment) => {
     // if no comment, ensure button disabled. Other was ensure is enabled

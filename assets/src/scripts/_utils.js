@@ -49,7 +49,7 @@ export function setElementText(element, text) {
  * Show or hide the parent element of a SACRO element
  *
  * @param {string} element - data attribute name used in the template
- * @param {Node} parent - parent element node name to find
+ * @param {string} parent - valid CSS selector string
  * @param {('show'|'hide')} setState - set if the element is shown or hidden
  */
 export function toggleParentVisibility(element, parent, setState) {
