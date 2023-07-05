@@ -125,6 +125,7 @@ const fileClick = async ({ outputName, metadata, url }) => {
         "unknown"
       )}">Unknown</span>`
     );
+    setElementText("fileDetailsSummary", ``);
   }
 
   /**
