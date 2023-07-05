@@ -121,14 +121,19 @@ const outputClick = async ({ outputName, metadata, url }) => {
   toggleParentVisibility("outputDetailsStatus", "div", "show");
 
   if (summary) {
-    const splitSummary = summary.split("; ").filter((i) => i !== "");
-    const status =
-      splitSummary[0] !== "review" ? capitalise(splitSummary[0]) : "Unknown";
-    const statusInfo = splitSummary.filter((item, i) => item !== "" && i !== 0);
-
     /**
-     * Split the metadata summary to show the overall output status
+     * Parse the metadata summary so we can show the ACRO status clearly
      */
+    const splitSummary = summary.split("; ").filter((i) => i !== "");
+    let status = capitalise(splitSummary[0]);
+    let statusInfo;
+    if (status === "Review") {
+      status = "Unknown";
+      statusInfo = ["This type of output cannot be checked automatically"];
+    } else {
+      statusInfo = splitSummary.filter((item, i) => item !== "" && i !== 0);
+    }
+
     setElementHTML(
       "outputDetailsStatus",
       `<span class="inline-flex items-center rounded-md px-2 py-0.5 font-medium ${statusStyles(
@@ -136,10 +141,7 @@ const outputClick = async ({ outputName, metadata, url }) => {
       )}">${status}</span>`
     );
 
-    if (splitSummary.length > 1) {
-      /**
-       * Show the remaining summary information
-       */
+    if (statusInfo.length) {
       setElementHTML(
         "outputDetailsSummary",
         `(${statusInfo.map((item) => `<span>${item}</span>`).join(", ")})`
