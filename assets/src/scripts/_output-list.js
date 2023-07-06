@@ -1,26 +1,26 @@
 import { effect } from "@preact/signals";
 import outputs from "./_data";
-import fileClick from "./_file-click";
-import { approvedFiles } from "./_signals";
+import outputClick from "./_output-click";
+import { approvedOutputs } from "./_signals";
 
-const fileList = () => {
-  const container = document.getElementById("filesList");
-  const fileListItems = [...container.querySelectorAll("li")];
+const outputList = () => {
+  const container = document.getElementById("outputList");
+  const outputListItems = [...container.querySelectorAll("li")];
 
   // add click handler to each list item
-  fileListItems.forEach((el) => {
-    const outputName = el.getAttribute("data-file-name");
+  outputListItems.forEach((el) => {
+    const outputName = el.getAttribute("data-output-name");
     const metadata = outputs[outputName];
 
     // get the URL and strip off the leading #
     const url = el.querySelector("a").getAttribute("href").replace("#/", "");
 
-    // toggle selected state for the file list
+    // toggle selected state for the output list
     el.addEventListener("click", () => {
-      fileClick({ outputName, metadata, url });
+      outputClick({ outputName, metadata, url });
 
       // clear selected class from all items in the list
-      fileListItems.forEach((e) => e.classList.remove("bg-blue-50"));
+      outputListItems.forEach((e) => e.classList.remove("bg-blue-50"));
 
       // set selected class on this list item
       el.classList.add("bg-blue-50");
@@ -28,9 +28,9 @@ const fileList = () => {
 
     // toggle icon changes on state change
     effect(() => {
-      Object.keys(outputs).forEach((file) => {
-        if (outputName === file) {
-          const state = approvedFiles.value[file]?.approved;
+      Object.keys(outputs).forEach((output) => {
+        if (outputName === output) {
+          const state = approvedOutputs.value[output]?.approved;
 
           if (state === null) {
             el.setAttribute("data-review-status", "none");
@@ -45,4 +45,4 @@ const fileList = () => {
   });
 };
 
-export default fileList;
+export default outputList;

@@ -1,4 +1,4 @@
-import { approvedFiles, fileComments } from "./_signals";
+import { approvedOutputs, outputComments } from "./_signals";
 
 const formSetup = () => {
   const modal = document.querySelector("#submitModal");
@@ -12,11 +12,11 @@ const formSetup = () => {
   // update the form with approved files data before its submitted
   document.querySelector("#approveForm").addEventListener("formdata", (ev) => {
     const data = Object.fromEntries(
-      Object.keys(approvedFiles.value).map((output) => [
+      Object.keys(approvedOutputs.value).map((output) => [
         output,
         {
-          state: approvedFiles.value[output].approved,
-          comment: fileComments.value[output],
+          state: approvedOutputs.value[output].approved,
+          comment: outputComments.value[output],
         },
       ])
     );

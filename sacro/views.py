@@ -82,7 +82,7 @@ def index(request):
     outputs = get_outputs(data)
 
     # build up all the bits we need for sidebar's context as a single list
-    files = [
+    output_list = [
         {
             "name": name,
             "status": data["status"],
@@ -100,7 +100,7 @@ def index(request):
         request,
         "index.html",
         context={
-            "files": files,
+            "output_list": output_list,
             "outputs": outputs.as_dict(),
             "review_url": review_url,
         },
