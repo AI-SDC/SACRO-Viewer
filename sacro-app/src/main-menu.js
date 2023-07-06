@@ -4,6 +4,7 @@ const fs = require("fs");
 const os = require("node:os");
 const nodePath = require("path");
 const querystring = require("querystring");
+const findAppPath = require("./find-app-path");
 
 const mainMenu = (serverUrl) => {
   const menuItems = [
@@ -88,7 +89,11 @@ const mainMenu = (serverUrl) => {
   }
 
   let buildDate = "Not defined";
-  const buildDateFile = nodePath.join(__dirname, "../build_date.txt");
+  const buildDateFile = nodePath.join(
+    nodePath.dirname(findAppPath()),
+    "build_date.txt"
+  );
+  log.info(buildDateFile);
   if (fs.existsSync(buildDateFile)) {
     buildDate = fs.readFileSync(buildDateFile);
     buildDate = `${buildDate}`.trim();
