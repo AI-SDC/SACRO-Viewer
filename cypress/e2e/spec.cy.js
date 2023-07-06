@@ -2,13 +2,13 @@
 describe("Approve all files and download ZIP", () => {
   it("passes", () => {
     cy.visit("http://localhost:8000");
-    cy.get("[data-cy='filesList'] li").each(($el, index, $list) => {
+    cy.get("[data-sacro-el='outputList'] li").each(($el, index, $list) => {
       cy.wrap($el).click();
 
-      cy.get("[data-sacro-el='fileDetailsTextareaComments']").type(
+      cy.get("[data-sacro-el='outputDetailsTextareaComments']").type(
         "This is a comment"
       );
-      cy.get("[data-cy='approve']").click();
+      cy.get("[data-sacro-el='outputDetailsBtnApprove']").click();
     });
 
     // prepare for form submission that returns back a file

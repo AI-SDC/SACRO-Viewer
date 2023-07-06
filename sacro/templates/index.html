@@ -15,9 +15,9 @@
       {% /button %}
     {% /header %}
 
-  <aside class="overflow-y-scroll bg-white border-r border-zinc-200 py-2">
+  <aside class="overflow-y-auto bg-white border-r border-zinc-200 py-2">
     <h2 id="outputListHeader" class="sr-only">Output list</h2>
-    <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of outputs" id="outputList" data-cy="outputList">
+    <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of outputs" id="outputList" data-sacro-el="outputList">
       {% for output in output_list %}
       <li
         aria-label="Output: {{ output.name }}"
@@ -160,7 +160,7 @@
           invalid:border-bn-ribbon-600 invalid:ring-bn-ribbon-600 invalid:ring-1
         "
         id="id_comment"
-          data-sacro-el="submissionComment"
+        data-sacro-el="submissionComment"
         type="text"
       ></textarea>
     </div>
