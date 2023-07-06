@@ -5,11 +5,7 @@ export default defineConfig({
   build: {
     manifest: true,
     rollupOptions: {
-      input: [
-        "./assets/src/scripts/main.js",
-        "./assets/src/styles/main.css",
-        "./assets/src/styles/index.css",
-      ],
+      input: ["./assets/src/scripts/base.js", "./assets/src/scripts/index.js"],
     },
     outDir: "assets/dist",
     emptyOutDir: true,
