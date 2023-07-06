@@ -1,11 +1,11 @@
 import "../styles/main.css";
-import fileList from "./_files-list";
 import formSetup from "./_form-setup";
 import modalSetup from "./_modal-setup";
+import outputList from "./_output-list";
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("fileContent").classList.add("hidden");
-  fileList();
+  outputList();
   formSetup();
   modalSetup();
 });

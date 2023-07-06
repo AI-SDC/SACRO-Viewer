@@ -31,18 +31,18 @@
     </header>
 
     <aside class="overflow-y-auto bg-white border-r border-zinc-200 py-2">
-      <h2 id="fileListHeader" class="sr-only">File list</h2>
-      <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of files" id="filesList" data-cy="filesList">
-        {% for file in files %}
+      <h2 id="outputListHeader" class="sr-only">Output list</h2>
+      <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of outpus" id="outputList" data-cy="outputList">
+        {% for output in output_list %}
         <li
-          aria-label="File: {{ file.name }}"
+          aria-label="Output: {{ output.name }}"
           class="
             relative group py-0.5 px-1 hover:bg-slate-50
-            {% if file.status == "fail" %}
+            {% if output.status == "fail" %}
             text-red-800
-            {% elif file.status == "pass" %}
+            {% elif output.status == "pass" %}
             text-blue-800
-            {% elif file.status == "review" %}
+            {% elif output.status == "review" %}
             text-fuchsia-900
             {% endif %}
 
@@ -50,21 +50,21 @@
             data-[review-status=false]:bg-red-100/50
           "
 
-          data-file-name="{{ file.name }}"
+          data-output-name="{{ output.name }}"
           data-review-status="none"
         >
-          <dl class="flex flex-row gap-x-2 items-center" aria-label="File information">
+          <dl class="flex flex-row gap-x-2 items-center" aria-label="Output information">
             <div class="order-2">
-              <dt class="sr-only">File name:</dt>
+              <dt class="sr-only">Output name:</dt>
               <dd>
                 <a
-                  href="#{{ file.url }}"
+                  href="#{{ output.url }}"
                   class="
                     before:absolute before:inset-0 before:w-full before:h-full
                   "
                 >
                   <span class="relative">
-                    {{ file.name }}
+                    {{ output.name }}
                   </span>
                 </a>
               </dd>
@@ -72,19 +72,19 @@
             <div class="order-1">
               <dt class="sr-only">ACRO status:</dt>
               <dd>
-                <span class="sr-only">{{ file.status }}</span>
-                {% if file.status == "fail" %}
+                <span class="sr-only">{{ output.status }}</span>
+                {% if output.status == "fail" %}
                 {% icon_file_x class="h-5 w-5 stroke-red-700" %}
-                {% elif file.status == "pass" %}
+                {% elif output.status == "pass" %}
                 {% icon_file class="h-5 w-5 stroke-blue-700" %}
-                {% elif file.status == "review" %}
+                {% elif output.status == "review" %}
                 {% icon_file_unknown class="h-5 w-5 stroke-fuchsia-700" %}
                 {% endif %}
               </dd>
             </div>
             <div class="order-3 ml-auto">
-              <dt class="sr-only">File type:</dt>
-              <dd>{{ file.type }}</dd>
+              <dt class="sr-only">Output type:</dt>
+              <dd>{{ output.type }}</dd>
             </div>
             <div class="order-4">
               <dt class="sr-only">Review status:</dt>
@@ -110,50 +110,50 @@
     </aside>
 
     <main class="container overflow-y-scroll">
-      {{ outputs|json_script:"filesData" }}
+      {{ outputs|json_script:"outputData" }}
 
       <div class="grid gap-y-4">
         <div class="overflow-hidden bg-white shadow">
           <div class="p-4">
-            <h1 class="text-xl font-semibold leading-7 text-gray-900" data-sacro-el="fileTitle">
-              Select a file
+            <h1 class="text-xl font-semibold leading-7 text-gray-900" data-sacro-el="outputTitle">
+              Select an output
             </h1>
           </div>
           <div class="border-t border-gray-100">
             <dl class="divide-y divide-gray-100">
               <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
                 <dt class="text-sm font-medium text-gray-900">Created at</dt>
-                <dd class="text-sm leading-6 text-gray-700 col-span-3" data-sacro-el="fileCreatedDate"></dd>
+                <dd class="text-sm leading-6 text-gray-700 col-span-3" data-sacro-el="outputCreatedDate"></dd>
               </div>
               <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
-                <dt class="text-sm font-medium text-gray-900">File type</dt>
-                <dd class="text-sm leading-6 text-gray-700 col-span-3" data-sacro-el="fileType"></dd>
+                <dt class="text-sm font-medium text-gray-900">Output type</dt>
+                <dd class="text-sm leading-6 text-gray-700 col-span-3" data-sacro-el="outputType"></dd>
               </div>
               <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
                 <dt class="text-sm font-medium text-gray-900">ACRO status</dt>
                 <dd class="text-sm leading-6 text-gray-700 col-span-3">
-                  <span data-sacro-el="fileDetailsStatus"></span>
-                  <span data-sacro-el="fileDetailsSummary"></span>
+                  <span data-sacro-el="outputDetailsStatus"></span>
+                  <span data-sacro-el="outputDetailsSummary"></span>
                 </dd>
               </div>
               <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
                 <dt class="text-sm font-medium text-gray-900">Comments</dt>
                 <dd class="text-sm leading-6 text-gray-700 col-span-3">
-                  <ul data-sacro-el="fileDetailsComments" class="list-disc ml-4">
+                  <ul data-sacro-el="outputDetailsComments" class="list-disc ml-4">
                   </ul>
                 </dd>
               </div>
               <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
                 <dt class="text-sm font-medium text-gray-900">Review</dt>
                 <dd class="text-sm leading-6 text-gray-700 col-span-3">
-                  <span data-sacro-el="fileDetailsReviewForm" id="fileMetadata"></span>
+                  <span data-sacro-el="outputDetailsReviewForm" id="outputMetadata"></span>
                 </dd>
               </div>
             </dl>
           </div>
         </div>
 
-        {% #card title="Select a file" container=True container_id="fileContent" class="hidden" %}
+        {% #card title="Select an output" container=True container_id="fileContent" class="hidden" %}
         {% /card %}
       </div>
 

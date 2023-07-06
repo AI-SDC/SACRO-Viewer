@@ -1,4 +1,4 @@
-const siteData = JSON.parse(document.getElementById("filesData").textContent);
+const siteData = JSON.parse(document.getElementById("outputData").textContent);
 
 const { outputs } = siteData;
 

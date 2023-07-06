@@ -6,9 +6,9 @@ import {
   invalidFileElement,
 } from "./_file-elements";
 import {
-  approvedFiles,
-  fileComments,
-  openFile,
+  approvedOutputs,
+  outputComments,
+  openOutput,
   setComment,
   setReviewState,
 } from "./_signals";
@@ -60,9 +60,9 @@ function checkComment(button, comment) {
   }
 }
 
-const fileClick = async ({ outputName, metadata, url }) => {
+const outputClick = async ({ outputName, metadata, url }) => {
   // Set the file values
-  openFile.value = {
+  openOutput.value = {
     outputName,
     ext: getFileExt(metadata.path),
     url,
@@ -70,7 +70,6 @@ const fileClick = async ({ outputName, metadata, url }) => {
   };
 
   const {
-    outputName: openOutput,
     metadata: {
       comments,
       output,
@@ -79,35 +78,35 @@ const fileClick = async ({ outputName, metadata, url }) => {
       type,
       properties: { method },
     },
-  } = openFile.value;
+  } = openOutput.value;
 
   /**
    * Show the file viewer
    */
   document
-    .getElementById("select-a-file-title")
+    .getElementById("select-an-output-title")
     .closest("section")
     .classList.remove("hidden");
 
   /**
    * Set the page name
    */
-  toggleParentVisibility("fileTitle", "h1", "show");
-  setElementText("fileTitle", openOutput);
+  toggleParentVisibility("outputTitle", "h1", "show");
+  setElementText("outputTitle", outputName);
 
   /**
-   * Set the file title
+   * Set the output title
    */
   // eslint-disable-next-line prefer-destructuring
-  document.getElementById("select-a-file-title").innerText = output[0];
+  document.getElementById("select-an-output-title").innerText = outputName;
 
   /**
    * Display the created at date
    */
   if (timestamp) {
-    toggleParentVisibility("fileCreatedDate", "div", "show");
+    toggleParentVisibility("outputCreatedDate", "div", "show");
     setElementHTML(
-      "fileCreatedDate",
+      "outputCreatedDate",
       `<time datetime="${timestamp}" title="${timestamp}">
       ${formatDate(timestamp)}
     </time>`
@@ -115,11 +114,11 @@ const fileClick = async ({ outputName, metadata, url }) => {
   }
 
   if (method) {
-    toggleParentVisibility("fileType", "div", "show");
-    setElementText("fileType", `${method ?? ""} ${type}`);
+    toggleParentVisibility("outputType", "div", "show");
+    setElementText("outputType", `${method ?? ""} ${type}`);
   }
 
-  toggleParentVisibility("fileDetailsStatus", "div", "show");
+  toggleParentVisibility("outputDetailsStatus", "div", "show");
 
   if (summary) {
     const splitSummary = summary.split("; ").filter((i) => i !== "");
@@ -128,10 +127,10 @@ const fileClick = async ({ outputName, metadata, url }) => {
     const statusInfo = splitSummary.filter((item, i) => item !== "" && i !== 0);
 
     /**
-     * Split the metadata summary to show the overall file status
+     * Split the metadata summary to show the overall output status
      */
     setElementHTML(
-      "fileDetailsStatus",
+      "outputDetailsStatus",
       `<span class="inline-flex items-center rounded-md px-2 py-0.5 font-medium ${statusStyles(
         status
       )}">${status}</span>`
@@ -142,67 +141,67 @@ const fileClick = async ({ outputName, metadata, url }) => {
        * Show the remaining summary information
        */
       setElementHTML(
-        "fileDetailsSummary",
+        "outputDetailsSummary",
         `(${statusInfo.map((item) => `<span>${item}</span>`).join(", ")})`
       );
     } else {
-      setElementText("fileDetailsSummary", ``);
+      setElementText("outputDetailsSummary", ``);
     }
   } else {
-    toggleParentVisibility("fileDetailsStatus", "div", "show");
+    toggleParentVisibility("outputDetailsStatus", "div", "show");
     setElementHTML(
-      "fileDetailsStatus",
+      "outputDetailsStatus",
       `<span class="inline-flex items-center rounded-md px-2 py-0.5 font-medium ${statusStyles()}">Unknown</span>`
     );
-    setElementText("fileDetailsSummary", ``);
+    setElementText("outputDetailsSummary", ``);
   }
 
   /**
    * Show the comments summary information
    */
   if (comments.length) {
-    toggleParentVisibility("fileDetailsComments", "div", "show");
+    toggleParentVisibility("outputDetailsComments", "div", "show");
     setElementHTML(
-      "fileDetailsComments",
+      "outputDetailsComments",
       comments.map((item) => `<li>${item}</li>`).join("")
     );
   } else {
-    toggleParentVisibility("fileDetailsComments", "div", "hide");
+    toggleParentVisibility("outputDetailsComments", "div", "hide");
   }
 
   /**
    * Set up the review form
    */
-  toggleParentVisibility("fileDetailsReviewForm", "div", "show");
+  toggleParentVisibility("outputDetailsReviewForm", "div", "show");
 
   // Set the metadata
-  const fileMetadata = document.getElementById("fileMetadata");
+  const fileMetadata = document.getElementById("outputMetadata");
 
   fileMetadata.innerHTML = html`
     <div>
       <div class="flex flex-row">
         <button
-          class="${btnStyles.default} ${approvedFiles.value[openOutput]
+          class="${btnStyles.default} ${approvedOutputs.value[outputName]
             .approved === true
             ? btnStyles.success
             : btnStyles.successOutline} rounded-l-md"
-          data-sacro-el="fileDetailsBtnApprove"
+          data-sacro-el="outputDetailsBtnApprove"
           data-cy="approve"
         >
           Approve
         </button>
         <button
           class="${btnStyles.default} ${btnStyles.secondaryOutline} ${btnStyles.notDisabled} border-x-0"
-          data-sacro-el="fileDetailsBtnReset"
+          data-sacro-el="outputDetailsBtnReset"
         >
           Reset
         </button>
         <button
-          class="${btnStyles.default} ${approvedFiles.value[openOutput]
+          class="${btnStyles.default} ${approvedOutputs.value[outputName]
             .approved === false
             ? btnStyles.warning
             : btnStyles.warningOutline} ${btnStyles.notDisabled} rounded-r-md"
-          data-sacro-el="fileDetailsBtnReject"
+          data-sacro-el="outputDetailsBtnReject"
         >
           Reject
         </button>
@@ -211,7 +210,7 @@ const fileClick = async ({ outputName, metadata, url }) => {
         class="mt-2 inline-block font-semibold text-slate-900 cursor-pointer"
         for="comments"
       >
-        Review comments on ${openOutput}:
+        Review comments on ${outputName}:
       </label>
       <textarea
         class="
@@ -221,27 +220,27 @@ const fileClick = async ({ outputName, metadata, url }) => {
           focus:border-oxford-500 focus:ring-oxford-500
           invalid:border-bn-ribbon-600 invalid:ring-bn-ribbon-600 invalid:ring-1
         "
-        data-sacro-el="fileDetailsTextareaComments"
+        data-sacro-el="outputDetailsTextareaComments"
         name="comments"
         id="comments"
         type="text"
       >
-${fileComments.value[openOutput]}</textarea
+${outputComments.value[outputName]}</textarea
       >
     </div>
   `;
 
   const approveButton = fileMetadata.querySelector(
-    `[data-sacro-el="fileDetailsBtnApprove"]`
+    `[data-sacro-el="outputDetailsBtnApprove"]`
   );
   const resetButton = fileMetadata.querySelector(
-    `[data-sacro-el="fileDetailsBtnReset"]`
+    `[data-sacro-el="outputDetailsBtnReset"]`
   );
   const rejectButton = fileMetadata.querySelector(
-    `[data-sacro-el="fileDetailsBtnReject"]`
+    `[data-sacro-el="outputDetailsBtnReject"]`
   );
   const commentInput = fileMetadata.querySelector(
-    `[data-sacro-el="fileDetailsTextareaComments"]`
+    `[data-sacro-el="outputDetailsTextareaComments"]`
   );
 
   const requireCommentButtons = [];
@@ -263,19 +262,19 @@ ${fileComments.value[openOutput]}</textarea
   );
 
   approveButton.addEventListener("click", () => {
-    setReviewState(openOutput, true);
+    setReviewState(outputName, true);
     setButtonActive(approveButton, "success", true);
     setButtonActive(rejectButton, "warning", false);
   });
 
   resetButton.addEventListener("click", () => {
-    setReviewState(openOutput, null);
+    setReviewState(outputName, null);
     setButtonActive(approveButton, "success", false);
     setButtonActive(rejectButton, "warning", false);
   });
 
   rejectButton.addEventListener("click", () => {
-    setReviewState(openOutput, false);
+    setReviewState(outputName, false);
     setButtonActive(rejectButton, "warning", true);
     setButtonActive(approveButton, "success", false);
   });
@@ -287,10 +286,10 @@ ${fileComments.value[openOutput]}</textarea
     );
   });
 
-  if (isCsv(openFile.value.ext)) {
-    createTableElement(openFile, output);
-  } else if (isImg(openFile.value.ext)) {
-    createImageElement(openFile.value.url);
+  if (isCsv(openOutput.value.ext)) {
+    createTableElement(openOutput, output);
+  } else if (isImg(openOutput.value.ext)) {
+    createImageElement(openOutput.value.url);
   } else {
     invalidFileElement();
   }
@@ -298,4 +297,4 @@ ${fileComments.value[openOutput]}</textarea
   return fileContentElement.classList.remove("hidden");
 };
 
-export default fileClick;
+export default outputClick;

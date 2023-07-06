@@ -1,5 +1,5 @@
 import { effect } from "@preact/signals";
-import { approvedFiles, isReviewComplete } from "./_signals";
+import { approvedOutputs, isReviewComplete } from "./_signals";
 
 const modalSetup = () => {
   const button = document.querySelector("#openModalBtn");
@@ -42,8 +42,8 @@ const modalSetup = () => {
   effect(() => setButtonState(isReviewComplete()));
 
   button.addEventListener("click", () => {
-    const approvedCount = Object.keys(approvedFiles.value).filter(
-      (k) => approvedFiles.value[k].approved
+    const approvedCount = Object.keys(approvedOutputs.value).filter(
+      (k) => approvedOutputs.value[k].approved
     ).length;
     modal.querySelector(".count").innerHTML = approvedCount;
 
