@@ -1,0 +1,4 @@
+body {
+  grid-template-rows: max-content 1fr;
+  grid-template-columns: 1fr minmax(min-content, 2fr) 1fr;
+}

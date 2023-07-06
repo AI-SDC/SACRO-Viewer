@@ -6,7 +6,8 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 from django.conf import settings
-from django.http import FileResponse, Http404, HttpResponse, HttpResponseBadRequest
+from django.http import FileResponse, Http404, HttpResponseBadRequest
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
@@ -176,5 +177,28 @@ def review_create(request):
         "path": outputs.path,
     }
 
-    # TODO: redirect to detail view
-    return HttpResponse()
+    return redirect("review-detail", pk="current")
+
+
+@require_GET
+def review_detail(request, pk):
+    if not (review := REVIEWS.get(pk)):
+        raise Http404
+
+    approved_outputs_url = reverse("approved-outputs", kwargs={"pk": "current"})
+
+    approved = sum(1 for o in review["decisions"].values() if o["state"])
+    total = len(review["decisions"])
+    counts = {
+        "total": total,
+        "approved": approved,
+        "rejected": total - approved,
+    }
+
+    context = {
+        "approved_outputs_url": approved_outputs_url,
+        "counts": counts,
+        "review": review,
+    }
+
+    return TemplateResponse(request, "review.html", context=context)

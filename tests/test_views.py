@@ -8,6 +8,7 @@ from urllib.parse import urlencode
 import pytest
 from django.http import Http404
 from django.test import RequestFactory, override_settings
+from django.urls import reverse
 
 from sacro import views
 
@@ -194,7 +195,8 @@ def test_review_create_success(test_outputs, review_data, monkeypatch):
 
     response = views.review_create(request)
 
-    assert response.status_code == 200
+    assert response.status_code == 302, response.content
+    assert response.url == reverse("review-detail", kwargs={"pk": "current"})
     assert views.REVIEWS["current"] == {
         "comment": "test",
         "decisions": review_data,
@@ -214,3 +216,23 @@ def test_review_create_unrecognized_files(test_outputs):
 
     assert response.status_code == 400, response.content
     assert b"invalid output names" in response.content
+
+
+def test_review_detail_success(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+
+    request = RequestFactory().get("/")
+
+    response = views.review_detail(request, pk="current")
+
+    assert response.status_code == 200
+    assert response.context_data["review"] == review_summary
+
+
+def test_review_detail_unknown_review(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+
+    request = RequestFactory().get("/")
+
+    with pytest.raises(Http404):
+        views.review_detail(request, pk="test")
