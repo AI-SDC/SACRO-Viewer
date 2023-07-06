@@ -6,16 +6,18 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 from django.conf import settings
-from django.http import FileResponse, Http404, HttpResponseBadRequest
+from django.http import FileResponse, Http404, HttpResponse, HttpResponseBadRequest
 from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_GET, require_POST
 
 from sacro import transform
 from sacro.adapters import local_audit, zipfile
 
 
 logger = logging.getLogger(__name__)
+
+REVIEWS = {}
 
 
 def reverse_with_params(param_dict, *args, **kwargs):
@@ -76,7 +78,7 @@ def get_outputs(data):
     return Outputs(path)
 
 
-@require_http_methods(["GET"])
+@require_GET
 def index(request):
     """Render the template with all details"""
     # quick fix for loading data in dev w/o having to mess with paths in querystrings
@@ -85,19 +87,19 @@ def index(request):
         data = {"path": "outputs/results.json"}
 
     outputs = get_outputs(data)
-    review_url = reverse_with_params({"path": str(outputs.path)}, "review")
+    create_url = reverse_with_params({"path": str(outputs.path)}, "review-create")
 
     return TemplateResponse(
         request,
         "index.html",
         context={
             "outputs": dict(outputs),
-            "review_url": review_url,
+            "create_url": create_url,
         },
     )
 
 
-@require_http_methods(["GET"])
+@require_GET
 def contents(request):
     """Return file contents.
 
@@ -126,24 +128,18 @@ def contents(request):
         raise Http404
 
 
-@require_http_methods(["POST"])
-def review(request):
-    # we load the path from the querystring, even though this is a post request
-    outputs = get_outputs(request.GET)
+@require_POST
+def approved_outputs(request, pk):
+    if not (review := REVIEWS.get(pk)):
+        raise Http404
 
-    raw_json = request.POST.get("review")
-    if not raw_json:
-        return HttpResponseBadRequest("no review data ")
-
-    review_data = json.loads(raw_json)
-
-    # check for invalid output names
-    unrecognized_outputs = [output for output in review_data if output not in outputs]
-    if unrecognized_outputs:
-        return HttpResponseBadRequest(f"invalid output names: {unrecognized_outputs}")
+    outputs = Outputs(review["path"])
+    approved_outputs = [k for k, v in review["decisions"].items() if v["state"]]
 
     approved_outputs = {
-        k: outputs[k]["files"] for k, v in review_data.items() if v["state"] is True
+        k: outputs[k]["files"]
+        for k, v in review["decisions"].items()
+        if v["state"] is True
     }
     in_memory_zf = zipfile.create(outputs, approved_outputs)
 
@@ -151,6 +147,34 @@ def review(request):
     filename = f"{outputs.path.parent.stem}_{outputs.path.stem}.zip"
 
     username = getpass.getuser()
-    local_audit.log_release(review_data, username)
+    local_audit.log_release(review["decisions"], username)
 
     return FileResponse(in_memory_zf, as_attachment=True, filename=filename)
+
+
+@require_POST
+def review_create(request):
+    if not (comment := request.POST.get("comment")):
+        return HttpResponseBadRequest("no comment data submitted")
+
+    if not (raw_review := request.POST.get("review")):
+        return HttpResponseBadRequest("no review data submitted")
+
+    review = json.loads(raw_review)
+
+    # we load the path from the querystring, even though this is a post request
+    # check the reviewed outputs are valid
+    outputs = get_outputs(request.GET)
+    approved_outputs = [k for k, v in review.items() if v["state"] is True]
+    unrecognized_outputs = [o for o in approved_outputs if o not in outputs]
+    if unrecognized_outputs:
+        return HttpResponseBadRequest(f"invalid output names: {unrecognized_outputs}")
+
+    REVIEWS["current"] = {
+        "comment": comment,
+        "decisions": review,
+        "path": outputs.path,
+    }
+
+    # TODO: redirect to detail view
+    return HttpResponse()

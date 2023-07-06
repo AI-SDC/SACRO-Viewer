@@ -9,7 +9,7 @@ from sacro import views
 urlpatterns = [
     path("", views.index, name="index"),
     path("contents/", views.contents, name="contents"),
-    path("review/", views.review, name="review"),
+    path("review/", views.review_create, name="review-create"),
 ]
 
 if settings.DEBUG and importlib.util.find_spec(

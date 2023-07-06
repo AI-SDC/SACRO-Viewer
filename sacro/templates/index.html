@@ -139,7 +139,7 @@
   </main>
 
   {% #modal id="submitModal" title="Release and download" subtitle='<span class="count"></span> files are ready to be released' %}
-    <form action="{{ submission_url }}" method="post" id="approveForm" class="flex flex-col gap-3">
+    <form action="{{ create_url }}" method="post" id="approveForm" class="flex flex-col gap-3">
       {% csrf_token %}
 
       <p>Record your assessment of the whole release request below.</p>
