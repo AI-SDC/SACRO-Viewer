@@ -2,40 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  /* grid-template-rows: max-content max-content 1fr; */
-  grid-template-rows: max-content 1fr;
-  grid-template-columns: minmax(min-content, 1fr) repeat(2, 1fr);
-}
-
 body > header {
   grid-column: 1 / -1;
-}
-
-/* body > nav {
-  grid-column: 1 / -1;
-} */
-
-body > aside {
-  grid-column: 1;
-  scrollbar-gutter: stable;
-}
-
-body > main {
-  grid-column: 2 / -1;
-  padding-block: 0.5rem;
-}
-
-.header {
-  align-items: center;
-  background-color: var(--color-white);
-  border-bottom: 1px solid var(--color-zinc-200);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 1rem;
-}
-
-li.selected {
-  background-color: lightgrey;
 }
