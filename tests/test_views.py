@@ -9,7 +9,7 @@ import pytest
 from django.http import Http404
 from django.test import RequestFactory, override_settings
 
-from sacro import transform, views
+from sacro import views
 
 
 TEST_PATH = Path("outputs/results.json")
@@ -21,20 +21,11 @@ def test_outputs(tmp_path):
     return views.Outputs(tmp_path / TEST_PATH.name)
 
 
-def test_outputs_as_dict(test_outputs):
-    d = test_outputs.as_dict()
-    raw = json.loads(test_outputs.path.read_text())
-    assert d["outputs"].raw_metadata == raw
-    assert list(d["outputs"].items()) == list(
-        transform.transform_acro_metadata(raw).items()
-    )
-
-
 def test_index(test_outputs):
     request = RequestFactory().get(path="/", data={"path": str(test_outputs.path)})
 
     response = views.index(request)
-    assert response.context_data["outputs"] == test_outputs.as_dict()
+    assert response.context_data["outputs"] == dict(test_outputs)
     assert (
         response.context_data["review_url"]
         == f"/review/?{urlencode({'path': test_outputs.path})}"
@@ -46,7 +37,7 @@ def test_index_no_path():
     request = RequestFactory().get(path="/")
 
     response = views.index(request)
-    assert response.context_data["outputs"] == views.Outputs(TEST_PATH).as_dict()
+    assert response.context_data["outputs"] == dict(views.Outputs(TEST_PATH))
 
 
 @override_settings(DEBUG=False)
@@ -57,11 +48,12 @@ def test_index_no_path_no_debug():
 
 
 def test_contents_success(test_outputs):
-    for output, url in test_outputs.content_urls.items():
-        actual_file = test_outputs.path.parent / test_outputs[output]["path"]
-        request = RequestFactory().get(path=url)
-        response = views.contents(request)
-        assert response.getvalue() == Path(actual_file).read_bytes()
+    for metadata in test_outputs.values():
+        for path, url in metadata["files"].items():
+            actual_file = test_outputs.path.parent / path
+            request = RequestFactory().get(path=url)
+            response = views.contents(request)
+            assert response.getvalue() == Path(actual_file).read_bytes()
 
 
 def test_contents_absolute(test_outputs):
@@ -73,10 +65,12 @@ def test_contents_absolute(test_outputs):
             ]
     test_outputs.write()
 
-    for output, url in test_outputs.content_urls.items():
-        test_outputs.path.parent / test_outputs[output]["path"]
-        request = RequestFactory().get(path=url)
-        views.contents(request)
+    for metadata in test_outputs.values():
+        for path, url in metadata["files"].items():
+            actual_file = test_outputs.path.parent / path
+            request = RequestFactory().get(path=url)
+            response = views.contents(request)
+            assert response.getvalue() == Path(actual_file).read_bytes()
 
 
 def test_contents_not_in_outputs(test_outputs):
@@ -110,16 +104,19 @@ def test_review_success_all_files(test_outputs, review_data):
         v["state"] = True
     request = get_review_url_request(test_outputs, review_data)
     response = views.review(request)
+
+    expected_namelist = []
+
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
         assert zip_obj.testzip() is None
-        assert zip_obj.namelist() == [
-            Path(v["path"]).name for v in test_outputs.values()
-        ]
-        for output, data in test_outputs.items():
-            zip_path = Path(data["path"]).name
-            actual_path = test_outputs.get_file_path(output)
-            assert actual_path.read_bytes() == zip_obj.open(zip_path).read()
+        for output, metadata in test_outputs.items():
+            for filename in metadata["files"]:
+                expected_namelist.append(filename)
+                zip_path = Path(filename).name
+                actual_path = test_outputs.get_file_path(output, filename)
+                assert actual_path.read_bytes() == zip_obj.open(zip_path).read()
+        assert zip_obj.namelist() == expected_namelist
 
 
 def test_review_success_no_files(test_outputs, review_data):

@@ -19,8 +19,3 @@ def test_minimal():
             "path": None,
         }
     }
-
-
-def test_path():
-    transformed = transform.transform_acro_metadata({"test": {"output": [1, 2]}})
-    assert transformed["test"]["path"] == 1

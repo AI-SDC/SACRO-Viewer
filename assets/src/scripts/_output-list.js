@@ -12,12 +12,9 @@ const outputList = () => {
     const outputName = el.getAttribute("data-output-name");
     const metadata = outputs[outputName];
 
-    // get the URL and strip off the leading #
-    const url = el.querySelector("a").getAttribute("href").replace("#/", "");
-
     // toggle selected state for the output list
     el.addEventListener("click", () => {
-      outputClick({ outputName, metadata, url });
+      outputClick({ outputName, metadata });
 
       // clear selected class from all items in the list
       outputListItems.forEach((e) => e.classList.remove("bg-blue-50"));

@@ -27,9 +27,6 @@ def transform_acro_metadata(raw_metadata):
         new = DEFAULTS.copy()
         new.setdefault("uid", name)
         new.update(**metadata)
-        if new.get("output"):
-            new["path"] = new["output"][0]
-
         transformed[name] = new
 
     return transformed

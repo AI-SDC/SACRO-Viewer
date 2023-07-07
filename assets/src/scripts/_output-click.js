@@ -2,7 +2,6 @@ import { btnStyles, setButtonActive } from "./_buttons";
 import {
   createImageElement,
   createTableElement,
-  fileContentElement,
   invalidFileElement,
 } from "./_file-elements";
 import {
@@ -60,19 +59,16 @@ function checkComment(button, comment) {
   }
 }
 
-const outputClick = async ({ outputName, metadata, url }) => {
+const outputClick = async ({ outputName, metadata }) => {
   // Set the file values
   openOutput.value = {
     outputName,
-    ext: getFileExt(metadata.path),
-    url,
     metadata,
   };
 
   const {
     metadata: {
       comments,
-      output,
       summary,
       timestamp,
       type,
@@ -94,11 +90,10 @@ const outputClick = async ({ outputName, metadata, url }) => {
   toggleParentVisibility("outputTitle", "h1", "show");
   setElementText("outputTitle", outputName);
 
-  /**
-   * Set the output title
-   */
-  // eslint-disable-next-line prefer-destructuring
-  document.getElementById("select-an-output-title").innerText = outputName;
+  document
+    .getElementById("select-an-output-title")
+    .closest("div.flex")
+    .classList.add("hidden");
 
   /**
    * Display the created at date
@@ -290,15 +285,41 @@ ${outputComments.value[outputName]}</textarea
     );
   });
 
-  if (isCsv(openOutput.value.ext)) {
-    createTableElement(openOutput, output);
-  } else if (isImg(openOutput.value.ext)) {
-    createImageElement(openOutput.value.url);
-  } else {
-    invalidFileElement();
-  }
+  // render files
 
-  return fileContentElement.classList.remove("hidden");
+  // clear existing content
+  const filesContainerElement = document.getElementById("fileContent");
+  filesContainerElement.innerHTML = "";
+
+  // only attempt to render outcome cells if there is a single output file
+  const outcome =
+    Object.keys(metadata.files).length === 1 ? metadata.outcome : {};
+
+  Object.entries(metadata.files).forEach(([path, url]) => {
+    const ext = getFileExt(path);
+
+    const fileElement = document.createElement("div");
+    fileElement.classList.add("outputFile");
+    fileElement.innerHTML = html`
+      <div>
+        <h2>${path}</h2>
+        <div class="contents"></div>
+      </div>
+    `;
+    const contentElement = fileElement.querySelector("div.contents");
+
+    if (isCsv(ext)) {
+      createTableElement(contentElement, ext, url, outcome);
+    } else if (isImg(ext)) {
+      createImageElement(contentElement, url);
+    } else {
+      invalidFileElement(contentElement);
+    }
+
+    filesContainerElement.appendChild(fileElement);
+  });
+
+  return filesContainerElement.classList.remove("hidden");
 };
 
 export default outputClick;

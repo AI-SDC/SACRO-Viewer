@@ -18,9 +18,9 @@
   <aside class="overflow-y-auto bg-white border-r border-zinc-200 py-2">
     <h2 id="outputListHeader" class="sr-only">Output list</h2>
     <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of outputs" id="outputList" data-sacro-el="outputList">
-      {% for output in output_list %}
+      {% for name, output in outputs.items%}
       <li
-        aria-label="Output: {{ output.name }}"
+        aria-label="Output: {{ name }}"
         class="
           relative group py-0.5 px-1 hover:bg-slate-50
           {% if output.status == "fail" %}
@@ -35,21 +35,16 @@
           data-[review-status=false]:bg-red-100/50
         "
 
-        data-output-name="{{ output.name }}"
+        data-output-name="{{ name }}"
         data-review-status="none"
       >
         <dl class="flex flex-row gap-x-2 items-center" aria-label="Output information">
           <div class="order-2">
             <dt class="sr-only">Output name:</dt>
             <dd>
-              <a
-                href="#{{ output.url }}"
-                class="
-                  before:absolute before:inset-0 before:w-full before:h-full
-                "
-              >
+              <a class="before:absolute before:inset-0 before:w-full before:h-full">
                 <span class="relative">
-                  {{ output.name }}
+                  {{ name }}
                 </span>
               </a>
             </dd>
@@ -69,7 +64,7 @@
           </div>
           <div class="order-3 ml-auto">
             <dt class="sr-only">Output type:</dt>
-            <dd>{{ output.type }}</dd>
+            <dd>{{ output.properties.method|default_if_none:"" }} {{ output.type }}</dd>
           </div>
           <div class="order-4">
             <dt class="sr-only">Review status:</dt>
