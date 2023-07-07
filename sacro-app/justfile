@@ -15,4 +15,5 @@ run: npm-ci
 build: npm-ci
     #!/bin/bash
     export BUILD_DIR="../build/{{arch()}}-$BUILD_TARGET/release/install/sacro"
+    echo $(date '+%Y-%m-%d %H:%M') > ${BUILD_DIR}/build_date.txt
     npm run build
