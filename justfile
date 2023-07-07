@@ -113,6 +113,14 @@ test *args: devenv test-outputs
     $BIN/coverage report || $BIN/coverage html
 
 
+test-e2e: devenv test-outputs
+    npm run cypress:run
+
+
+test-cypress: devenv test-outputs
+    npm run cypress:open
+
+
 black *args=".": devenv
     $BIN/black --check {{ args }}
 
