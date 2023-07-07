@@ -22,6 +22,7 @@ show_contexts = true
 
 [tool.pytest.ini_options]
 addopts = "--ignore=./build"
+DJANGO_SETTINGS_MODULE = "sacro.settings"
 
 [tool.ruff]
 line-length = 88

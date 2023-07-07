@@ -11,6 +11,7 @@ django-browser-reload
 pip-tools
 pre-commit
 pytest
+pytest-django
 pytest-mock
 ruff
 pyoxidizer
