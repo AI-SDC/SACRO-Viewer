@@ -1,5 +1,3 @@
-const siteData = JSON.parse(document.getElementById("outputData").textContent);
-
-const { outputs } = siteData;
+const outputs = JSON.parse(document.getElementById("outputData").textContent);
 
 export default outputs;

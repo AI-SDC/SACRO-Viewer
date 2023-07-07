@@ -2,7 +2,6 @@ import getpass
 import json
 import logging
 from dataclasses import dataclass
-from functools import cached_property
 from pathlib import Path
 from urllib.parse import urlencode
 
@@ -34,27 +33,33 @@ class Outputs(dict):
     def __post_init__(self):
         self.raw_metadata = json.loads(self.path.read_text())
         self.update(transform.transform_acro_metadata(self.raw_metadata))
+        # add urls to JSON data
+        for name, metadata in self.items():
+            files = {}
+            for filepath in metadata["output"]:
+                {"path": str(self.path), "name": name}
+                files[filepath] = reverse_with_params(
+                    {
+                        "path": str(self.path),
+                        "output": name,
+                        "filename": filepath,
+                    },
+                    "contents",
+                )
+            metadata["files"] = files
 
-    @cached_property
-    def content_urls(self):
-        urls = {}
-        for output, data in self.items():
-            params = {"path": str(self.path), "name": output}
-            urls[output] = reverse_with_params(params, "contents")
-
-        return urls
-
-    def get_file_path(self, name):
+    def get_file_path(self, output, filename):
         """Return absolute path to output file"""
-        path = Path(self[name]["path"])
+        if filename not in self[output]["files"]:  # pragma: nocover
+            return None
         # note: if path is absolute, this will just return path
-        return self.path.parent / path
-
-    def as_dict(self):
-        return {"outputs": self}
+        return self.path.parent / filename
 
     def write(self):
+        """Useful testing helper"""
         self.path.write_text(json.dumps(self.raw_metadata, indent=2))
+        self.clear()
+        self.__post_init__()
 
 
 def get_outputs(data):
@@ -80,28 +85,13 @@ def index(request):
         data = {"path": "outputs/results.json"}
 
     outputs = get_outputs(data)
-
-    # build up all the bits we need for sidebar's context as a single list
-    output_list = [
-        {
-            "name": name,
-            "status": data["status"],
-            "type": f"{data['properties'].get('method', '')} {data['type']}".strip(),
-            "url": reverse_with_params(
-                {"path": str(outputs.path), "name": name}, "contents"
-            ),
-        }
-        for name, data in outputs.items()
-    ]
-
     review_url = reverse_with_params({"path": str(outputs.path)}, "review")
 
     return TemplateResponse(
         request,
         "index.html",
         context={
-            "output_list": output_list,
-            "outputs": outputs.as_dict(),
+            "outputs": dict(outputs),
             "review_url": review_url,
         },
     )
@@ -115,12 +105,19 @@ def contents(request):
     in the json.  This prevents loading arbitrary user files over http.
     """
     outputs = get_outputs(request.GET)
-    name = request.GET.get("name")
+    output = request.GET.get("output")
+    filename = request.GET.get("filename")
 
+    file_path = None
     try:
-        file_path = outputs.get_file_path(name)
+        file_path = outputs.get_file_path(output, filename)
     except KeyError:
-        logger.info(f"output {name} not found in {outputs.path}")
+        pass
+
+    if file_path is None:
+        logger.info(
+            f"output file {filename} for output {output} not found in {outputs.path}"
+        )
         raise Http404
 
     try:
@@ -140,12 +137,14 @@ def review(request):
 
     review_data = json.loads(raw_json)
 
-    approved_outputs = [k for k, v in review_data.items() if v["state"] is True]
-
-    unrecognized_outputs = [o for o in approved_outputs if o not in outputs]
+    # check for invalid output names
+    unrecognized_outputs = [output for output in review_data if output not in outputs]
     if unrecognized_outputs:
         return HttpResponseBadRequest(f"invalid output names: {unrecognized_outputs}")
 
+    approved_outputs = {
+        k: outputs[k]["files"] for k, v in review_data.items() if v["state"] is True
+    }
     in_memory_zf = zipfile.create(outputs, approved_outputs)
 
     # use the directory name as the files might all just be results.json

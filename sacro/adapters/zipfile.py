@@ -12,13 +12,14 @@ def create(outputs, approved_outputs):
         missing = []
 
         # add approved files
-        for approved in approved_outputs:
-            path = outputs.get_file_path(approved)
-            if path.exists():
-                zip_obj.write(path, arcname=path.name)
-            else:
-                logger.warning("{path} does not exist. Excluding from zipfile")
-                missing.append(str(path))
+        for output, files in approved_outputs.items():
+            for filename in files:
+                path = outputs.get_file_path(output, filename)
+                if path.exists():
+                    zip_obj.write(path, arcname=path.name)
+                else:
+                    logger.warning("{path} does not exist. Excluding from zipfile")
+                    missing.append(str(path))
 
         if missing:
             lines = [

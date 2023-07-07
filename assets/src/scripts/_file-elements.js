@@ -2,32 +2,25 @@
 import fileLoader from "./_file-loader";
 import tableBuilder from "./_table-builder";
 
-export const fileContentElement = document.getElementById("fileContent");
+export async function createTableElement(el, ext, url, outcome) {
+  const data = await fileLoader(ext, url);
 
-export async function createTableElement(file) {
-  const data = await fileLoader(file);
+  el.classList.add("overflow-x-scroll");
 
   tableBuilder({
     csvString: data,
-    el: fileContentElement,
-    outcome: file.value.metadata.outcome,
+    el,
+    outcome,
   });
-
-  fileContentElement.classList.add("overflow-x-scroll");
 }
 
-export function createImageElement(data) {
-  fileContentElement.innerHTML = "";
-  fileContentElement.classList.remove("overflow-x-scroll");
-
+export function createImageElement(el, url) {
   const img = document.createElement("img");
-  img.src = data;
-  fileContentElement.appendChild(img);
+  img.src = url;
+  el.appendChild(img);
 }
 
-export function invalidFileElement() {
-  fileContentElement.classList.remove("overflow-x-scroll");
-
-  fileContentElement.textContent =
+export function invalidFileElement(el) {
+  el.textContent =
     "This type of file cannot be displayed. It should be reviewed outside of this application";
 }

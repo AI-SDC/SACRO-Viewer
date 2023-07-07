@@ -1,8 +1,7 @@
 import { canDisplay, isCsv } from "./_utils";
 
-async function fileLoader(openOutput) {
-  if (!openOutput) return null;
-  const response = await fetch(openOutput.value.url);
+async function fileLoader(ext, url) {
+  const response = await fetch(url);
 
   if (!response.ok) {
     // eslint-disable-next-line no-console
@@ -12,8 +11,8 @@ async function fileLoader(openOutput) {
 
   let res;
 
-  if (canDisplay(openOutput.value.ext)) {
-    if (isCsv(openOutput.value.ext)) {
+  if (canDisplay(ext)) {
+    if (isCsv(ext)) {
       res = await response.text();
     }
   }
