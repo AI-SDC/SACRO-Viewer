@@ -28,5 +28,6 @@ export function createImageElement(data) {
 export function invalidFileElement() {
   fileContentElement.classList.remove("overflow-x-scroll");
 
-  fileContentElement.textContent = "This file cannot be displayed";
+  fileContentElement.textContent =
+    "This type of file cannot be displayed. It should be reviewed outside of this application";
 }
