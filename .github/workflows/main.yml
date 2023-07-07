@@ -75,6 +75,7 @@ jobs:
           wait-on: "http://localhost:8000/"
 
   build-windows:
+    needs: [check, test-windows]
     permissions:
       contents: write
     runs-on: windows-2022
