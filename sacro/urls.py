@@ -16,6 +16,7 @@ urlpatterns = [
         views.approved_outputs,
         name="approved-outputs",
     ),
+    path("review/<str:pk>/summary/", views.summary, name="summary"),
 ]
 
 if settings.DEBUG and importlib.util.find_spec(

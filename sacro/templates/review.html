@@ -27,6 +27,14 @@
           Download approved outputs
         {% /button %}
       </form>
+
+      <form action="{{ summary_url }}" method="POST" data-sacro-el="downloadSummaryForm">
+        {% csrf_token %}
+
+        {% #button type="submit" variant="success" %}
+          Download review summary
+        {% /button %}
+      </form>
     </div>
 
   </main>

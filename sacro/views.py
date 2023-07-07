@@ -6,8 +6,9 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 from django.conf import settings
-from django.http import FileResponse, Http404, HttpResponseBadRequest
+from django.http import FileResponse, Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
@@ -186,6 +187,7 @@ def review_detail(request, pk):
         raise Http404
 
     approved_outputs_url = reverse("approved-outputs", kwargs={"pk": "current"})
+    summary_url = reverse("summary", kwargs={"pk": "current"})
 
     approved = sum(1 for o in review["decisions"].values() if o["state"])
     total = len(review["decisions"])
@@ -199,6 +201,28 @@ def review_detail(request, pk):
         "approved_outputs_url": approved_outputs_url,
         "counts": counts,
         "review": review,
+        "summary_url": summary_url,
     }
 
     return TemplateResponse(request, "review.html", context=context)
+
+
+@require_POST
+def summary(request, pk):
+    if not (review := REVIEWS.get(pk)):
+        raise Http404
+
+    # add ACRO status to output decisions
+    outputs = Outputs(review["path"])
+    for name, data in review["decisions"].items():
+        review["decisions"][name]["acro_status"] = outputs[name]["status"]
+
+    content = render_to_string("summary.txt", context={"review": review})
+
+    # Use an HttpResponse because FileResponse is for file handles which we
+    # don't have here
+    return HttpResponse(
+        content,
+        content_type="text/plain",
+        headers={"Content-Disposition": "attachment;filename=summary.txt"},
+    )

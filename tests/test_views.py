@@ -236,3 +236,27 @@ def test_review_detail_unknown_review(review_summary, monkeypatch):
 
     with pytest.raises(Http404):
         views.review_detail(request, pk="test")
+
+
+def test_summary_success(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+
+    request = RequestFactory().post("/")
+
+    response = views.summary(request, pk="current")
+
+    assert response.status_code == 200
+
+    content = response.getvalue().decode("utf-8")
+    assert review_summary["comment"] in content
+    for name in review_summary["decisions"].keys():
+        assert name in content
+
+
+def test_summary_unknown_review(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+
+    request = RequestFactory().post("/")
+
+    with pytest.raises(Http404):
+        views.summary(request, pk="test")
