@@ -26,9 +26,13 @@ const mainMenu = (serverUrl) => {
                 ],
               })
               .then((result) => {
-                const qs = querystring.stringify({ path: result.filePaths[0] });
-                const url = `${serverUrl}?${qs}`;
-                BrowserWindow.getFocusedWindow().loadURL(url);
+                if (!result.canceled) {
+                  const qs = querystring.stringify({
+                    path: result.filePaths[0],
+                  });
+                  const url = `${serverUrl}?${qs}`;
+                  BrowserWindow.getFocusedWindow().loadURL(url);
+                }
               })
               .catch((err) => {
                 log.error(err);

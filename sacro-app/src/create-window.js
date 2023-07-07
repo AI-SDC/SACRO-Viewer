@@ -38,13 +38,15 @@ const createWindow = async () => {
     ],
   });
 
-  const qs = querystring.stringify({ path: result.filePaths[0] });
-  const url = `${serverUrl}?${qs}`;
+  if (!result.canceled) {
+    const qs = querystring.stringify({ path: result.filePaths[0] });
+    const url = `${serverUrl}?${qs}`;
 
-  if (serverProcess === null) {
-    win.loadURL(url);
-  } else {
-    waitThenLoad(url, 4000, win);
+    if (serverProcess === null) {
+      win.loadURL(url);
+    } else {
+      waitThenLoad(url, 4000, win);
+    }
   }
 
   if (process.env.DEBUG) {
