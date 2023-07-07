@@ -179,9 +179,9 @@ const outputClick = async ({ outputName, metadata, url }) => {
   toggleParentVisibility("outputDetailsReviewForm", "div", "show");
 
   // Set the metadata
-  const fileMetadata = document.getElementById("outputMetadata");
+  const outputMetadata = document.getElementById("outputMetadata");
 
-  fileMetadata.innerHTML = html`
+  outputMetadata.innerHTML = html`
     <div>
       <div class="flex flex-row">
         <button
@@ -234,16 +234,16 @@ ${outputComments.value[outputName]}</textarea
     </div>
   `;
 
-  const approveButton = fileMetadata.querySelector(
+  const approveButton = outputMetadata.querySelector(
     `[data-sacro-el="outputDetailsBtnApprove"]`
   );
-  const resetButton = fileMetadata.querySelector(
+  const resetButton = outputMetadata.querySelector(
     `[data-sacro-el="outputDetailsBtnReset"]`
   );
-  const rejectButton = fileMetadata.querySelector(
+  const rejectButton = outputMetadata.querySelector(
     `[data-sacro-el="outputDetailsBtnReject"]`
   );
-  const commentInput = fileMetadata.querySelector(
+  const commentInput = outputMetadata.querySelector(
     `[data-sacro-el="outputDetailsTextareaComments"]`
   );
 
