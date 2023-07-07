@@ -284,7 +284,7 @@ ${outputComments.value[outputName]}</textarea
   });
 
   commentInput.addEventListener("keyup", () => {
-    setComment(openOutput, commentInput.value);
+    setComment(outputName, commentInput.value);
     requireCommentButtons.forEach((button) =>
       checkComment(button, commentInput.value)
     );
