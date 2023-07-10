@@ -24,6 +24,8 @@ based browser.
   - [Building the python web app](#building-the-python-web-app)
   - [Building the electron GUI app](#building-the-electron-gui-app)
   - [Testing the built application](#testing-the-built-application)
+- [Stack](#stack)
+  - [Vite](#vite)
 
 
 ## System requirements
@@ -53,6 +55,7 @@ Run the Django devserver with:
 just run
 ```
 
+If you are making changes to the JavaScript you may wish to have the server auto-refresh so you get those changes without having to reload the page.
 Make sure `DJANGO_VITE_DEV_MODE` is set in your environment and run the Vite devserver with:
 ```
 just assets-run
@@ -154,3 +157,17 @@ Navigate to the `outputs` directory and choose `results.json`. You should
 now be able to see the outputs rendered in the app.
 
 You can click on the `Approve and Download` button to download the files.
+
+
+## Stack
+### Vite
+This project uses [Vite](https://vitejs.dev/), a modern build tool and development server, to build the frontend assets.
+Vite integrates into Django using [django-vite](https://github.com/MrBin99/django-vite).
+
+Vite works by compiling JavaScript files, and outputs a manifest file, the JavaScript files, and any included assets such as stylesheets or images.
+
+Vite adds all JavaScript files to the page using [ES6 Module syntax](https://caniuse.com/es6-module).
+For legacy browsers, this project is utilising the [Vite Legacy Plugin](https://github.com/vitejs/vite/tree/main/packages/plugin-legacy) to provide a fallback using the [module/nomodule pattern](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/).
+
+Vite is configured to build assets in `assets/src` and output them to `assets/dist`.
+Django is configured to use `assets/dist` as a directory to collect static files from.
