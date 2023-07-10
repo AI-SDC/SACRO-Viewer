@@ -80,3 +80,64 @@ describe("Approve all files, view summary page, and download approved outputs", 
       });
   });
 });
+
+describe("clearing a comment resets the button state", () => {
+  it("passes", () => {
+    cy.visit("http://localhost:8000");
+
+    cy.get("[data-sacro-el='outputList'] li:nth-child(3)").click();
+
+    // check we're looking at a passing one
+    cy.get("[data-sacro-el='outputDetailsStatus'] span").should(
+      "have.text",
+      "Pass"
+    );
+
+    // check initial states of approve and reject buttons
+    cy.get("[data-sacro-el='outputDetailsBtnApprove']").should("be.enabled");
+    cy.get("[data-sacro-el='outputDetailsBtnReject']").should("be.disabled");
+
+    // set a comment and check the buttons have their border-only css classes
+    cy.get("[data-sacro-el='outputDetailsTextareaComments']").type(
+      "This is a comment"
+    );
+    cy.get("[data-sacro-el='outputDetailsBtnApprove']").should(
+      "have.class",
+      "bg-transparent",
+      "border-green-700"
+    );
+    cy.get("[data-sacro-el='outputDetailsBtnReject']").should(
+      "have.class",
+      "bg-transparent",
+      "border-red-700"
+    );
+    cy.get("[data-sacro-el='outputDetailsBtnReject']").should("be.enabled");
+
+    // approve the output
+    cy.get("[data-sacro-el='outputDetailsBtnApprove']").click();
+
+    // pick another output
+    cy.get("[data-sacro-el='outputList'] li:nth-child(4)").click();
+
+    // pick the original output
+    cy.get("[data-sacro-el='outputList'] li:nth-child(3)").click();
+
+    // clear the comment
+    cy.get("[data-sacro-el='outputDetailsTextareaComments']").clear();
+    cy.get("[data-sacro-el='outputDetailsTextareaComments']").trigger("keyup");
+
+    // check the buttons are reset to border-only styles and disabled appropriately
+    cy.get("[data-sacro-el='outputDetailsBtnApprove']").should(
+      "have.class",
+      "bg-transparent",
+      "border-green-700"
+    );
+    cy.get("[data-sacro-el='outputDetailsBtnApprove']").should("be.enabled");
+    cy.get("[data-sacro-el='outputDetailsBtnReject']").should(
+      "have.class",
+      "bg-transparent",
+      "border-red-700"
+    );
+    cy.get("[data-sacro-el='outputDetailsBtnReject']").should("be.disabled");
+  });
+});

@@ -34,28 +34,33 @@ function statusStyles(status) {
   return `bg-yellow-100 text-yellow-900`;
 }
 
-function checkComment(button, comment) {
-  // if no comment, ensure button disabled. Other was ensure is enabled
-  if (comment.trim() === "") {
-    // ensure button is disabled
-    if (!button.disabled) {
-      button.disabled = true; // eslint-disable-line no-param-reassign
-      btnStyles.notDisabled
-        .split(" ")
-        .map((style) => button.classList.remove(style));
-      btnStyles.disabled.split(" ").map((style) => button.classList.add(style));
-      button.setAttribute("title", "You must enter a comment first");
-    }
-  } else if (button.disabled) {
-    // make sure button is enabled
-    button.disabled = false; // eslint-disable-line no-param-reassign
-    btnStyles.disabled
-      .split(" ")
-      .map((style) => button.classList.remove(style));
-    btnStyles.notDisabled
-      .split(" ")
-      .map((style) => button.classList.add(style));
-    button.setAttribute("title", "");
+function enableButton(button) {
+  if (!button.disabled) return;
+
+  button.disabled = false; // eslint-disable-line no-param-reassign
+  btnStyles.disabled.split(" ").map((style) => button.classList.remove(style));
+  btnStyles.notDisabled.split(" ").map((style) => button.classList.add(style));
+  button.setAttribute("title", "");
+}
+
+function disableButton(button) {
+  if (button.disabled) return;
+
+  button.disabled = true; // eslint-disable-line no-param-reassign
+  btnStyles.notDisabled
+    .split(" ")
+    .map((style) => button.classList.remove(style));
+  btnStyles.disabled.split(" ").map((style) => button.classList.add(style));
+  button.setAttribute("title", "You must enter a comment first");
+}
+
+function setButtonState(button, enableOnEmpty) {
+  // we know the comment is empty here so now we only have to care about the
+  // value of enableOnEmpty to drive enable/disable
+  if (enableOnEmpty) {
+    enableButton(button);
+  } else {
+    disableButton(button);
   }
 }
 
@@ -242,23 +247,9 @@ ${outputComments.value[outputName]}</textarea
     `[data-sacro-el="outputDetailsTextareaComments"]`
   );
 
-  const requireCommentButtons = [];
-
-  if (metadata.status === "review") {
-    // custom outputs require a comment either way
-    requireCommentButtons.push(approveButton);
-    requireCommentButtons.push(rejectButton);
-  } else if (metadata.status === "fail") {
-    // if ACRO passed, require a comment to approve it
-    requireCommentButtons.push(approveButton);
-  } else if (metadata.status === "pass") {
-    // if ACRO passed, require a comment to reject it
-    requireCommentButtons.push(rejectButton);
-  }
-
-  requireCommentButtons.forEach((button) =>
-    checkComment(button, commentInput.value)
-  );
+  // set initial state for approve/reject buttons
+  setButtonState(approveButton, metadata.status === "pass");
+  setButtonState(rejectButton, metadata.status === "fail");
 
   approveButton.addEventListener("click", () => {
     setReviewState(outputName, true);
@@ -280,9 +271,21 @@ ${outputComments.value[outputName]}</textarea
 
   commentInput.addEventListener("keyup", () => {
     setComment(outputName, commentInput.value);
-    requireCommentButtons.forEach((button) =>
-      checkComment(button, commentInput.value)
-    );
+
+    if (commentInput.value.trim() !== "") {
+      // when the comment isn't empty we can enable our buttons and move on
+      enableButton(approveButton);
+      enableButton(rejectButton);
+      return;
+    }
+
+    // always remove the review state when the comment is empty
+    setReviewState(outputName, null);
+
+    setButtonState(approveButton, metadata.status === "pass");
+    setButtonActive(approveButton, "success", false);
+    setButtonState(rejectButton, metadata.status === "fail");
+    setButtonActive(rejectButton, "warning", false);
   });
 
   // render files
