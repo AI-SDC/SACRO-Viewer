@@ -4,13 +4,28 @@
 
 The SACRO app consists of two parts:
 
-1) a python webapp that renders a set of ACRO outputs for review
-2) an electron app and installer that bundles the python web app
+1) a Django web app with vanilla JavaScript UI that renders a set of ACRO outputs for review
+2) an Electron app and installer that bundles the web app
 
 
-The python web app is designed to be able to be used as normally deployed web
-site. The electron app packages a pre-built version of this webapp with a chrome
+The web app is designed to be able to be used as normally deployed web
+site. The electron app packages a pre-built version of this web app with a chrome
 based browser.
+
+
+- [System requirements](#system-requirements)
+  - [Windows](#windows)
+- [Local development environment](#local-development-environment)
+- [Tests](#tests)
+- [Test data](#test-data)
+- [Running the electron app in dev mode](#running-the-electron-app-in-dev-mode)
+  - [Testing the electron app](#testing-the-electron-app)
+- [Building the application](#building-the-application)
+  - [Building the python web app](#building-the-python-web-app)
+  - [Building the electron GUI app](#building-the-electron-gui-app)
+  - [Testing the built application](#testing-the-built-application)
+- [Stack](#stack)
+  - [Vite](#vite)
 
 
 ## System requirements
@@ -35,10 +50,15 @@ Note: just commands will only work inside git-bash shell by default, as they ass
 
 ## Local development environment
 
-Set up a local development environment with:
+Run the Django devserver with:
 ```
-just devenv
-just assets
+just run
+```
+
+If you are making changes to the JavaScript you may wish to have the server auto-refresh so you get those changes without having to reload the page.
+Make sure `DJANGO_VITE_DEV_MODE` is set in your environment and run the Vite devserver with:
+```
+just assets-run
 ```
 
 ## Tests
@@ -66,7 +86,7 @@ just clean
 just test-outputs
 ```
 
-## Running the electon app in dev mode
+## Running the electron app in dev mode
 
 First, run the development version of the python webapp and then run the
 electron app pointing at that by setting the SACRO_URL env var.
@@ -137,3 +157,17 @@ Navigate to the `outputs` directory and choose `results.json`. You should
 now be able to see the outputs rendered in the app.
 
 You can click on the `Approve and Download` button to download the files.
+
+
+## Stack
+### Vite
+This project uses [Vite](https://vitejs.dev/), a modern build tool and development server, to build the frontend assets.
+Vite integrates into Django using [django-vite](https://github.com/MrBin99/django-vite).
+
+Vite works by compiling JavaScript files, and outputs a manifest file, the JavaScript files, and any included assets such as stylesheets or images.
+
+Vite adds all JavaScript files to the page using [ES6 Module syntax](https://caniuse.com/es6-module).
+For legacy browsers, this project is utilising the [Vite Legacy Plugin](https://github.com/vitejs/vite/tree/main/packages/plugin-legacy) to provide a fallback using the [module/nomodule pattern](https://philipwalton.com/articles/deploying-es2015-code-in-production-today/).
+
+Vite is configured to build assets in `assets/src` and output them to `assets/dist`.
+Django is configured to use `assets/dist` as a directory to collect static files from.
