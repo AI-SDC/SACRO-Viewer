@@ -1,6 +1,6 @@
 import { approvedOutputs, outputComments } from "./_signals";
 
-const formSetup = () => {
+export default function formSetup() {
   const modal = document.querySelector("#submitModal");
   const submit = modal.querySelector(`#approveForm button[type="submit"]`);
 
@@ -57,6 +57,4 @@ const formSetup = () => {
       submit.setAttribute("title", "");
     }
   });
-};
-
-export default formSetup;
+}

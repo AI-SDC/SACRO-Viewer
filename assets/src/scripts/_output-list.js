@@ -3,7 +3,7 @@ import outputs from "./_data";
 import outputClick from "./_output-click";
 import { approvedOutputs } from "./_signals";
 
-const outputList = () => {
+export default function outputList() {
   const container = document.getElementById("outputList");
   const outputListItems = [...container.querySelectorAll("li")];
 
@@ -40,6 +40,4 @@ const outputList = () => {
       return null;
     });
   });
-};
-
-export default outputList;
+}
