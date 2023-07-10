@@ -4,6 +4,27 @@ import { html } from "./_utils";
 const indexOfAll = (arr, val) =>
   arr.reduce((acc, el, i) => (el !== val ? [...acc, i] : acc), []);
 
+function highlightFailingCells(columnName, columnOutcome, headings) {
+  const rows = indexOfAll(Object.values(columnOutcome), "ok");
+  const column = headings.findIndex((val) => val === columnName);
+
+  const colData = rows.map((row) => {
+    const tableBody = document.getElementById("csvBody");
+    const tableRow = tableBody.children[row];
+    const tableCell = tableRow.children[column];
+
+    tableCell.setAttribute("title", Object.values(columnOutcome)[row]);
+    tableCell.classList.add(
+      "bg-red-50",
+      "!border",
+      "!border-red-600",
+      "text-red-900"
+    );
+    return tableCell;
+  });
+  return colData;
+}
+
 function tableBuilder({ csvString, el, outcome }) {
   const csvToJson = Papa.parse(csvString).data;
 
@@ -35,31 +56,9 @@ function tableBuilder({ csvString, el, outcome }) {
 
   el.innerHTML = table; // eslint-disable-line no-param-reassign
 
-  Object.keys(outcome).map((key) => {
-    const rows = indexOfAll(Object.values(outcome[key]), "ok");
-    const column = csvToJson[0].findIndex((val) => val === key);
-
-    const colData = rows.map((row) => {
-      const tableBody = document.getElementById("csvBody");
-      const tableRow = tableBody.children[row];
-      const tableCell = tableRow.children[column];
-
-      tableCell.innerHTML = Object.values(outcome[key])
-        [row].split("; ")
-        .filter((i) => i !== "")
-        .map((i) => html`<span class="block">${i}</span>`)
-        .join("");
-
-      return tableCell.classList.add(
-        "bg-red-50",
-        "!border",
-        "!border-red-600",
-        "text-red-900"
-      );
-    });
-
-    return colData;
-  });
+  Object.keys(outcome).map((columnName) =>
+    highlightFailingCells(columnName, outcome[columnName], csvToJson[0])
+  );
 }
 
 export default tableBuilder;
