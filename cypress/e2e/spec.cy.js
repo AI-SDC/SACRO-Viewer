@@ -124,7 +124,6 @@ describe("clearing a comment resets the button state", () => {
 
     // clear the comment
     cy.get("[data-sacro-el='outputDetailsTextareaComments']").clear();
-    cy.get("[data-sacro-el='outputDetailsTextareaComments']").trigger("keyup");
 
     // check the buttons are reset to border-only styles and disabled appropriately
     cy.get("[data-sacro-el='outputDetailsBtnApprove']").should(

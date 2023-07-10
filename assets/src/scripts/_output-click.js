@@ -269,7 +269,7 @@ ${outputComments.value[outputName]}</textarea
     setButtonActive(approveButton, "success", false);
   });
 
-  commentInput.addEventListener("keyup", () => {
+  commentInput.addEventListener("keydown", () => {
     setComment(outputName, commentInput.value);
 
     if (commentInput.value.trim() !== "") {
