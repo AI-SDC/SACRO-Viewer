@@ -42,6 +42,10 @@
         bg-bn-ribbon-600 text-white
         hover:bg-bn-ribbon-700
         focus:ring-bn-ribbon-500 focus:ring-offset-white
+      {% elif variant == "danger-outline" %}
+        bg-transparent border border-red-700 text-red-700
+        hover:bg-red-100
+        focus:bg-red-100 focus:ring-red-500 focus:ring-offset-white
       {% elif variant == "warning" %}
         bg-bn-flamenco-600 text-white
         hover:bg-bn-flamenco-700

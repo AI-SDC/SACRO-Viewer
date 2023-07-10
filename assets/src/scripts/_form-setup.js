@@ -57,7 +57,4 @@ export default function formSetup() {
       submit.setAttribute("title", "");
     }
   });
-
-  // FIXME: what to do on submit?
-  submit.addEventListener("click", () => {});
 }

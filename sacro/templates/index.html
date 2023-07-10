@@ -8,12 +8,12 @@
 {% endblock %}
 
 {% block content %}
-  <body class="grid h-screen overflow-hidden bg-zinc-100">
-    {% #header %}
-      {% #button disabled=True id="openModalBtn" type="submit" %}
-        Release and download
-      {% /button %}
-    {% /header %}
+<body class="grid h-screen overflow-hidden bg-zinc-100">
+  {% #header %}
+    {% #button disabled=True id="openModalBtn" type="submit" %}
+      Release and download
+    {% /button %}
+  {% /header %}
 
   <aside class="overflow-y-auto bg-white border-r border-zinc-200 py-2">
     <h2 id="outputListHeader" class="sr-only">Output list</h2>
@@ -62,7 +62,7 @@
               {% endif %}
             </dd>
           </div>
-          <div class="order-3 ml-auto">
+          <div class="order-3 ml-auto text-right">
             <dt class="sr-only">Output type:</dt>
             <dd>{{ output.properties.method|default_if_none:"" }} {{ output.type }}</dd>
           </div>
@@ -146,14 +146,16 @@
   </main>
 
   {% #modal id="submitModal" title="Release and download" subtitle='<span class="count"></span> files are ready to be released' %}
-    <p>Record your assessment of the whole release request below.</p>
-    <p>
-      For example, if there are disclosivity concerns that span multiple
-      outputs, or if significant changes are needed to the whole study before
-      it can be released.
-    </p>
+    <form action="{{ create_url }}" method="post" id="approveForm" class="flex flex-col gap-3">
+      {% csrf_token %}
 
-    <div class="">
+      <p>Record your assessment of the whole release request below.</p>
+      <p>
+        For example, if there are disclosivity concerns that span multiple
+        outputs, or if significant changes are needed to the whole study before
+        it can be released.
+      </p>
+
       <textarea name="comment"
         class="
           my-1 block w-full rounded-md border-slate-300 text-slate-900 shadow-sm resize-none
@@ -165,15 +167,14 @@
         data-sacro-el="submissionComment"
         type="text"
       ></textarea>
-    </div>
 
-    <p>Click the button below to download a zip file of the files you have approved.</p>
+      <p>Click the button below to download a zip file of the files you have approved.</p>
 
-    <form action="{{ review_url }}" method="post" id="approveForm">
-      {% csrf_token %}
-      {% #button type="submit" disabled=True %}
-        Submit
-      {% /button %}
+      <div>
+        {% #button type="submit" disabled=True %}
+          Submit
+        {% /button %}
+      </div>
     </form>
 
   {% /modal %}
