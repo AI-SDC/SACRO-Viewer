@@ -48,10 +48,14 @@ Note: just commands will only work inside git-bash shell by default, as they ass
 
 ## Local development environment
 
-Set up a local development environment with:
+Run the Django devserver with:
 ```
-just devenv
-just assets
+just run
+```
+
+Make sure `DJANGO_VITE_DEV_MODE` is set in your environment and run the Vite devserver with:
+```
+just assets-run
 ```
 
 ## Tests
