@@ -4,12 +4,12 @@
 
 The SACRO app consists of two parts:
 
-1) a python webapp that renders a set of ACRO outputs for review
-2) an electron app and installer that bundles the python web app
+1) a Django web app with vanilla JavaScript UI that renders a set of ACRO outputs for review
+2) an Electron app and installer that bundles the web app
 
 
-The python web app is designed to be able to be used as normally deployed web
-site. The electron app packages a pre-built version of this webapp with a chrome
+The web app is designed to be able to be used as normally deployed web
+site. The electron app packages a pre-built version of this web app with a chrome
 based browser.
 
 
