@@ -269,10 +269,10 @@ ${outputComments.value[outputName]}</textarea
     setButtonActive(approveButton, "success", false);
   });
 
-  commentInput.addEventListener("keydown", () => {
-    setComment(outputName, commentInput.value);
+  commentInput.addEventListener("keyup", (e) => {
+    setComment(outputName, e.target.value);
 
-    if (commentInput.value.trim() !== "") {
+    if (outputComments.value[outputName].trim() !== "") {
       // when the comment isn't empty we can enable our buttons and move on
       enableButton(approveButton);
       enableButton(rejectButton);

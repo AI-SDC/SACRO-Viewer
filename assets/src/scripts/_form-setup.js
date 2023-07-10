@@ -39,7 +39,7 @@ const formSetup = () => {
   ];
 
   // enable the submit button once the comment box has content
-  modal.querySelector("#id_comment").addEventListener("keydown", (e) => {
+  modal.querySelector("#id_comment").addEventListener("keyup", (e) => {
     // if no comment, ensure button disabled. Other was ensure is enabled
     if (e.target.value.trim() === "") {
       // ensure button is disabled
