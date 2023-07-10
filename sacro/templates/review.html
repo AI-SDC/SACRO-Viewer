@@ -10,33 +10,46 @@
 <body class="grid">
   {% #header %}{% /header %}
 
-  <main class="col-start-2 flex flex-col gap-3 pt-5">
-    <h1 class="text-xl font-semibold leading-7 text-gray-900">Review complete</h1>
+  <main class="container w-full mx-auto">
+    <div class="flex flex-col gap-3 pt-5">
+      <div class="mb-4">
+        <h1 class="text-xl font-bold leading-6 text-gray-900">Review complete</h3>
+        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-zinc-700">Outputs reviewed</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-zinc-800">{{ counts.total }}</dd>
+          </div>
+          <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-green-900">Outputs approved</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-green-700">{{ counts.approved }}</dd>
+          </div>
+          <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-red-900">Outputs rejected</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-red-700">{{ counts.rejected }}</dd>
+          </div>
+        </dl>
+      </div>
 
-    <div>
-      <p>Outputs reviewed: {{ counts.total }}</p>
-      <p>Outputs approved: {{ counts.approved }}</p>
-      <p>Outputs rejected: {{ counts.rejected }}</p>
+      <div class="flex flex-col items-start gap-3">
+        <form action="{{ approved_outputs_url }}" method="POST" data-sacro-el="downloadOutputsForm">
+          {% csrf_token %}
+
+          {% #button type="submit" variant="success" %}
+            Download approved outputs
+          {% /button %}
+        </form>
+
+        <form action="{{ summary_url }}" method="POST" data-sacro-el="downloadSummaryForm">
+          {% csrf_token %}
+
+          {% #button type="submit" variant="primary" %}
+            Download review summary
+          {% /button %}
+        </form>
+
+        <p>Once your downloads have completed, you can close this application.</p>
+      </div>
     </div>
-
-    <div class="flex items-center gap-3">
-      <form action="{{ approved_outputs_url }}" method="POST" data-sacro-el="downloadOutputsForm">
-        {% csrf_token %}
-
-        {% #button type="submit" variant="success" %}
-          Download approved outputs
-        {% /button %}
-      </form>
-
-      <form action="{{ summary_url }}" method="POST" data-sacro-el="downloadSummaryForm">
-        {% csrf_token %}
-
-        {% #button type="submit" variant="success" %}
-          Download review summary
-        {% /button %}
-      </form>
-    </div>
-
   </main>
 </body>
 {% endblock content %}
