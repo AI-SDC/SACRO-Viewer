@@ -59,7 +59,7 @@ function checkComment(button, comment) {
   }
 }
 
-const outputClick = async ({ outputName, metadata }) => {
+export default async function outputClick({ outputName, metadata }) {
   // Set the file values
   openOutput.value = {
     outputName,
@@ -77,23 +77,10 @@ const outputClick = async ({ outputName, metadata }) => {
   } = openOutput.value;
 
   /**
-   * Show the file viewer
-   */
-  document
-    .getElementById("select-an-output-title")
-    .closest("section")
-    .classList.remove("hidden");
-
-  /**
    * Set the page name
    */
   toggleParentVisibility("outputTitle", "h1", "show");
   setElementText("outputTitle", outputName);
-
-  document
-    .getElementById("select-an-output-title")
-    .closest("div.flex")
-    .classList.add("hidden");
 
   /**
    * Display the created at date
@@ -285,41 +272,43 @@ ${outputComments.value[outputName]}</textarea
     );
   });
 
-  // render files
+  // Clear existing content
+  const filePreviewContainer = document.getElementById("filePreviewContainer");
+  filePreviewContainer.innerHTML = "";
 
-  // clear existing content
-  const filesContainerElement = document.getElementById("fileContent");
-  filesContainerElement.innerHTML = "";
+  const filePreviewTemplate = document.querySelector(
+    `[data-sacro-el="file-preview-template"]`
+  );
+
+  const filesCount = Object.keys(metadata.files).length;
 
   // only attempt to render outcome cells if there is a single output file
-  const outcome =
-    Object.keys(metadata.files).length === 1 ? metadata.outcome : {};
+  const outcome = filesCount === 1 ? metadata.outcome : {};
 
-  Object.entries(metadata.files).forEach(([path, url]) => {
+  Object.entries(metadata.files).map(([path, url], i) => {
     const ext = getFileExt(path);
+    const newFilesContainer =
+      filePreviewTemplate.content.firstElementChild.cloneNode(true);
 
-    const fileElement = document.createElement("div");
-    fileElement.classList.add("outputFile");
-    fileElement.innerHTML = html`
-      <div>
-        <h2>${path}</h2>
-        <div class="contents"></div>
-      </div>
-    `;
-    const contentElement = fileElement.querySelector("div.contents");
+    newFilesContainer.dataset.sacroEl = `file-preview-${i}`;
+
+    const filePreviewTitle = newFilesContainer.querySelector(
+      `[data-sacro-el="file-preview-template-title"]`
+    );
+    const filePreviewContent = newFilesContainer.querySelector(
+      `[data-sacro-el="file-preview-template-content"]`
+    );
+
+    filePreviewTitle.innerText = path;
 
     if (isCsv(ext)) {
-      createTableElement(contentElement, ext, url, outcome);
+      createTableElement(filePreviewContent, ext, url, outcome);
     } else if (isImg(ext)) {
-      createImageElement(contentElement, url);
+      createImageElement(filePreviewContent, url);
     } else {
-      invalidFileElement(contentElement);
+      invalidFileElement(filePreviewContent);
     }
 
-    filesContainerElement.appendChild(fileElement);
+    return filePreviewContainer.appendChild(newFilesContainer);
   });
-
-  return filesContainerElement.classList.remove("hidden");
-};
-
-export default outputClick;
+}

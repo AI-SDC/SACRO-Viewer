@@ -39,7 +39,7 @@
         data-review-status="none"
       >
         <dl class="flex flex-row gap-x-2 items-center" aria-label="Output information">
-          <div class="order-2">
+          <div class="order-2 cursor-pointer">
             <dt class="sr-only">Output name:</dt>
             <dd>
               <a class="before:absolute before:inset-0 before:w-full before:h-full">
@@ -133,8 +133,15 @@
         </div>
       </div>
 
-      {% #card title="Select an output" container=True container_id="fileContent" class="hidden" %}
-      {% /card %}
+      <div class="grid grid-col gap-y-4" id="filePreviewContainer"></div>
+
+      <template data-sacro-el="file-preview-template">
+        <section class="bg-white shadow">
+          <h2 data-sacro-el="file-preview-template-title" class="text-lg font-semibold tracking-tight text-slate-900 px-4 py-2"></h2>
+          <div data-sacro-el="file-preview-template-content" class="px-4 py-3 md:px-6 border-t border-slate-200 md:py-5"></div>
+        </section>
+      </template>
+
     </div>
   </main>
 
