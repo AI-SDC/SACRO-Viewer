@@ -13,6 +13,19 @@ site. The electron app packages a pre-built version of this webapp with a chrome
 based browser.
 
 
+- [System requirements](#system-requirements)
+  - [Windows](#windows)
+- [Local development environment](#local-development-environment)
+- [Tests](#tests)
+- [Test data](#test-data)
+- [Running the electron app in dev mode](#running-the-electron-app-in-dev-mode)
+  - [Testing the electron app](#testing-the-electron-app)
+- [Building the application](#building-the-application)
+  - [Building the python web app](#building-the-python-web-app)
+  - [Building the electron GUI app](#building-the-electron-gui-app)
+  - [Testing the built application](#testing-the-built-application)
+
+
 ## System requirements
 
 ### Windows
@@ -66,7 +79,7 @@ just clean
 just test-outputs
 ```
 
-## Running the electon app in dev mode
+## Running the electron app in dev mode
 
 First, run the development version of the python webapp and then run the
 electron app pointing at that by setting the SACRO_URL env var.
