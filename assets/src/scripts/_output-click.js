@@ -209,11 +209,15 @@ ${outputComments.value[outputName]}</textarea
     const filePreviewTitle = newFilesContainer.querySelector(
       `[data-sacro-el="file-preview-template-title"]`
     );
+    const filePreviewLink = newFilesContainer.querySelector(
+      `[data-sacro-el="file-preview-template-link"]`
+    );
     const filePreviewContent = newFilesContainer.querySelector(
       `[data-sacro-el="file-preview-template-content"]`
     );
 
     filePreviewTitle.innerText = path;
+    filePreviewLink.setAttribute("href", url);
 
     if (isCsv(ext)) {
       createTableElement(filePreviewContent, ext, url, outcome);
