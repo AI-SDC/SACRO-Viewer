@@ -189,6 +189,15 @@ assets: assets-build
 
 assets-rebuild: assets-clean assets
 
+assets-run: assets-install
+  #!/usr/bin/env bash
+
+  if [ "$DJANGO_VITE_DEV_MODE" == "False" ]; then
+      echo "Set DJANGO_VITE_DEV_MODE to a truthy value to run this command"
+      exit 1
+  fi
+  npm run dev
+
 # Ensure django's collectstatic is run if needed
 collectstatic: devenv assets
     ./scripts/collect-me-maybe.sh $BIN/python
