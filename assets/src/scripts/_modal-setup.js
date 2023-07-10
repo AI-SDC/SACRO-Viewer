@@ -1,7 +1,7 @@
 import { effect } from "@preact/signals";
 import { approvedOutputs, isReviewComplete } from "./_signals";
 
-const modalSetup = () => {
+export default function modalSetup() {
   const button = document.querySelector("#openModalBtn");
   const modal = document.querySelector("#submitModal");
 
@@ -49,6 +49,4 @@ const modalSetup = () => {
 
     modal.classList.remove("hidden");
   });
-};
-
-export default modalSetup;
+}

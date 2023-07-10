@@ -1,6 +1,6 @@
 import { approvedOutputs, outputComments } from "./_signals";
 
-const formSetup = () => {
+export default function formSetup() {
   const modal = document.querySelector("#submitModal");
   const submit = modal.querySelector(`#approveForm button[type="submit"]`);
 
@@ -60,6 +60,4 @@ const formSetup = () => {
 
   // FIXME: what to do on submit?
   submit.addEventListener("click", () => {});
-};
-
-export default formSetup;
+}
