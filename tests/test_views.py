@@ -8,6 +8,7 @@ from urllib.parse import urlencode
 import pytest
 from django.http import Http404
 from django.test import RequestFactory, override_settings
+from django.urls import reverse
 
 from sacro import views
 
@@ -27,7 +28,7 @@ def test_index(test_outputs):
     response = views.index(request)
     assert response.context_data["outputs"] == dict(test_outputs)
     assert (
-        response.context_data["review_url"]
+        response.context_data["create_url"]
         == f"/review/?{urlencode({'path': test_outputs.path})}"
     )
 
@@ -82,28 +83,51 @@ def test_contents_not_in_outputs(test_outputs):
         views.contents(request)
 
 
-def get_review_url_request(outputs_metadata, review_data):
-    # we currently use a query param to pass the path, but this is a POST
-    # so we use a get request to build the query string url, and then POST to that
-    rq = RequestFactory()
-    url = rq.get("/review", data={"path": str(outputs_metadata.path)}).get_full_path()
-    data = {}
-    if review_data:
-        data["review"] = json.dumps(review_data)
-    return rq.post(url, data=data)
-
-
 @pytest.fixture
 def review_data(test_outputs):
     return {k: {"state": False, "comments": "comment"} for k in test_outputs.keys()}
 
 
-def test_review_success_all_files(test_outputs, review_data):
+@pytest.fixture
+def review_summary(review_data, test_outputs):
+    return {
+        "comment": "test comment",
+        "decisions": review_data,
+        "path": test_outputs.path,
+    }
+
+
+def test_approved_outputs_missing_metadata(tmp_path, monkeypatch):
+    path = tmp_path / "results.json"
+    path.write_text(json.dumps({"test": {"output": ["does-not-exist"]}}))
+
+    review_data = {"decisions": {"test": {"state": True}}, "path": path}
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_data})
+
+    request = RequestFactory().post("/")
+
+    response = views.approved_outputs(request, pk="current")
+
+    zf = io.BytesIO(response.getvalue())
+    with zipfile.ZipFile(zf, "r") as zip_obj:
+        assert zip_obj.testzip() is None
+        assert zip_obj.namelist() == ["missing-files.txt"]
+        contents = zip_obj.open("missing-files.txt").read().decode("utf8")
+        assert "were not found" in contents
+        assert "does-not-exist" in contents
+
+
+def test_approved_outputs_success_all_files(test_outputs, review_summary):
     # approve all files
-    for k, v in review_data.items():
+    for k, v in review_summary["decisions"].items():
         v["state"] = True
-    request = get_review_url_request(test_outputs, review_data)
-    response = views.review(request)
+
+    views.REVIEWS["current"] = review_summary
+
+    path = urlencode({"path": test_outputs.path})
+    request = RequestFactory().post(f"/?{path}")
+
+    response = views.approved_outputs(request, pk="current")
 
     expected_namelist = []
 
@@ -119,40 +143,120 @@ def test_review_success_all_files(test_outputs, review_data):
         assert zip_obj.namelist() == expected_namelist
 
 
-def test_review_success_no_files(test_outputs, review_data):
-    request = get_review_url_request(test_outputs, None)
-    response = views.review(request)
-    assert response.status_code == 400
-
-
-def test_review_success_unrecognized_files(test_outputs):
-    bad_data = {"output-does-not-exist": {"state": True}}
-    request = get_review_url_request(test_outputs, bad_data)
-    response = views.review(request)
-    assert response.status_code == 400
-
-
-def test_review_missing_metadata(tmp_path):
-    path = tmp_path / "results.json"
-    path.write_text(json.dumps({"test": {"output": ["does-not-exist"]}}))
-    review_data = {"test": {"state": True}}
-    url = RequestFactory().get("/review", data={"path": str(path)}).get_full_path()
-    request = RequestFactory().post(url, data={"review": json.dumps(review_data)})
-    response = views.review(request)
-    zf = io.BytesIO(response.getvalue())
-    with zipfile.ZipFile(zf, "r") as zip_obj:
-        assert zip_obj.testzip() is None
-        assert zip_obj.namelist() == ["missing-files.txt"]
-        contents = zip_obj.open("missing-files.txt").read().decode("utf8")
-        assert "were not found" in contents
-        assert "does-not-exist" in contents
-
-
-def test_review_success_logs_audit_trail(test_outputs, review_data, mocker):
+def test_approved_outputs_success_logs_audit_trail(
+    test_outputs, review_summary, mocker, monkeypatch
+):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
     mocked_local_audit = mocker.patch("sacro.views.local_audit")
-    request = get_review_url_request(test_outputs, review_data)
 
-    response = views.review(request)
+    path = urlencode({"path": test_outputs.path})
+    request = RequestFactory().post(f"/?{path}")
+
+    response = views.approved_outputs(request, pk="current")
 
     assert response.status_code == 200
     mocked_local_audit.log_release.assert_called_once()
+
+
+def test_approved_outputs_unknown_review(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+
+    request = RequestFactory().post("/")
+
+    with pytest.raises(Http404):
+        views.approved_outputs(request, pk="test")
+
+
+def test_review_create_no_comment(test_outputs, review_data):
+    path = urlencode({"path": test_outputs.path})
+    request = RequestFactory().post(f"/?{path}", data={"review": review_data})
+
+    response = views.review_create(request)
+
+    assert response.status_code == 400
+    assert b"no comment data submitted" in response.content
+
+
+def test_review_create_no_review_data(test_outputs):
+    path = urlencode({"path": test_outputs.path})
+    request = RequestFactory().post(f"/?{path}", data={"comment": "test"})
+
+    response = views.review_create(request)
+
+    assert response.status_code == 400
+    assert b"no review data submitted" in response.content
+
+
+def test_review_create_success(test_outputs, review_data, monkeypatch):
+    path = urlencode({"path": test_outputs.path})
+    request = RequestFactory().post(
+        f"/?{path}", data={"comment": "test", "review": json.dumps(review_data)}
+    )
+
+    response = views.review_create(request)
+
+    assert response.status_code == 302, response.content
+    assert response.url == reverse("review-detail", kwargs={"pk": "current"})
+    assert views.REVIEWS["current"] == {
+        "comment": "test",
+        "decisions": review_data,
+        "path": test_outputs.path,
+    }
+
+
+def test_review_create_unrecognized_files(test_outputs):
+    bad_data = {"output-does-not-exist": {"state": True}}
+    path = urlencode({"path": test_outputs.path})
+    request = RequestFactory().post(
+        f"/?{path}",
+        data={"comment": "test", "review": json.dumps(bad_data)},
+    )
+
+    response = views.review_create(request)
+
+    assert response.status_code == 400, response.content
+    assert b"invalid output names" in response.content
+
+
+def test_review_detail_success(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+
+    request = RequestFactory().get("/")
+
+    response = views.review_detail(request, pk="current")
+
+    assert response.status_code == 200
+    assert response.context_data["review"] == review_summary
+
+
+def test_review_detail_unknown_review(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+
+    request = RequestFactory().get("/")
+
+    with pytest.raises(Http404):
+        views.review_detail(request, pk="test")
+
+
+def test_summary_success(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+
+    request = RequestFactory().post("/")
+
+    response = views.summary(request, pk="current")
+
+    assert response.status_code == 200
+
+    content = response.getvalue().decode("utf-8")
+    assert review_summary["comment"] in content
+    for name in review_summary["decisions"].keys():
+        assert name in content
+
+
+def test_summary_unknown_review(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+
+    request = RequestFactory().post("/")
+
+    with pytest.raises(Http404):
+        views.summary(request, pk="test")
