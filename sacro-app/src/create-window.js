@@ -87,10 +87,15 @@ const createWindow = async () => {
     const url = `${serverUrl}?${qs}`;
 
     const timeout = serverProcess === null ? 0 : 4000;
-    waitThenLoad(url, timeout).then(() => {
-      // load the server now we know it's serving
-      win.loadURL(url);
-    });
+    waitThenLoad(url, timeout)
+      .then(() => {
+        // load the server now we know it's serving
+        win.loadURL(url);
+      })
+      .catch(() => {
+        // show the error screen on failure
+        win.loadFile("error.html");
+      });
   }
 
   if (process.env.DEBUG) {
