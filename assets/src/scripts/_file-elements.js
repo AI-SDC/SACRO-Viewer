@@ -3,7 +3,7 @@ import fileLoader from "./_file-loader";
 import tableBuilder from "./_table-builder";
 
 /**
- * @param {Node} el
+ * @param {HTMLElement} el
  * @param {string} ext
  * @param {string} url
  * @param {object} outcome
@@ -21,7 +21,7 @@ export async function createTableElement(el, ext, url, outcome) {
 }
 
 /**
- * @param {Node} el
+ * @param {HTMLElement} el
  * @param {string} url
  */
 export function createImageElement(el, url) {
@@ -47,7 +47,7 @@ export async function createTextElement(el, ext, url) {
 
 /**
  *
- * @param {Node} el
+ * @param {HTMLElement} el
  */
 export function invalidFileElement(el) {
   el.textContent =
