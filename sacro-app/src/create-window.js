@@ -1,11 +1,15 @@
-const { BrowserWindow, Menu } = require("electron");
-const { dialog } = require("electron");
+const { session, BrowserWindow, Menu } = require("electron");
+const { dialog, shell } = require("electron");
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
 const process = require("node:process");
-const os = require("os");
-const querystring = require("querystring");
+const querystring = require("node:querystring");
 const { mainMenu } = require("./main-menu");
 const startServer = require("./start-server");
 const { waitThenLoad } = require("./utils");
+
+let TEMPDIR = null;
 
 const createWindow = async () => {
   let serverUrl = process.env.SACRO_URL;
@@ -18,6 +22,41 @@ const createWindow = async () => {
   }
 
   console.log(`Using ${serverUrl} as backend`);
+
+  // handle downloads
+  session.defaultSession.on("will-download", (event, item) => {
+    const [dispositionType] = item.getContentDisposition().split(";", 1);
+    // our output/feedback downloads, leave them alone.
+    if (dispositionType === "attachment") {
+      return;
+    }
+
+    // inline download, we want to download and open in native application
+
+    // create download dir if needed
+    if (TEMPDIR === null) {
+      try {
+        TEMPDIR = fs.mkdtempSync(path.join(os.tmpdir(), "sacro-"));
+      } catch (err) {
+        // TODO clean up on exit
+        // Note: this means if we fail to create the TMPDIR, we'll default to downloading the file normally.
+        console.error(err);
+        return;
+      }
+    }
+
+    const tmpPath = path.join(TEMPDIR, item.getFilename());
+    item.setSavePath(tmpPath);
+
+    item.once("done", (_, state) => {
+      if (state === "completed") {
+        // open in native application for this file type
+        shell.openPath(tmpPath);
+      } else {
+        console.error(`Download of ${item.getURL()} failed: ${state}`);
+      }
+    });
+  });
 
   const win = new BrowserWindow({
     width: 1024,
