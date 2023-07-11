@@ -138,6 +138,10 @@
     </div>
   </main>
 
+  <template id="tooltip">
+    {% tooltip %}
+  </template>
+
   {% #modal id="submitModal" title="Release and download" subtitle='<span class="count"></span> files are ready to be released' %}
     <form action="{{ create_url }}" method="post" id="approveForm" class="flex flex-col gap-3">
       {% csrf_token %}

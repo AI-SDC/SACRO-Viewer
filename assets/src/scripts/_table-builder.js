@@ -4,6 +4,13 @@ import { html } from "./_utils";
 const indexOfAll = (arr, val) =>
   arr.reduce((acc, el, i) => (el !== val ? [...acc, i] : acc), []);
 
+/**
+ *
+ * @param {string} columnName
+ * @param {object} columnOutcome
+ * @param {string[]} headings
+ * @returns
+ */
 function highlightFailingCells(columnName, columnOutcome, headings) {
   const rows = indexOfAll(Object.values(columnOutcome), "ok");
   const column = headings.findIndex((val) => val === columnName);
@@ -13,13 +20,32 @@ function highlightFailingCells(columnName, columnOutcome, headings) {
     const tableRow = tableBody.children[row];
     const tableCell = tableRow.children[column];
 
-    tableCell.setAttribute("title", Object.values(columnOutcome)[row]);
     tableCell.classList.add(
       "bg-red-50",
       "!border",
       "!border-red-600",
-      "text-red-900"
+      "text-red-900",
+      "relative",
+      "group",
+      "cursor-pointer"
     );
+
+    const tooltipContent = Object.values(columnOutcome)
+      [row].split("; ")
+      .filter((i) => i !== "")
+      .map((i) => html`<span class="block">${i}</span>`)
+      .join("");
+
+    const tooltipTemplateEl = document.getElementById(`tooltip`);
+
+    const cellTooltip =
+      tooltipTemplateEl?.content?.firstElementChild.cloneNode(true);
+
+    cellTooltip.classList.add("flex", "-bottom-2");
+    cellTooltip.querySelector(`[data-sacro-el="tooltip-content"]`).innerHTML =
+      tooltipContent;
+    tableCell.appendChild(cellTooltip);
+
     return tableCell;
   });
   return colData;
