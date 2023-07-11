@@ -19,7 +19,23 @@ export function isTxt(ext) {
   return ext.toLowerCase() === "txt";
 }
 
-export const canDisplay = (ext) => isCsv(ext) || isImg(ext) || isTxt(ext);
+/**
+ * Confirm if file is .json
+ * @param {string} ext - file extension
+ * @returns {boolean}
+ */
+export function isJson(ext) {
+  return ext.toLowerCase() === "json";
+}
+
+/**
+ * Confirm if file the file is allowed to be displayed
+ * @param {string} ext - file extension
+ * @returns {boolean}
+ */
+export function canDisplay(ext) {
+  return isCsv(ext) || isImg(ext) || isTxt(ext) || isJson(ext);
+}
 
 /**
  * Capitalise the first letter of a string

@@ -1,5 +1,6 @@
 import { btnStyles, setButtonActive } from "./_buttons";
 import {
+  createCodeElement,
   createImageElement,
   createTableElement,
   createTextElement,
@@ -24,6 +25,7 @@ import {
   html,
   isCsv,
   isImg,
+  isJson,
   isTxt,
   toggleParentVisibility,
 } from "./_utils";
@@ -227,6 +229,8 @@ ${outputComments.value[outputName]}</textarea
       createImageElement(filePreviewContent, url);
     } else if (isTxt(ext)) {
       createTextElement(filePreviewContent, ext, url);
+    } else if (isJson(ext)) {
+      createCodeElement(filePreviewContent, ext, url);
     } else {
       invalidFileElement(filePreviewContent);
     }

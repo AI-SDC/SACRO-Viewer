@@ -1,4 +1,4 @@
-import { canDisplay, isCsv, isTxt } from "./_utils";
+import { canDisplay, isCsv, isJson, isTxt } from "./_utils";
 
 async function fileLoader(ext, url) {
   const response = await fetch(url);
@@ -14,6 +14,10 @@ async function fileLoader(ext, url) {
   if (canDisplay(ext)) {
     if (isCsv(ext) || isTxt(ext)) {
       res = await response.text();
+    }
+
+    if (isJson(ext)) {
+      res = await response.json();
     }
   }
 

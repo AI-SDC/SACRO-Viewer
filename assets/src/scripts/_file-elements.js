@@ -46,6 +46,21 @@ export async function createTextElement(el, ext, url) {
 }
 
 /**
+ * @param {HTMLElement} el - Append the JSON to this element
+ * @param {string} ext - File type extension
+ * @param {string} url - Valid URL for the file location
+ */
+export async function createCodeElement(el, ext, url) {
+  const data = await fileLoader(ext, url);
+
+  const codeEl = document.createElement("pre");
+  codeEl.classList.add("break-words", "text-sm", "whitespace-break-spaces");
+  codeEl.innerText = JSON.stringify(data, null, 2);
+
+  el.appendChild(codeEl);
+}
+
+/**
  *
  * @param {Node} el
  */
