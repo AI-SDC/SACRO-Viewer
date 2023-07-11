@@ -1,13 +1,13 @@
 {% if type == "link" %}
   <a
-    {% attrs href %}
+    {% attrs data_sacro_el href %}
     {% if external %}
       rel="noopener noreferrer"
       target="_blank"
     {% endif %}
 {% else %}
   <button
-    {% attrs data_title disabled type=type|default:"button" id name value %}
+    {% attrs data_sacro_el data_title disabled type=type|default:"button" id name value %}
     {% if x_bind %}x-bind="{{ x_bind }}"{% endif %}
 {% endif %}
 
