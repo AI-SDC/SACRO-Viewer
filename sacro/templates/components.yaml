@@ -3,6 +3,7 @@ components:
   card: "components/card.html"
   header: "components/header.html"
   modal: "components/modal.html"
+  tooltip: "components/tooltip.html"
 
   icon_breadcrumb_arrow: "icons/breadcrumb-arrow.svg"
   icon_check: "icons/check.svg"
