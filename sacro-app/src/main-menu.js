@@ -1,4 +1,4 @@
-const { Menu, dialog, app, BrowserWindow } = require("electron");
+const { Menu, dialog, app, shell, BrowserWindow } = require("electron");
 const log = require("electron-log");
 const fs = require("fs");
 const os = require("node:os");
@@ -76,6 +76,15 @@ const mainMenu = (serverUrl) => {
     {
       role: "help",
       submenu: [
+        {
+          label: "View Audit Log",
+          click: async () => {
+            const auditFile = `${app.getPath("appData")}/SACRO/audit.log`;
+            const tempFile = `${app.getPath("temp")}/sacro-audit.log`;
+            fs.copyFileSync(auditFile, tempFile);
+            shell.openPath(tempFile);
+          },
+        },
         {
           role: "about",
         },
