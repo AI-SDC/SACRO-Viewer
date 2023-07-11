@@ -331,7 +331,17 @@ acro.rename_output(last_output(), "custom_txt")
 
 
 """
-6 (the big one) Finalise ACRO
+5c add a custom CSV, mirroring a working CSV from above (OLS)
+"""
+acro.custom_output(
+    "data/XandY.csv",
+    "This output is a table showing the relationship between X and Y in a CSV format",
+)
+acro.rename_output(last_output(), "custom_csv")
+
+
+"""
+7 (the big one) Finalise ACRO
  This is an example of the function _finalise()_
  which the users must call at the end of each session.
  - It takes each output and saves it to a CSV file.
