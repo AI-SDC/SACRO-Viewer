@@ -11,15 +11,15 @@ export const btnStyles = {
 
 /**
  * Set button styling depending on if it should be active or not
- * @param {Node} button - HTML Node
- * @param {string.<btnStyles>} variant - select the style (without `Outline`) that will be swapped
+ * @param {HTMLElement} button - HTML element
+ * @param {keyof typeof btnStyles} variant - select the style (without `Outline`) that will be swapped
  * @param {boolean} state - should the button be set to active (true) or inactive (false)
  */
 export function setButtonActive(button, variant, state) {
   if (state === true) {
     btnStyles?.[`${variant}Outline`]
       .split(" ")
-      .map((style) => button.classList.remove(style));
+      .map((/** @type {string} */ style) => button.classList.remove(style));
     btnStyles?.[variant].split(" ").map((style) => button.classList.add(style));
   } else {
     btnStyles?.[variant]
@@ -27,6 +27,6 @@ export function setButtonActive(button, variant, state) {
       .map((style) => button.classList.remove(style));
     btnStyles?.[`${variant}Outline`]
       .split(" ")
-      .map((style) => button.classList.add(style));
+      .map((/** @type {string} */ style) => button.classList.add(style));
   }
 }
