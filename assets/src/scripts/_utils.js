@@ -10,7 +10,16 @@ export const isCsv = (ext) => ext.toLowerCase() === "csv";
 export const isImg = (ext) =>
   ["gif", "jpg", "jpeg", "png", "svg"].includes(ext.toLowerCase());
 
-export const canDisplay = (ext) => isCsv(ext) || isImg(ext);
+/**
+ * Confirm if file is .txt
+ * @param {string} ext - file extension
+ * @returns {boolean}
+ */
+export function isTxt(ext) {
+  return ext.toLowerCase() === "txt";
+}
+
+export const canDisplay = (ext) => isCsv(ext) || isImg(ext) || isTxt(ext);
 
 /**
  * Capitalise the first letter of a string

@@ -2,6 +2,7 @@ import { btnStyles, setButtonActive } from "./_buttons";
 import {
   createImageElement,
   createTableElement,
+  createTextElement,
   invalidFileElement,
 } from "./_file-elements";
 import {
@@ -23,6 +24,7 @@ import {
   html,
   isCsv,
   isImg,
+  isTxt,
   toggleParentVisibility,
 } from "./_utils";
 
@@ -219,6 +221,8 @@ ${outputComments.value[outputName]}</textarea
       createTableElement(filePreviewContent, ext, url, outcome);
     } else if (isImg(ext)) {
       createImageElement(filePreviewContent, url);
+    } else if (isTxt(ext)) {
+      createTextElement(filePreviewContent, ext, url);
     } else {
       invalidFileElement(filePreviewContent);
     }
