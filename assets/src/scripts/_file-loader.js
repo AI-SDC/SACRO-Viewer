@@ -1,6 +1,12 @@
 import { canDisplay, isCsv, isTxt } from "./_utils";
 
-async function fileLoader(ext, url) {
+/**
+ * Load the contents of a file, if it can be loaded
+ * @param {string} ext - File type extension
+ * @param {string} url - URL string
+ * @returns {Promise} - return a JS promise
+ */
+export default async function fileLoader(ext, url) {
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -19,5 +25,3 @@ async function fileLoader(ext, url) {
 
   return res;
 }
-
-export default fileLoader;

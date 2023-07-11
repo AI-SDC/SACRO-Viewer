@@ -2,7 +2,7 @@ import { signal } from "@preact/signals";
 import outputs from "./_data";
 
 // Signal for the currently visible output
-export const openOutput = signal();
+export const openOutput = signal({});
 
 // Signal for output comments, initial state is an empty string
 // for each output
@@ -19,8 +19,8 @@ export const approvedOutputs = signal(
 );
 
 /**
- * @param {string} name
- * @param {string} comment
+ * @param {string} name - file name
+ * @param {string} comment - associated reviewer comment
  */
 export function setComment(name, comment) {
   outputComments.value = { ...outputComments.value, [name]: comment };
@@ -38,7 +38,7 @@ export function setReviewState(name, state) {
 }
 
 /**
- * @returns boolean | null
+ * @returns {boolean | null} - returns true if a review is completed for the file
  */
 export function isReviewComplete() {
   const allOutputsReviewed = !Object.values(approvedOutputs.value).filter(

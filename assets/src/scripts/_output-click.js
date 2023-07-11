@@ -28,6 +28,10 @@ import {
   toggleParentVisibility,
 } from "./_utils";
 
+/**
+ *
+ * @param button
+ */
 function enableButton(button) {
   if (!button.disabled) return;
 
@@ -37,6 +41,10 @@ function enableButton(button) {
   button.setAttribute("title", "");
 }
 
+/**
+ *
+ * @param button
+ */
 function disableButton(button) {
   if (button.disabled) return;
 
@@ -48,6 +56,11 @@ function disableButton(button) {
   button.setAttribute("title", "You must enter a comment first");
 }
 
+/**
+ *
+ * @param button
+ * @param enableOnEmpty
+ */
 function setButtonState(button, enableOnEmpty) {
   // we know the comment is empty here so now we only have to care about the
   // value of enableOnEmpty to drive enable/disable
@@ -58,6 +71,12 @@ function setButtonState(button, enableOnEmpty) {
   }
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.outputName
+ * @param root0.metadata
+ */
 export default async function outputClick({ outputName, metadata }) {
   // Set the file values
   openOutput.value = {

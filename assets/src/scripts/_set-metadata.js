@@ -54,6 +54,10 @@ export function setOutputType(method, type) {
   }
 }
 
+/**
+ *
+ * @param summary
+ */
 export function setAcroStatus(summary) {
   toggleParentVisibility("outputDetailsStatus", "div", "show");
 

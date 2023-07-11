@@ -1,8 +1,14 @@
 import Papa from "papaparse";
 import { html } from "./_utils";
 
-const indexOfAll = (arr, val) =>
-  arr.reduce((acc, el, i) => (el !== val ? [...acc, i] : acc), []);
+/**
+ *
+ * @param {string[]} arr
+ * @param {string} val
+ */
+function indexOfAll(arr, val) {
+  return arr.reduce((acc, el, i) => (el !== val ? [...acc, i] : acc), []);
+}
 
 /**
  *
@@ -51,6 +57,13 @@ function highlightFailingCells(columnName, columnOutcome, headings) {
   return colData;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.csvString
+ * @param root0.el
+ * @param root0.outcome
+ */
 function tableBuilder({ csvString, el, outcome }) {
   const csvToJson = Papa.parse(csvString).data;
 

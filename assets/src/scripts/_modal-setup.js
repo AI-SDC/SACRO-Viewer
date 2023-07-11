@@ -1,6 +1,9 @@
 import { effect } from "@preact/signals";
 import { approvedOutputs, isReviewComplete } from "./_signals";
 
+/**
+ *
+ */
 export default function modalSetup() {
   const button = document.querySelector("#openModalBtn");
   const modal = document.querySelector("#submitModal");

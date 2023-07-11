@@ -3,6 +3,9 @@ import outputs from "./_data";
 import outputClick from "./_output-click";
 import { approvedOutputs } from "./_signals";
 
+/**
+ *
+ */
 export default function outputList() {
   const container = document.getElementById("outputList");
   const outputListItems = [...container.querySelectorAll("li")];

@@ -1,5 +1,8 @@
 import { approvedOutputs, outputComments } from "./_signals";
 
+/**
+ *
+ */
 export default function formSetup() {
   const modal = document.querySelector("#submitModal");
   const submit = modal.querySelector(`#approveForm button[type="submit"]`);

@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 const tailwindForms = require("@tailwindcss/forms");
 
 function addCssVarColors({ addBase, theme }) {

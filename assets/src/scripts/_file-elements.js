@@ -3,10 +3,11 @@ import fileLoader from "./_file-loader";
 import tableBuilder from "./_table-builder";
 
 /**
- * @param {HTMLElement} el
- * @param {string} ext
- * @param {string} url
- * @param {object} outcome
+ * Create a table element from a link to a CSV file
+ * @param {HTMLElement} el - Append the table to this element
+ * @param {string} ext - File type extension
+ * @param {string} url - Valid URL for the file location
+ * @param {object} outcome - ACRO outcome object for the file specified
  */
 export async function createTableElement(el, ext, url, outcome) {
   const data = await fileLoader(ext, url);
@@ -21,8 +22,9 @@ export async function createTableElement(el, ext, url, outcome) {
 }
 
 /**
- * @param {HTMLElement} el
- * @param {string} url
+ * Create an image element
+ * @param {HTMLElement} el - Append the image to this element
+ * @param {string} url - Valid URL for the image location
  */
 export function createImageElement(el, url) {
   const img = document.createElement("img");
@@ -31,6 +33,7 @@ export function createImageElement(el, url) {
 }
 
 /**
+ * Create a preformatted plaintext element
  * @param {HTMLElement} el - Append the text to this element
  * @param {string} ext - File type extension
  * @param {string} url - Valid URL for the file location
@@ -46,8 +49,8 @@ export async function createTextElement(el, ext, url) {
 }
 
 /**
- *
- * @param {HTMLElement} el
+ * Display text confirming the requested file type cannot be previewed
+ * @param {HTMLElement} el - Append the text to this element
  */
 export function invalidFileElement(el) {
   el.textContent =
