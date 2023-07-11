@@ -106,6 +106,8 @@ jobs:
             sacro-app/package-lock.json
       # our just setup doesn't make just available on the path
       - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
+      - name: Download sample data
+        run: just test-outputs
       - name: Build binary
         run: just build
       - name: Build app
