@@ -1,17 +1,30 @@
-import os
+import sys
 from pathlib import Path
 
 import structlog
 
 
+def get_appdir():
+    home = Path.home()
+
+    if sys.platform == "win32":
+        return home / "AppData/Roaming"
+    if sys.platform == "linux":
+        return home / ".config"
+    if sys.platform == "darwin":
+        return home / "Library/Application Support"
+
+    return "."
+
+
 def get_log_filename():
-    filename = Path(os.getenv("APPDATA", ".")) / "SACRO" / "error.log"
+    filename = Path(get_appdir()) / "SACRO" / "error.log"
     filename.parent.mkdir(parents=True, exist_ok=True)
     return str(filename)
 
 
 def get_audit_filename():
-    filename = Path(os.getenv("APPDATA", ".")) / "SACRO" / "audit.log"
+    filename = Path(get_appdir()) / "SACRO" / "audit.log"
     filename.parent.mkdir(parents=True, exist_ok=True)
     return str(filename)
 
