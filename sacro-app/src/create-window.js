@@ -1,10 +1,10 @@
 const { session, BrowserWindow, Menu } = require("electron");
 const { dialog, shell } = require("electron");
-const fs = require("fs");
-const os = require("os");
-const path = require("path");
-const process = require("process");
-const querystring = require("querystring");
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
+const process = require("node:process");
+const querystring = require("node:querystring");
 const { mainMenu } = require("./main-menu");
 const startServer = require("./start-server");
 const { waitThenLoad } = require("./utils");
