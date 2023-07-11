@@ -321,6 +321,16 @@ acro.rename_output(last_output(), "custom_png")
 
 
 """
+5b: unsupport output type of a different format
+"""
+acro.custom_output(
+    "data/XandY.txt",
+    "This output is a text file showing the relationship between X and Y in a TXT format",
+)
+acro.rename_output(last_output(), "custom_txt")
+
+
+"""
 6 (the big one) Finalise ACRO
  This is an example of the function _finalise()_
  which the users must call at the end of each session.
