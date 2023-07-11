@@ -66,6 +66,7 @@ const createWindow = async () => {
     width: 1024,
     height: 768,
   });
+  win.loadFile("splash.html");
 
   win.on("close", () => {
     if (serverProcess !== null) serverProcess.kill();
