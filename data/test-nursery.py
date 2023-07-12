@@ -321,7 +321,7 @@ acro.rename_output(last_output(), "custom_png")
 
 
 """
-5b: unsupport output type of a different format
+5b: add a custom text file
 """
 acro.custom_output(
     "data/XandY.txt",
@@ -341,7 +341,17 @@ acro.rename_output(last_output(), "custom_csv")
 
 
 """
-7 (the big one) Finalise ACRO
+5d add a custom JSON file
+"""
+acro.custom_output(
+    "data/XandY.json",
+    "This output is a table showing the relationship between X and Y in a JSON format",
+)
+acro.rename_output(last_output(), "custom_json")
+
+
+"""
+6 (the big one) Finalise ACRO
  This is an example of the function _finalise()_
  which the users must call at the end of each session.
  - It takes each output and saves it to a CSV file.
