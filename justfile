@@ -212,5 +212,5 @@ test-outputs: test-data devenv
     #!/usr/bin/env bash
     if test outputs/results.json -nt data/test-nursery.py; then exit 0; fi
     # ACRO is additive by default, so delete before regenerating
-    rm -f outputs/*
+    rm -rf outputs/*
     $BIN/python data/test-nursery.py

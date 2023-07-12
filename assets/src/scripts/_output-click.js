@@ -203,7 +203,9 @@ ${outputComments.value[outputName]}</textarea
   // only attempt to render outcome cells if there is a single output file
   const outcome = filesCount === 1 ? openOutput.value.metadata.outcome : {};
 
-  Object.entries(openOutput.value.metadata.files).map(([path, url], i) => {
+  Object.entries(openOutput.value.metadata.files).map(([i, filedata]) => {
+    const path = filedata.name;
+    const { url } = filedata;
     const ext = getFileExt(path);
     const newFilesContainer =
       filePreviewTemplate.content.firstElementChild.cloneNode(true);

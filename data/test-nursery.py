@@ -116,6 +116,7 @@ safe_table = acro.crosstab(df.recommend, df.parents)
 acro.rename_output(last_output(), "crosstab_fail")
 acro.add_comments(last_output(), "Please let me have this table!")
 acro.add_comments(last_output(), "6 cells were suppressed in this table")
+acro.add_exception(last_output(), "Except me")
 print("\nand this is the researchers output")
 print(safe_table)
 
@@ -129,6 +130,7 @@ print(
 )
 safe_table = acro.crosstab(df.recommend, df.parents, values=df.children, aggfunc="mean")
 acro.rename_output(last_output(), "crosstab_fail_2")
+acro.add_exception(last_output(), "Except me")
 print("\nand this is the researchers output")
 print(safe_table)
 
@@ -308,6 +310,7 @@ acro.custom_output(
     "This output is an image showing the relationship between X and Y",
 )
 acro.rename_output(last_output(), "custom_jfif")
+acro.add_exception(last_output(), "Except me")
 
 
 """
@@ -318,6 +321,7 @@ acro.custom_output(
     "This output is an image showing the relationship between X and Y in a PNG format",
 )
 acro.rename_output(last_output(), "custom_png")
+acro.add_exception(last_output(), "Except me")
 
 
 """
@@ -328,6 +332,7 @@ acro.custom_output(
     "This output is a text file showing the relationship between X and Y in a TXT format",
 )
 acro.rename_output(last_output(), "custom_txt")
+acro.add_exception(last_output(), "Except me")
 
 
 """
@@ -338,6 +343,7 @@ acro.custom_output(
     "This output is a table showing the relationship between X and Y in a CSV format",
 )
 acro.rename_output(last_output(), "custom_csv")
+acro.add_exception(last_output(), "Except me")
 
 
 """
@@ -348,6 +354,7 @@ acro.custom_output(
     "This output is a table showing the relationship between X and Y in a JSON format",
 )
 acro.rename_output(last_output(), "custom_json")
+acro.add_exception(last_output(), "Except me")
 
 
 """
