@@ -8,6 +8,7 @@ components:
   icon_breadcrumb_arrow: "icons/breadcrumb-arrow.svg"
   icon_check: "icons/check.svg"
   icon_document_outline: "icons/document-outline.svg"
+  icon_exclamation_triangle: "icons/exclamation-triangle.svg"
   icon_file: "icons/file.svg"
   icon_file_unknown: "icons/file-unknown.svg"
   icon_file_x: "icons/file-x.svg"

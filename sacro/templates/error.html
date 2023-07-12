@@ -1,0 +1,33 @@
+{% load django_vite %}
+
+<!DOCTYPE html>
+<html lang="en" class="min-h-screen">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SACRO Outputs Viewer</title>
+
+    {% vite_hmr_client %}
+    {% vite_asset "assets/src/scripts/base.js" %}
+    {% vite_asset "assets/src/scripts/error.js" %}
+  </head>
+
+  <body class="grid h-screen">
+    <div class="row-start-2 grid">
+      <div class="col-start-2 flex flex-col gap-3 text-center w-screen">
+        <div class="flex justify-center">
+          {% icon_exclamation_triangle class="h-32 w-32 stroke-slate-700" %}
+        </div>
+
+        <p class="break-normal">
+          The application encourtered a problem. Please restart the application and try
+          again. If this problem continues please contact support.
+        </p>
+
+        <p class="break-words">{{ message }}</p>
+      </div>
+    </div>
+
+  </body>
+</html>

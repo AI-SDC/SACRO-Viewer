@@ -1,0 +1,9 @@
+body {
+  grid-template-rows: 1fr max-content 1fr;
+  grid-template-columns: 1fr;
+}
+
+body > div {
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr min-content 1fr;
+}
