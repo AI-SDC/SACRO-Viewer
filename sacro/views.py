@@ -1,4 +1,5 @@
 import getpass
+import html
 import json
 import logging
 from dataclasses import dataclass, field
@@ -166,13 +167,13 @@ def approved_outputs(request, pk):
 
 @require_POST
 def review_create(request):
-    if not (comment := request.POST.get("comment")):
+    if not (comment := html.unescape(request.POST.get("comment", ""))):
         return HttpResponseBadRequest("no comment data submitted")
 
-    if not (raw_review := request.POST.get("review")):
+    if not (raw_review := html.unescape(request.POST.get("review", ""))):
         return HttpResponseBadRequest("no review data submitted")
 
-    review = json.loads(raw_review)
+    review = json.loads(html.unescape(raw_review))
 
     # we load the path from the querystring, even though this is a post request
     # check the reviewed outputs are valid
