@@ -134,9 +134,15 @@ def contents(request):
         raise Http404
 
     try:
-        return FileResponse(open(file_path, "rb"))
+        response = FileResponse(
+            open(file_path, "rb"), as_attachment=True, filename=filename
+        )
     except FileNotFoundError:  # pragma: no cover
         raise Http404
+
+    # enable electron opening this file with native app
+    response["Content-Disposition"] += "; native=true"
+    return response
 
 
 @require_POST
