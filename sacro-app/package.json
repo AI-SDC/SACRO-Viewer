@@ -30,7 +30,8 @@
     },
     "linux": {
       "target": "deb",
-      "category": "Science"
+      "category": "Science",
+      "icon": "build/icon.icns"
     },
     "extraResources": [
       {
