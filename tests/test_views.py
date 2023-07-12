@@ -50,26 +50,24 @@ def test_index_no_path_no_debug():
 
 def test_contents_success(test_outputs):
     for metadata in test_outputs.values():
-        for path, url in metadata["files"].items():
-            actual_file = test_outputs.path.parent / path
-            request = RequestFactory().get(path=url)
+        for filedata in metadata["files"]:
+            actual_file = test_outputs.path.parent / filedata["name"]
+            request = RequestFactory().get(path=filedata["url"])
             response = views.contents(request)
             assert response.getvalue() == Path(actual_file).read_bytes()
 
 
 def test_contents_absolute(test_outputs):
     # convert to absolute file paths
-    for value in test_outputs.raw_metadata.values():
-        for output in value["output"]:
-            value["output"] = [
-                str(test_outputs.path.parent / output) for output in value["output"]
-            ]
+    for value in test_outputs.raw_metadata["results"].values():
+        for filedata in value["files"]:
+            filedata["name"] = str(test_outputs.path.parent / filedata["name"])
     test_outputs.write()
 
     for metadata in test_outputs.values():
-        for path, url in metadata["files"].items():
-            actual_file = test_outputs.path.parent / path
-            request = RequestFactory().get(path=url)
+        for filedata in metadata["files"]:
+            actual_file = test_outputs.path.parent / filedata["name"]
+            request = RequestFactory().get(path=filedata["url"])
             response = views.contents(request)
             assert response.getvalue() == Path(actual_file).read_bytes()
 
@@ -99,7 +97,14 @@ def review_summary(review_data, test_outputs):
 
 def test_approved_outputs_missing_metadata(tmp_path, monkeypatch):
     path = tmp_path / "results.json"
-    path.write_text(json.dumps({"test": {"output": ["does-not-exist"]}}))
+    path.write_text(
+        json.dumps(
+            {
+                "version": "test",
+                "results": {"test": {"files": [{"name": "does-not-exist"}]}},
+            }
+        )
+    )
 
     review_data = {"decisions": {"test": {"state": True}}, "path": path}
     monkeypatch.setattr(views, "REVIEWS", {"current": review_data})
@@ -135,7 +140,8 @@ def test_approved_outputs_success_all_files(test_outputs, review_summary):
     with zipfile.ZipFile(zf, "r") as zip_obj:
         assert zip_obj.testzip() is None
         for output, metadata in test_outputs.items():
-            for filename in metadata["files"]:
+            for filedata in metadata["files"]:
+                filename = filedata["name"]
                 expected_namelist.append(filename)
                 zip_path = Path(filename).name
                 actual_path = test_outputs.get_file_path(output, filename)

@@ -1,7 +1,7 @@
 import getpass
 import json
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urlencode
 
@@ -13,7 +13,6 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
 
-from sacro import transform
 from sacro.adapters import local_audit, zipfile
 
 
@@ -33,36 +32,44 @@ class Outputs(dict):
     """An ACRO json output file"""
 
     path: Path
+    version: str = None
+    config: dict = field(default_factory=dict)
 
     def __post_init__(self):
         self.raw_metadata = json.loads(self.path.read_text())
-        self.update(transform.transform_acro_metadata(self.raw_metadata))
+        config_path = self.path.parent / "config.json"
+        if config_path.exists():
+            self.config = json.loads(config_path.read_text())
+
+        self.version = self.raw_metadata["version"]
+        self.update(self.raw_metadata["results"])
+
         # add urls to JSON data
-        for name, metadata in self.items():
-            files = {}
-            for filepath in metadata["output"]:
-                {"path": str(self.path), "name": name}
-                files[filepath] = reverse_with_params(
+        for output, metadata in self.items():
+            for filedata in metadata["files"]:
+                filedata["url"] = reverse_with_params(
                     {
                         "path": str(self.path),
-                        "output": name,
-                        "filename": filepath,
+                        "output": output,
+                        "filename": filedata["name"],
                     },
                     "contents",
                 )
-            metadata["files"] = files
 
     def get_file_path(self, output, filename):
         """Return absolute path to output file"""
-        if filename not in self[output]["files"]:  # pragma: nocover
+        if filename not in {
+            f["name"] for f in self[output]["files"]
+        }:  # pragma: nocover
             return None
-        # note: if path is absolute, this will just return path
+        # note: if filename is absolute, this will just return filename
         return self.path.parent / filename
 
     def write(self):
         """Useful testing helper"""
         self.path.write_text(json.dumps(self.raw_metadata, indent=2))
         self.clear()
+        self.version = None
         self.__post_init__()
 
 
@@ -96,6 +103,8 @@ def index(request):
         "index.html",
         context={
             "outputs": dict(outputs),
+            "config": outputs.config,
+            "version": outputs.version,
             "create_url": create_url,
         },
     )
@@ -136,13 +145,8 @@ def approved_outputs(request, pk):
         raise Http404
 
     outputs = Outputs(review["path"])
-    approved_outputs = [k for k, v in review["decisions"].items() if v["state"]]
 
-    approved_outputs = {
-        k: outputs[k]["files"]
-        for k, v in review["decisions"].items()
-        if v["state"] is True
-    }
+    approved_outputs = [k for k, v in review["decisions"].items() if v["state"] is True]
     in_memory_zf = zipfile.create(outputs, approved_outputs)
 
     # use the directory name as the files might all just be results.json
