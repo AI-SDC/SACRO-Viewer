@@ -12,6 +12,7 @@ import {
   setOutputTitle,
   setOutputType,
   setResearcherComments,
+  setExceptionRequest,
 } from "./_set-metadata";
 import {
   approvedOutputs,
@@ -75,6 +76,10 @@ export default async function outputClick({ outputName, metadata }) {
   );
   setAcroStatus(openOutput.value.metadata.summary);
   setResearcherComments(openOutput.value.metadata.comments);
+  setExceptionRequest(
+    openOutput.value.metadata.exception,
+    openOutput.value.metadata.status
+  );
 
   /**
    * Set up the review form
