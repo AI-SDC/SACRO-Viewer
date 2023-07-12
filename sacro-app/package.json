@@ -1,10 +1,10 @@
 {
   "name": "@opensafely/sacro",
-  "productName": "SACRO",
+  "productName": "sacro",
   "version": "0.1.0",
   "main": "main.js",
   "description": "SACRO Output Viewer",
-  "author": "OpenSAFELY",
+  "author": "OpenSAFELY <tech@opensafely.org>",
   "homepage": "https://github.com/opensafely-core/sacro",
   "scripts": {
     "dev": "electron . --no-sandbox",
@@ -29,8 +29,9 @@
       ]
     },
     "linux": {
-      "target": "AppImage",
-      "category": "Science"
+      "target": "deb",
+      "category": "Science",
+      "icon": "build/icon.icns"
     },
     "extraResources": [
       {
