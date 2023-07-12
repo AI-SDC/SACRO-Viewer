@@ -24,21 +24,23 @@ const createWindow = async () => {
   console.log(`Using ${serverUrl} as backend`);
 
   // handle downloads
-  session.defaultSession.on("will-download", (event, item) => {
-    const [dispositionType] = item.getContentDisposition().split(";", 1);
-    // our output/feedback downloads, leave them alone.
-    if (dispositionType === "attachment") {
+  session.defaultSession.on("will-download", (_, item) => {
+    // note: the DownloadItem API does not give us access to arbitrary request headers.
+    // so we add an additional field onto the Content-Disposition to trigger the native open behaviour
+    const splitDisposition = item.getContentDisposition().split(";");
+    if (splitDisposition.at(-1).trim() !== "native=true") {
+      // normal download (i.e. pop a save dialog)
       return;
     }
 
-    // inline download, we want to download and open in native application
+    // native open allowed, download and open in native application
 
     // create download dir if needed
     if (TEMPDIR === null) {
       try {
         TEMPDIR = fs.mkdtempSync(path.join(os.tmpdir(), "sacro-"));
+        // TODO clean up tmpdir on exit?
       } catch (err) {
-        // TODO clean up on exit
         // Note: this means if we fail to create the TMPDIR, we'll default to downloading the file normally.
         console.error(err);
         return;
@@ -48,12 +50,14 @@ const createWindow = async () => {
     const tmpPath = path.join(TEMPDIR, item.getFilename());
     item.setSavePath(tmpPath);
 
-    item.once("done", (_, state) => {
+    item.once("done", (__, state) => {
       if (state === "completed") {
         // open in native application for this file type
         shell.openPath(tmpPath);
       } else {
-        console.error(`Download of ${item.getURL()} failed: ${state}`);
+        console.error(
+          `Download of ${item.getFilename()} from ${item.getURL()} failed: ${state}`
+        );
       }
     });
   });
