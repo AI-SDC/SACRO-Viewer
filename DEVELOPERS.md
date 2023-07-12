@@ -93,7 +93,7 @@ electron app pointing at that by setting the SACRO_URL env var.
 
 ```
 just run &
-export SACRO_URL=http://localhost:8000
+export SACRO_URL=http://127.0.0.1:8000
 just sacro-app/run
 ```
 
