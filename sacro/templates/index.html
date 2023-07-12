@@ -15,6 +15,7 @@
     {% /button %}
   {% /header %}
 
+
   <aside class="overflow-y-auto bg-white border-r border-zinc-200 py-2">
     <h2 id="outputListHeader" class="sr-only">Output list</h2>
     <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of outputs" id="outputList" data-sacro-el="outputList">
@@ -91,6 +92,13 @@
 
   <main class="container overflow-y-scroll">
     {{ outputs|json_script:"outputData" }}
+
+    <details id="profile">
+      <summary>These results were generated with the following <acronym title="Automated Checking of Research Outputs">ACRO</acronym> risk profile</summary>
+      {% for k, v in config.items %}
+      <dt>{{ k }}</dt><dd>{{ v }}</dd>
+      {% endfor %}
+    </details>
 
     <div class="grid gap-y-4">
       <div class="overflow-hidden bg-white shadow">

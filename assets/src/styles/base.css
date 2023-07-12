@@ -5,3 +5,11 @@
 body > header {
   grid-column: 1 / -1;
 }
+
+details summary {
+  cursor: pointer;
+}
+
+details summary > * {
+  display: inline;
+}
