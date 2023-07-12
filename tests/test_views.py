@@ -83,13 +83,16 @@ def test_contents_not_in_outputs(test_outputs):
 
 @pytest.fixture
 def review_data(test_outputs):
-    return {k: {"state": False, "comments": "comment"} for k in test_outputs.keys()}
+    return {
+        k: {"state": False, "comment": "comment with ' and 😀"}
+        for k in test_outputs.keys()
+    }
 
 
 @pytest.fixture
 def review_summary(review_data, test_outputs):
     return {
-        "comment": "test comment",
+        "comment": "test comment with &",
         "decisions": review_data,
         "path": test_outputs.path,
     }
@@ -193,7 +196,7 @@ def test_review_create_no_review_data(test_outputs):
     assert b"no review data submitted" in response.content
 
 
-def test_review_create_success(test_outputs, review_data, monkeypatch):
+def test_review_create_success(test_outputs, review_data):
     path = urlencode({"path": test_outputs.path})
     request = RequestFactory().post(
         f"/?{path}", data={"comment": "test", "review": json.dumps(review_data)}
@@ -208,6 +211,24 @@ def test_review_create_success(test_outputs, review_data, monkeypatch):
         "decisions": review_data,
         "path": test_outputs.path,
     }
+    # check comments
+    review = views.REVIEWS["current"]["decisions"]
+    first = list(review)[0]
+    assert review[first]["comment"] == "comment with ' and 😀"
+
+
+def test_review_create_html_entities(test_outputs, review_data):
+    path = urlencode({"path": test_outputs.path})
+    # just use the first comment of the test data to test
+    first = list(review_data)[0]
+    review_data[first]["comment"] = "&amp;"
+    request = RequestFactory().post(
+        f"/?{path}", data={"comment": "test", "review": json.dumps(review_data)}
+    )
+
+    views.review_create(request)
+
+    assert views.REVIEWS["current"]["decisions"][first]["comment"] == "&"
 
 
 def test_review_create_unrecognized_files(test_outputs):
@@ -255,8 +276,9 @@ def test_summary_success(review_summary, monkeypatch):
 
     content = response.getvalue().decode("utf-8")
     assert review_summary["comment"] in content
-    for name in review_summary["decisions"].keys():
+    for name, value in review_summary["decisions"].items():
         assert name in content
+        assert value["comment"] in content
 
 
 def test_summary_unknown_review(review_summary, monkeypatch):
