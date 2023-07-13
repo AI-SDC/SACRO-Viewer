@@ -1,4 +1,5 @@
 import getpass
+import hashlib
 import html
 import json
 import logging
@@ -44,6 +45,10 @@ class Outputs(dict):
 
         self.version = self.raw_metadata["version"]
         self.update(self.raw_metadata["results"])
+        self.annotate()
+
+    def annotate(self):
+        """Add various useful annotations to the JSON data"""
 
         # add urls to JSON data
         for output, metadata in self.items():
@@ -56,6 +61,26 @@ class Outputs(dict):
                     },
                     "contents",
                 )
+
+        # add and check checksum data
+        checksums_dir = self.path.parent / "checksums"
+        for output, metadata in self.items():
+            for filedata in metadata["files"]:
+                filedata["checksum_valid"] = False
+                filedata["checksum"] = None
+
+                path = checksums_dir / (filedata["name"] + ".txt")
+                if not path.exists():
+                    continue
+
+                filedata["checksum"] = path.read_text(encoding="utf8")
+                actual_file = self.get_file_path(output, filedata["name"])
+
+                if not actual_file.exists():  # pragma: nocover
+                    continue
+
+                checksum = hashlib.sha256(actual_file.read_bytes()).hexdigest()
+                filedata["checksum_valid"] = checksum == filedata["checksum"]
 
     def get_file_path(self, output, filename):
         """Return absolute path to output file"""

@@ -22,6 +22,28 @@ def test_outputs(tmp_path):
     return views.Outputs(tmp_path / TEST_PATH.name)
 
 
+def test_outputs_annotation(test_outputs):
+    assert test_outputs.version == "0.4.0"
+    for metadata in test_outputs.values():
+        for filedata in metadata["files"]:
+            assert filedata["checksum"] is not None
+            assert filedata["checksum_valid"] is True
+            assert filedata["url"].startswith("/contents/?path=")
+
+
+def test_outputs_annotation_checksum_failed(test_outputs):
+    first_output = list(test_outputs)[0]
+    first_file = test_outputs[first_output]["files"][0]["name"]
+    checksum = test_outputs.path.parent / "checksums" / (first_file + ".txt")
+    checksum.write_text("bad checksum")
+
+    # re-annotate
+    test_outputs.annotate()
+
+    assert test_outputs[first_output]["files"][0]["checksum"] == "bad checksum"
+    assert test_outputs[first_output]["files"][0]["checksum_valid"] is False
+
+
 def test_index(test_outputs):
     request = RequestFactory().get(path="/", data={"path": str(test_outputs.path)})
 
