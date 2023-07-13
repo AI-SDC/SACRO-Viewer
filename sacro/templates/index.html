@@ -93,11 +93,31 @@
   <main class="container overflow-y-scroll">
     {{ outputs|json_script:"outputData" }}
 
-    <details id="profile">
-      <summary>These results were generated with the following <acronym title="Automated Checking of Research Outputs">ACRO</acronym> risk profile</summary>
-      {% for k, v in config.items %}
-      <dt>{{ k }}</dt><dd>{{ v }}</dd>
-      {% endfor %}
+    <details class="overflow-hidden bg-white shadow mb-3" id="riskProfile" open>
+      <summary class="pl-4 pr-2 py-2">
+        <h3 class="ml-1 text-base font-medium leading-7 text-gray-900">
+          ACRO risk profile
+        </h3>
+      </summary>
+      <p class="text-sm px-6 pb-2">
+        These results were generated with the following
+        <abbr title="Automated Checking of Research Outputs">ACRO</abbr>
+        risk profile:
+      </p>
+      <div class="border-t border-gray-100 pb-1">
+        <dl class="divide-y divide-gray-100">
+          {% for k, v in config.items %}
+          <div class="grid grid-cols-3 gap-4 px-6 py-2 leading-none text-sm">
+            <dt class="font-medium text-gray-900 break-words">
+              {{ k }}
+            </dt>
+            <dd class="text-gray-700 col-span-2">
+              {{ v }}
+            </dd>
+          </div>
+          {% endfor %}
+        </dl>
+      </div>
     </details>
 
     <div class="grid gap-y-4">
