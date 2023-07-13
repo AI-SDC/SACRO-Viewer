@@ -16,6 +16,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
 
 from sacro.adapters import local_audit, zipfile
+from sacro.versioning import check_version
 
 
 logger = logging.getLogger(__name__)
@@ -110,7 +111,11 @@ def get_outputs(data):
     if not path.exists():  # pragma: no cover
         raise Http404
 
-    return Outputs(path)
+    outputs = Outputs(path)
+
+    check_version(outputs.version)
+
+    return outputs
 
 
 @require_GET
