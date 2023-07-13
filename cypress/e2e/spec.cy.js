@@ -7,10 +7,10 @@ describe("Approve all files, view summary page, and download approved outputs", 
     cy.get("[data-sacro-el='outputList'] li").each(($el) => {
       cy.wrap($el).click();
 
-      cy.get("[data-sacro-el='outputDetailsTextareaComments']").type(
+      cy.get("[data-sacro-el='output-details-review-comment']").type(
         "This is a comment"
       );
-      cy.get("[data-sacro-el='outputDetailsBtnApprove']").click();
+      cy.get("[data-sacro-el='output-details-review-approve']").click();
     });
 
     // open the modal, comment, and submit the form

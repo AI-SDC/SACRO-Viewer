@@ -1,5 +1,6 @@
 import htm from "htm";
 import vhtml from "vhtml";
+import { outputComments } from "./_signals";
 
 export const html = htm.bind(vhtml);
 
@@ -108,4 +109,13 @@ export function formatDate(date) {
     hour: "numeric",
     minute: "numeric",
   });
+}
+
+/**
+ * Given an output name, find out if the user has entered a comment
+ * @param {string} outputName - output name
+ * @returns {boolean} - comment status
+ */
+export function hasComment(outputName) {
+  return outputComments.value[outputName].trim() !== "";
 }
