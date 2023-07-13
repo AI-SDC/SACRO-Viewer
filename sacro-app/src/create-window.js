@@ -66,6 +66,7 @@ const createWindow = async () => {
     width: 1024,
     height: 768,
   });
+  win.loadFile("splash.html");
 
   win.on("close", () => {
     if (serverProcess !== null) serverProcess.kill();
@@ -85,11 +86,16 @@ const createWindow = async () => {
     const qs = querystring.stringify({ path: result.filePaths[0] });
     const url = `${serverUrl}?${qs}`;
 
-    if (serverProcess === null) {
-      win.loadURL(url);
-    } else {
-      waitThenLoad(url, 4000, win);
-    }
+    const timeout = serverProcess === null ? 0 : 4000;
+    waitThenLoad(url, timeout)
+      .then(() => {
+        // load the server now we know it's serving
+        win.loadURL(url);
+      })
+      .catch(() => {
+        // show the error screen on failure
+        win.loadFile("error.html");
+      });
   }
 
   if (process.env.DEBUG) {
