@@ -13,21 +13,23 @@
     {% vite_asset "assets/src/scripts/error.js" %}
   </head>
 
-  <body class="grid h-screen">
-    <div class="row-start-2 grid">
-      <div class="col-start-2 flex flex-col gap-3 text-center w-screen">
-        <div class="flex justify-center">
-          {% icon_exclamation_triangle class="h-32 w-32 stroke-slate-700" %}
-        </div>
-
-        <p class="break-normal">
-          The application encourtered a problem. Please restart the application and try
-          again. If this problem continues please contact support.
-        </p>
-
-        <p class="break-words">{{ message }}</p>
+  <body class="min-h-screen bg-zinc-100 flex flex-col items-center justify-center text-center">
+    <main class="flex flex-col gap-y-4 bg-white items-center w-[65ch] text-lg p-6 shadow -mt-16">
+      <div class="bg-yellow-50 border-2 border-yellow-400 inline-flex rounded-full p-4">
+        {% icon_exclamation_triangle class="h-16 w-16 stroke-yellow-600" %}
       </div>
-    </div>
-
+      <h1 class="text-3xl font-bold leading-tight tracking-tight">
+        The application encountered a problem
+      </h1>
+      <div class="flex flex-col gap-y-4 text-lg">
+        <p>
+          Please restart the application and try again.<br />
+          If this problem continues please contact support.
+        </p>
+        <p class="break-words">
+          {{ message }}
+        </p>
+      </div>
+    </main>
   </body>
 </html>
