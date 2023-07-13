@@ -111,3 +111,19 @@ export function setResearcherComments(comments) {
     toggleParentVisibility("outputDetailsComments", "div", "hide");
   }
 }
+
+/**
+ * Show the exception request for outputs that don't pass an acro check.
+ *
+ * @param {string} comment
+ * @param {string} status
+ */
+export function setExceptionRequest(comment, status) {
+  if (status === "pass") {
+    toggleParentVisibility("outputExceptionRequest", "div", "hide");
+    setElementHTML("outputExceptionRequest", ``);
+  } else {
+    toggleParentVisibility("outputExceptionRequest", "div", "show");
+    setElementHTML("outputExceptionRequest", comment);
+  }
+}
