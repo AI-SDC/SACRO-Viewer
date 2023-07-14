@@ -9,6 +9,7 @@ import setFormState from "./_form-state";
 import {
   setAcroStatus,
   setCreatedAtDate,
+  setExceptionRequest,
   setOutputTitle,
   setOutputType,
   setResearcherComments,
@@ -31,6 +32,10 @@ export default async function outputClick({ outputName, metadata }) {
   );
   setAcroStatus(openOutput.value.metadata.summary);
   setResearcherComments(openOutput.value.metadata.comments);
+  setExceptionRequest(
+    openOutput.value.metadata.exception,
+    openOutput.value.metadata.status
+  );
   setFormState(openOutput.value.outputName);
 
   // Clear existing content
