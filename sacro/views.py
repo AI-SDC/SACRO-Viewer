@@ -3,6 +3,7 @@ import hashlib
 import html
 import json
 import logging
+from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urlencode
@@ -63,10 +64,11 @@ class Outputs(dict):
                     "contents",
                 )
 
-        # add and check checksum data
+        # add and check checksum data, and transform cell data to more useful format
         checksums_dir = self.path.parent / "checksums"
         for output, metadata in self.items():
             for filedata in metadata["files"]:
+                # checksums
                 filedata["checksum_valid"] = False
                 filedata["checksum"] = None
 
@@ -82,6 +84,17 @@ class Outputs(dict):
 
                 checksum = hashlib.sha256(actual_file.read_bytes()).hexdigest()
                 filedata["checksum_valid"] = checksum == filedata["checksum"]
+
+                # cells
+                cells = filedata.get("sdc", {}).get("cells", {})
+                cell_index = defaultdict(list)
+
+                for flag, indicies in cells.items():
+                    for x, y in indicies:
+                        key = f"{x},{y}"
+                        cell_index[key].append(flag)
+
+                filedata["cell_index"] = cell_index
 
     def get_file_path(self, output, filename):
         """Return absolute path to output file"""
