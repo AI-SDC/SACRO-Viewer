@@ -150,7 +150,6 @@ export default function setFormState(outputName) {
   reviewComment.addEventListener(
     "keyup",
     /** @param {KeyboardEvent} e */ (e) => {
-      console.log({ e });
       const target = /** @type {HTMLTextAreaElement} */ (e.target); // eslint-disable-line prefer-destructuring
       setComment(outputName, target.value);
 
