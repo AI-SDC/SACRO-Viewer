@@ -1,6 +1,5 @@
 import io
 import json
-import shutil
 import zipfile
 from pathlib import Path
 from urllib.parse import urlencode
@@ -11,15 +10,6 @@ from django.test import RequestFactory, override_settings
 from django.urls import reverse
 
 from sacro import views
-
-
-TEST_PATH = Path("outputs/results.json")
-
-
-@pytest.fixture
-def test_outputs(tmp_path):
-    shutil.copytree(TEST_PATH.parent, tmp_path, dirs_exist_ok=True)
-    return views.Outputs(tmp_path / TEST_PATH.name)
 
 
 def test_outputs_annotation(test_outputs):
@@ -56,7 +46,7 @@ def test_index(test_outputs):
 
 
 @override_settings(DEBUG=True)
-def test_index_no_path():
+def test_index_no_path(TEST_PATH):
     request = RequestFactory().get(path="/")
 
     response = views.index(request)

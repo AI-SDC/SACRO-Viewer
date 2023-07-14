@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "sacro.middleware.AppTokenMiddleware",
+    "sacro.middleware.ErrorHandlerMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -171,3 +172,7 @@ DJANGO_VITE_MANIFEST_PATH = STATIC_ROOT / "manifest.json"
 
 # Insert Whitenoise Middleware.
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+
+# PROJECT SETTINGS
+ACRO_SUPPORTED_VERSION = "0.4.x"
