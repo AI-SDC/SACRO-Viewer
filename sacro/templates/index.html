@@ -151,6 +151,12 @@
                 </ul>
               </dd>
             </div>
+            <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+              <dt class="text-sm font-medium text-gray-900">Exception request</dt>
+              <dd class="text-sm leading-6 text-gray-700 col-span-3">
+                <span data-sacro-el="outputExceptionRequest"></span>
+              </dd>
+            </div>
           </dl>
           <div id="reviewForm"></div>
           <template data-sacro-el="output-details-review-form">
@@ -161,7 +167,7 @@
                   <legend class="sr-only">
                     <h3>Select a review status</h3>
                   </legend>
-                  <div class="text-sm text-red-700 mb-2" id="reviewStatusHint" data-sacro-el="output-details-review-hint"></div>
+                  <div class="text-sm font-medium text-slate-700 mb-2" id="reviewStatusHint" data-sacro-el="output-details-review-hint"></div>
                   <div class="flex flex-row">
                     <label for="approveRadio" class="cursor-pointer">
                       <input
@@ -211,7 +217,7 @@
                 </fieldset>
 
                 <label
-                  class="mt-2 inline-block font-semibold text-slate-900 cursor-pointer"
+                  class="mt-3 inline-block font-semibold text-slate-900 cursor-pointer"
                   data-sacro-el="output-details-review-comment-label"
                   for="comments"
                 ></label>
@@ -244,6 +250,7 @@
               Open file
             {% /button %}
           </div>
+          <p data-sacro-el="file-preview-template-checksum" class="relative z-10 -mb-[1px] px-4 py-2 text-sm font-semibold text-red-700 text-center bg-red-50 border-x-4 border-red-700"></p>
           <div data-sacro-el="file-preview-template-content" class="px-4 py-3 md:px-6 border-t border-slate-200 md:py-5"></div>
         </section>
       </template>

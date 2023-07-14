@@ -8,7 +8,9 @@ import {
 import setFormState from "./_form-state";
 import {
   setAcroStatus,
+  setChecksumInfo,
   setCreatedAtDate,
+  setExceptionRequest,
   setOutputTitle,
   setOutputType,
   setResearcherComments,
@@ -31,6 +33,10 @@ export default async function outputClick({ outputName, metadata }) {
   );
   setAcroStatus(openOutput.value.metadata.summary);
   setResearcherComments(openOutput.value.metadata.comments);
+  setExceptionRequest(
+    openOutput.value.metadata.exception,
+    openOutput.value.metadata.status
+  );
   setFormState(openOutput.value.outputName);
 
   // Clear existing content
@@ -61,9 +67,14 @@ export default async function outputClick({ outputName, metadata }) {
     const filePreviewLink = newFilesContainer.querySelector(
       `[data-sacro-el="file-preview-template-link"]`
     );
+    const filePreviewChecksum = newFilesContainer.querySelector(
+      `[data-sacro-el="file-preview-template-checksum"]`
+    );
     const filePreviewContent = newFilesContainer.querySelector(
       `[data-sacro-el="file-preview-template-content"]`
     );
+
+    setChecksumInfo(filePreviewChecksum, filedata.checksum_valid);
 
     filePreviewTitle.innerText = path;
     filePreviewLink.setAttribute("href", url);

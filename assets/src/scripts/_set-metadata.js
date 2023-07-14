@@ -127,3 +127,18 @@ export function setExceptionRequest(comment, status) {
     setElementHTML("outputExceptionRequest", comment);
   }
 }
+
+/**
+ * If the checksum is invalid, show a message to the user
+ * @param {HTMLElement} el - Append the text to this element
+ * @param {boolean} checksumValid - true/false if the checksum is valid
+ */
+export function setChecksumInfo(el, checksumValid) {
+  if (!checksumValid) {
+    // eslint-disable-next-line no-param-reassign
+    el.innerText =
+      "This file had been modified since the ACRO runner generated it.";
+  } else {
+    el.remove();
+  }
+}
