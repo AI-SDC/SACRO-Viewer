@@ -10,7 +10,7 @@
     "lint": "eslint \"./assets/src/scripts\" \"./sacro-app\" \"./cypress\" \"./*.{cjs,js}\"",
     "lint:fix": "npm run lint -- --fix",
     "cypress:open": "cypress open --e2e",
-    "cypress:run": "cypress run --spec 'cypress/e2e/spec.cy.js'"
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@preact/signals": "^1.1.3",
@@ -21,6 +21,7 @@
     "vite": "^4.3.9"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^9.0.0",
     "autoprefixer": "^10.4.14",
     "cypress": "^12.16.0",
     "eslint": "^8.42.0",
