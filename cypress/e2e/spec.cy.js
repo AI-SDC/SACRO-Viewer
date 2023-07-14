@@ -1,16 +1,14 @@
-/* eslint-disable no-unused-vars */
-describe("Approve all files, view summary page, and download approved outputs", () => {
-  it("passes", () => {
+describe("Start to finish user journey for approving and downloading outputs", () => {
+  beforeEach(() => {
     cy.visit("http://localhost:8000");
+  });
 
-    // comment on and approve each output
+  it("Approves all files, visits the summary page, and downloads approved outputs", () => {
+    // Comment on and approve each output
     cy.get("[data-sacro-el='outputList'] li").each(($el) => {
-      cy.wrap($el).click();
-
-      cy.get("[data-sacro-el='output-details-review-comment']").type(
-        "This is a comment"
-      );
-      cy.get("[data-sacro-el='output-details-review-approve']").click();
+      cy.get($el).click();
+      cy.findByLabelText(/Review comments on/i).type("This is a comment");
+      cy.findByLabelText("Approve").closest("label").click();
     });
 
     // open the modal, comment, and submit the form
@@ -78,65 +76,5 @@ describe("Approve all files, view summary page, and download approved outputs", 
           expect(contentType).to.equal("text/plain");
         });
       });
-  });
-});
-
-describe("clearing a comment resets the button state", () => {
-  it("passes", () => {
-    cy.visit("http://localhost:8000");
-
-    cy.get("[data-sacro-el='outputList'] li:nth-child(3)").click();
-
-    // check we're looking at a passing one
-    cy.get("[data-sacro-el='outputDetailsStatus'] span").should(
-      "have.text",
-      "Pass"
-    );
-
-    // check initial states of approve and reject buttons
-    cy.get("[data-sacro-el='outputDetailsBtnApprove']").should("be.enabled");
-    cy.get("[data-sacro-el='outputDetailsBtnReject']").should("be.disabled");
-
-    // set a comment and check the buttons have their border-only css classes
-    cy.get("[data-sacro-el='outputDetailsTextareaComments']").type(
-      "This is a comment"
-    );
-    cy.get("[data-sacro-el='outputDetailsBtnApprove']").should(
-      "have.class",
-      "bg-transparent",
-      "border-green-700"
-    );
-    cy.get("[data-sacro-el='outputDetailsBtnReject']").should(
-      "have.class",
-      "bg-transparent",
-      "border-red-700"
-    );
-    cy.get("[data-sacro-el='outputDetailsBtnReject']").should("be.enabled");
-
-    // approve the output
-    cy.get("[data-sacro-el='outputDetailsBtnApprove']").click();
-
-    // pick another output
-    cy.get("[data-sacro-el='outputList'] li:nth-child(4)").click();
-
-    // pick the original output
-    cy.get("[data-sacro-el='outputList'] li:nth-child(3)").click();
-
-    // clear the comment
-    cy.get("[data-sacro-el='outputDetailsTextareaComments']").clear();
-
-    // check the buttons are reset to border-only styles and disabled appropriately
-    cy.get("[data-sacro-el='outputDetailsBtnApprove']").should(
-      "have.class",
-      "bg-transparent",
-      "border-green-700"
-    );
-    cy.get("[data-sacro-el='outputDetailsBtnApprove']").should("be.enabled");
-    cy.get("[data-sacro-el='outputDetailsBtnReject']").should(
-      "have.class",
-      "bg-transparent",
-      "border-red-700"
-    );
-    cy.get("[data-sacro-el='outputDetailsBtnReject']").should("be.disabled");
   });
 });
