@@ -67,14 +67,14 @@ export default async function outputClick({ outputName, metadata }) {
     const filePreviewLink = newFilesContainer.querySelector(
       `[data-sacro-el="file-preview-template-link"]`
     );
+    const filePreviewChecksum = newFilesContainer.querySelector(
+      `[data-sacro-el="file-preview-template-checksum"]`
+    );
     const filePreviewContent = newFilesContainer.querySelector(
       `[data-sacro-el="file-preview-template-content"]`
     );
-    const filePreviewFooter = newFilesContainer.querySelector(
-      `[data-sacro-el="file-preview-template-footer"]`
-    );
 
-    setChecksumInfo(filePreviewFooter, filedata.checksum_valid);
+    setChecksumInfo(filePreviewChecksum, filedata.checksum_valid);
 
     filePreviewTitle.innerText = path;
     filePreviewLink.setAttribute("href", url);
