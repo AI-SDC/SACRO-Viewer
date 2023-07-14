@@ -82,7 +82,9 @@ const createWindow = async () => {
     ],
   });
 
-  if (!result.canceled) {
+  if (result.canceled) {
+    win.loadFile("no-file.html");
+  } else {
     const qs = querystring.stringify({ path: result.filePaths[0] });
     const url = `${serverUrl}?${qs}`;
 
