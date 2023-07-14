@@ -8,6 +8,7 @@ import {
 import setFormState from "./_form-state";
 import {
   setAcroStatus,
+  setChecksumInfo,
   setCreatedAtDate,
   setExceptionRequest,
   setOutputTitle,
@@ -69,6 +70,11 @@ export default async function outputClick({ outputName, metadata }) {
     const filePreviewContent = newFilesContainer.querySelector(
       `[data-sacro-el="file-preview-template-content"]`
     );
+    const filePreviewFooter = newFilesContainer.querySelector(
+      `[data-sacro-el="file-preview-template-footer"]`
+    );
+
+    setChecksumInfo(filePreviewFooter, filedata.checksum_valid);
 
     filePreviewTitle.innerText = path;
     filePreviewLink.setAttribute("href", url);
