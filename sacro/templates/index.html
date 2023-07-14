@@ -67,18 +67,18 @@
             <dt class="sr-only">Output type:</dt>
             <dd>{{ output.properties.method|default_if_none:"" }} {{ output.type }}</dd>
           </div>
-          <div class="order-4">
+          <div class="order-4" data-sacro-el="file-list-review-status">
             <dt class="sr-only">Review status:</dt>
             <dd>
-              <span class="hidden group-data-[review-status=none]:block">
+              <span class="hidden group-data-[review-status=none]:block" data-sacro-el="file-list-review-status-null">
                 <span class="sr-only">Not yet reviewed</span>
                 <svg class="h-5 w-5"></svg>
               </span>
-              <span class="hidden group-data-[review-status=true]:block">
+              <span class="hidden group-data-[review-status=true]:block" data-sacro-el="file-list-review-status-approved">
                 <span class="sr-only">Approved</span>
                 {% icon_check class="h-5 w-5 text-green-600" %}
               </span>
-              <span class="hidden group-data-[review-status=false]:block">
+              <span class="hidden group-data-[review-status=false]:block" data-sacro-el="file-list-review-status-rejected">
                 <span class="sr-only">Rejected</span>
                 {% icon_x_mark class="h-5 w-5 text-red-600" %}
               </span>
