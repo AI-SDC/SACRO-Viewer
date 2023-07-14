@@ -20,6 +20,18 @@ def test_outputs_annotation(test_outputs):
             assert filedata["checksum_valid"] is True
             assert filedata["url"].startswith("/contents/?path=")
 
+            cells = filedata.get("sdc", {}).get("cells", {})
+            cell_index = filedata["cell_index"]
+
+            if cells == {}:
+                assert cell_index == {}
+                continue
+
+            for flag, indicies in cells.items():
+                for x, y in indicies:
+                    key = f"{x},{y}"
+                    assert key in cell_index
+
 
 def test_outputs_annotation_checksum_failed(test_outputs):
     first_output = list(test_outputs)[0]
