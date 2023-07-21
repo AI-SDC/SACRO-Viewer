@@ -24,20 +24,20 @@ Potential options for the application considered were:
 - System web browser installed in the TRE
 - Chrome in App Mode
 
-Electron was selected after each of the above were tested by the team.
+Electron was selected after each of the above was tested by the team.
 
 ### Pros
 
-- Electron apps are compatible with Windows, Linux, and macOS, meaning we did not need to find a individual application framework for each operating system
-- Electron has a mechanism for creating native Application installer, meaning we avoided work building our own installer
-- Embedded Chromium means we can use latest web technologies and know which version of the browser the user is using
-  - This meant we do need to perform cross-browser testing
-  - Testing across operating systems has a much reduced risk by using Electron, as the Chromium project aims to have feature parity across platforms. We are therefore unlikely to run in to issues specific to one operating system.
-- Electron is an Open Source project, meaning that we were not tied to a particular vendor or provider for an application building framework. Compared with other options (listed above), it is frequently updated, and has good documentation.
+- Electron apps are compatible with Windows, Linux, and macOS, meaning we did not need to find an individual application framework for each operating system.
+- Electron has a mechanism for creating native Application installers, meaning we avoided building our own installer.
+- Embedded Chromium means we can use the latest web technologies and know which version of the browser the user is using.
+  - This meant we did not need to perform cross-browser testing.
+  - Testing across operating systems has a much-reduced risk by using Electron, as the Chromium project aims to have feature parity across platforms. We are therefore unlikely to run into issues specific to one operating system.
+- Electron is an Open Source project, meaning that we are not tied to a particular vendor or provider for an application building framework. Compared with other options (listed above), it is frequently updated and has good documentation.
 - Electron is written in JavaScript, which the team has some familiarity with, compared with Tauri, for example, which uses Rust.
 
 ### Cons
 
 - The team is most comfortable with Python, whereas Electron uses JavaScript (Node.js). Research and learning time was required to understand how to use JavaScript in the context of an Electron application.
-- Connecting the Python side to Electron required custom code to talk between the Django app, and the Electron application processes
-- Tom O has the most knowledge of JavaScript on the team, but had not used Electron for a production application
+- Connecting the Python side to Electron required custom code to talk between the Django app, and the Electron application processes.
+- Tom O has the most knowledge of JavaScript on the team but has not used Electron for a production application.
