@@ -10,11 +10,11 @@ Accepted
 
 We need to provide a visual GUI for users so that they can interact with the ACRO outputs to approve or reject each output. The GUI should be available to be installed in a Trusted Research Environment (TRE) by a system administrator, ideally without too many manual steps or a large number of dependencies.
 
-As part of our decision-making, we found that Electron provides some well-documented and well-supported ways of creating Windows and Linux installers.
-
 ## Decision
 
 Use Electron as the framework for building a desktop application. Electron embeds the Chromium browser engine and Node.js as a means of interacting with the users operating system. This allows us to use Django, HTML, CSS, and JavaScript to build a web application, something the team is deeply familiar with, yet provide a desktop application to users.
+
+As part of our decision-making, we found that Electron provides some well-documented and well-supported ways of creating Windows and Linux installers.
 
 ## Consequences
 
