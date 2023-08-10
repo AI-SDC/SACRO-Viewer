@@ -4,9 +4,8 @@
 
 The SACRO app consists of two parts:
 
-1) a Django web app with vanilla JavaScript UI that renders a set of ACRO outputs for review
-2) an Electron app and installer that bundles the web app
-
+1. a Django web app with vanilla JavaScript UI that renders a set of ACRO outputs for review
+2. an Electron app and installer that bundles the web app
 
 The web app is designed to be able to be used as normally deployed web
 site. The electron app packages a pre-built version of this web app with a chrome
@@ -26,7 +25,7 @@ based browser.
   - [Testing the built application](#testing-the-built-application)
 - [Stack](#stack)
   - [Vite](#vite)
-
+- [Links to built artefacts](#links-to-built-artefacts)
 
 ## System requirements
 
@@ -51,18 +50,22 @@ Note: just commands will only work inside git-bash shell by default, as they ass
 ## Local development environment
 
 Run the Django devserver with:
+
 ```
 just run
 ```
 
 If you are making changes to the JavaScript you may wish to have the server auto-refresh so you get those changes without having to reload the page.
 Make sure `DJANGO_VITE_DEV_MODE` is set in your environment and run the Vite devserver with:
+
 ```
 just assets-run
 ```
 
 ## Tests
+
 Run the tests with:
+
 ```
 just test <args>
 ```
@@ -70,7 +73,7 @@ just test <args>
 ## Test data
 
 The script `data/test-nursery.py` uses ACRO to generate outputs from a public test
-dataset. These are automatically regenerated if needed by the `justfile` e.g. for `just test` or `just run`.  The outputs are generated in the `outputs/` directory.
+dataset. These are automatically regenerated if needed by the `justfile` e.g. for `just test` or `just run`. The outputs are generated in the `outputs/` directory.
 
 It can be run with the following command:
 
@@ -81,6 +84,7 @@ just test-outputs
 However, this won't always pick up new changes. For example, if new files are
 added to the test data. In this case it may be necessary to force removal
 of all the test data and regenerate it, by doing the following.
+
 ```
 just clean
 just test-outputs
@@ -129,9 +133,8 @@ just build
 ```
 
 This builds the pyoxidizer binary of the python application for the current
-platform. It can take a while.  The build executable and supporting files can be
+platform. It can take a while. The build executable and supporting files can be
 found in `build/$ARCH/release/install/sacro`.
-
 
 ### Building the electron GUI app
 
@@ -158,9 +161,10 @@ now be able to see the outputs rendered in the app.
 
 You can click on the `Approve and Download` button to download the files.
 
-
 ## Stack
+
 ### Vite
+
 This project uses [Vite](https://vitejs.dev/), a modern build tool and development server, to build the frontend assets.
 Vite integrates into Django using [django-vite](https://github.com/MrBin99/django-vite).
 
@@ -171,3 +175,12 @@ For legacy browsers, this project is utilising the [Vite Legacy Plugin](https://
 
 Vite is configured to build assets in `assets/src` and output them to `assets/dist`.
 Django is configured to use `assets/dist` as a directory to collect static files from.
+
+## Links to built artefacts
+
+We use [nightly.link for GitHub](https://nightly.link/) as a redirect service to point users to the latest builds.
+
+The redirect URLs are stored in the [opensafely.org repo `static/_redirects` file](https://github.com/ebmdatalab/opensafely.org/blob/main/static/_redirects#L74).
+
+- [Windows link](https://www.opensafely.org/sacro/latest-windows-build)
+- [Linux link](https://www.opensafely.org/sacro/latest-linux-build)
