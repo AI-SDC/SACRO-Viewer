@@ -20,6 +20,9 @@ def load_from_path(path):
 class ACROOutputs(dict):
     """An ACRO json output file"""
 
+    class InvalidFile(Exception):
+        pass
+
     path: Path
     version: str = None
     config: dict = field(default_factory=dict)
@@ -29,6 +32,20 @@ class ACROOutputs(dict):
         config_path = self.path.parent / "config.json"
         if config_path.exists():
             self.config = json.loads(config_path.read_text())
+
+        # super basic structural validation
+        try:
+            assert "version" in self.raw_metadata
+            assert "results" in self.raw_metadata
+            assert len(self.raw_metadata["results"]) > 0
+            for result in self.raw_metadata["results"].values():
+                assert "files" in result
+                assert len(result["files"]) > 0
+                for filedata in result["files"]:
+                    assert "name" in filedata
+
+        except AssertionError as exc:
+            raise self.InvalidFile(f"{self.path} is not a valid ACRO json file: {exc}")
 
         self.version = self.raw_metadata["version"]
         self.update(self.raw_metadata["results"])
