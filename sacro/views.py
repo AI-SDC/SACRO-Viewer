@@ -1,12 +1,8 @@
 import getpass
-import hashlib
 import html
 import json
 import logging
-from collections import defaultdict
-from dataclasses import dataclass, field
 from pathlib import Path
-from urllib.parse import urlencode
 
 from django.conf import settings
 from django.http import FileResponse, Http404, HttpResponse, HttpResponseBadRequest
@@ -16,8 +12,8 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
 
+from sacro import models, utils
 from sacro.adapters import local_audit, zipfile
-from sacro.versioning import check_version
 
 
 logger = logging.getLogger(__name__)
@@ -25,95 +21,7 @@ logger = logging.getLogger(__name__)
 REVIEWS = {}
 
 
-def reverse_with_params(param_dict, *args, **kwargs):
-    """Wrapper for django reverse that adds query parameters"""
-    url = reverse(*args, **kwargs)
-    return url + "?" + urlencode(param_dict)
-
-
-@dataclass
-class Outputs(dict):
-    """An ACRO json output file"""
-
-    path: Path
-    version: str = None
-    config: dict = field(default_factory=dict)
-
-    def __post_init__(self):
-        self.raw_metadata = json.loads(self.path.read_text())
-        config_path = self.path.parent / "config.json"
-        if config_path.exists():
-            self.config = json.loads(config_path.read_text())
-
-        self.version = self.raw_metadata["version"]
-        self.update(self.raw_metadata["results"])
-        self.annotate()
-
-    def annotate(self):
-        """Add various useful annotations to the JSON data"""
-
-        # add urls to JSON data
-        for output, metadata in self.items():
-            for filedata in metadata["files"]:
-                filedata["url"] = reverse_with_params(
-                    {
-                        "path": str(self.path),
-                        "output": output,
-                        "filename": filedata["name"],
-                    },
-                    "contents",
-                )
-
-        # add and check checksum data, and transform cell data to more useful format
-        checksums_dir = self.path.parent / "checksums"
-        for output, metadata in self.items():
-            for filedata in metadata["files"]:
-                # checksums
-                filedata["checksum_valid"] = False
-                filedata["checksum"] = None
-
-                path = checksums_dir / (filedata["name"] + ".txt")
-                if not path.exists():
-                    continue
-
-                filedata["checksum"] = path.read_text(encoding="utf8")
-                actual_file = self.get_file_path(output, filedata["name"])
-
-                if not actual_file.exists():  # pragma: nocover
-                    continue
-
-                checksum = hashlib.sha256(actual_file.read_bytes()).hexdigest()
-                filedata["checksum_valid"] = checksum == filedata["checksum"]
-
-                # cells
-                cells = filedata.get("sdc", {}).get("cells", {})
-                cell_index = defaultdict(list)
-
-                for flag, indicies in cells.items():
-                    for x, y in indicies:
-                        key = f"{x},{y}"
-                        cell_index[key].append(flag)
-
-                filedata["cell_index"] = cell_index
-
-    def get_file_path(self, output, filename):
-        """Return absolute path to output file"""
-        if filename not in {
-            f["name"] for f in self[output]["files"]
-        }:  # pragma: nocover
-            return None
-        # note: if filename is absolute, this will just return filename
-        return self.path.parent / filename
-
-    def write(self):
-        """Useful testing helper"""
-        self.path.write_text(json.dumps(self.raw_metadata, indent=2))
-        self.clear()
-        self.version = None
-        self.__post_init__()
-
-
-def get_outputs(data):
+def get_outputs_from_request(data):
     """Use outputs path from request and load it"""
     param_path = data.get("path")
     if param_path is None:
@@ -124,11 +32,7 @@ def get_outputs(data):
     if not path.exists():  # pragma: no cover
         raise Http404
 
-    outputs = Outputs(path)
-
-    check_version(outputs.version)
-
-    return outputs
+    return models.load_from_path(path)
 
 
 @require_GET
@@ -139,8 +43,8 @@ def index(request):
     if "path" not in request.GET and settings.DEBUG:
         data = {"path": "outputs/results.json"}
 
-    outputs = get_outputs(data)
-    create_url = reverse_with_params({"path": str(outputs.path)}, "review-create")
+    outputs = get_outputs_from_request(data)
+    create_url = utils.reverse_with_params({"path": str(outputs.path)}, "review-create")
 
     return TemplateResponse(
         request,
@@ -161,7 +65,7 @@ def contents(request):
     We also require the json file and check that the requested file is present
     in the json.  This prevents loading arbitrary user files over http.
     """
-    outputs = get_outputs(request.GET)
+    outputs = get_outputs_from_request(request.GET)
     output = request.GET.get("output")
     filename = request.GET.get("filename")
 
@@ -194,7 +98,7 @@ def approved_outputs(request, pk):
     if not (review := REVIEWS.get(pk)):
         raise Http404
 
-    outputs = Outputs(review["path"])
+    outputs = models.ACROOutputs(review["path"])
 
     approved_outputs = [k for k, v in review["decisions"].items() if v["state"] is True]
     in_memory_zf = zipfile.create(outputs, approved_outputs)
@@ -220,7 +124,7 @@ def review_create(request):
 
     # we load the path from the querystring, even though this is a post request
     # check the reviewed outputs are valid
-    outputs = get_outputs(request.GET)
+    outputs = get_outputs_from_request(request.GET)
     approved_outputs = [k for k, v in review.items() if v["state"] is True]
     unrecognized_outputs = [o for o in approved_outputs if o not in outputs]
     if unrecognized_outputs:
@@ -267,7 +171,7 @@ def summary(request, pk):
         raise Http404
 
     # add ACRO status to output decisions
-    outputs = Outputs(review["path"])
+    outputs = models.ACROOutputs(review["path"])
     for name, data in review["decisions"].items():
         review["decisions"][name]["acro_status"] = outputs[name]["status"]
 

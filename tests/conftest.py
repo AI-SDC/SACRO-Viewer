@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from sacro import views
+from sacro import models
 
 
 @pytest.fixture
@@ -14,4 +14,4 @@ def TEST_PATH():
 @pytest.fixture
 def test_outputs(tmp_path, TEST_PATH):
     shutil.copytree(TEST_PATH.parent, tmp_path, dirs_exist_ok=True)
-    return views.Outputs(tmp_path / TEST_PATH.name)
+    return models.ACROOutputs(tmp_path / TEST_PATH.name)
