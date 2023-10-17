@@ -48,6 +48,7 @@ def find_acro_metadata(dirpath):
 
 def scaffold_acro_metadata(path):
     dirpath = path.parent
+    checksums_dir = dirpath / "checksums"
     metadata = {
         "version": "0.4.0",
         "results": {},
@@ -71,9 +72,16 @@ def scaffold_acro_metadata(path):
             "exception": None,
             "timestamp": datetime.fromtimestamp(output.stat().st_mtime).isoformat(),
             "comments": [
-                "This ACRO output was auto generated the SACRO Viewer application",
+                "This non-ACRO output metadata was auto generated the SACRO Viewer application",
             ],
         }
+
+        # Write the checksums at the time of first looking at the directory
+        # This is a bit of a hack. Ideally, we'd find a way to disable checksums in such cases
+        checksums_dir.mkdir(exist_ok=True)
+        checksum_path = checksums_dir / (output.name + ".txt")
+        checksum_path.write_text(hashlib.sha256(output.read_bytes()).hexdigest())
+
     path.write_text(json.dumps(metadata, indent=2))
 
 
