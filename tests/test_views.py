@@ -12,6 +12,26 @@ from django.urls import reverse
 from sacro import models, views
 
 
+def test_load(test_outputs):
+    request = RequestFactory().get(
+        path="/load", data={"dirpath": str(test_outputs.path.parent)}
+    )
+    response = views.load(request)
+    assert response.status_code == 302
+    assert response.headers["Location"] == f"/?{urlencode({'path': test_outputs.path})}"
+
+
+def test_load_multiple(test_outputs):
+    (test_outputs.path.parent / "valid.json").write_text(
+        json.dumps(test_outputs.raw_metadata)
+    )
+    request = RequestFactory().get(
+        path="/load", data={"dirpath": str(test_outputs.path.parent)}
+    )
+    response = views.load(request)
+    assert response.status_code == 500
+
+
 def test_index(test_outputs):
     request = RequestFactory().get(path="/", data={"path": str(test_outputs.path)})
 

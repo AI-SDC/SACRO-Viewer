@@ -54,3 +54,43 @@ def test_validation(data, tmp_path):
     bad_json.write_text(json.dumps(data))
     with pytest.raises(models.ACROOutputs.InvalidFile):
         models.ACROOutputs(bad_json)
+
+
+def test_find_acro_metadata(test_outputs):
+    dirpath = test_outputs.path.parent
+    # remove other json files to have blank slate
+    (dirpath / "config.json").unlink()
+    (dirpath / "XandY.json").unlink()
+
+    default = test_outputs.path.rename(dirpath / "outputs.json")
+
+    # test default name
+    assert models.find_acro_metadata(dirpath) == default
+
+    # test alt name
+    expected = default.rename(dirpath / "results.json")
+    assert models.find_acro_metadata(dirpath) == expected
+
+    # test additional bad file
+    (dirpath / "notit.json").write_text("{}")
+    assert models.find_acro_metadata(dirpath) == expected
+
+    # test additional valid file error
+    (dirpath / "valid.json").write_text(json.dumps(test_outputs.raw_metadata))
+    with pytest.raises(models.MultipleACROFiles):
+        models.find_acro_metadata(dirpath)
+
+
+def test_find_acro_metadata_no_file(test_outputs):
+    test_outputs.path.unlink()
+
+    dirpath = test_outputs.path.parent
+    path = models.find_acro_metadata(dirpath)
+    # check the generated metadata loads correctly
+    outputs = models.ACROOutputs(path)
+    for name, result in outputs.items():
+        assert result["files"][0]["name"] == name
+        assert result["status"] == "review"
+        assert result["type"] == "custom"
+        assert result["command"] == "custom"
+        assert result["summary"] == "review"

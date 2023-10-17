@@ -12,7 +12,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
 
-from sacro import models, utils
+from sacro import errors, models, utils
 from sacro.adapters import local_audit, zipfile
 
 
@@ -21,9 +21,8 @@ logger = logging.getLogger(__name__)
 REVIEWS = {}
 
 
-def get_outputs_from_request(data):
-    """Use outputs path from request and load it"""
-    param_path = data.get("path")
+def get_filepath_from_request(data, name):
+    param_path = data.get(name)
     if param_path is None:
         raise Http404
 
@@ -32,7 +31,23 @@ def get_outputs_from_request(data):
     if not path.exists():  # pragma: no cover
         raise Http404
 
+    return path
+
+
+def get_outputs_from_request(data):
+    """Use outputs path from request and load it"""
+    path = get_filepath_from_request(data, "path")
     return models.load_from_path(path)
+
+
+@require_GET
+def load(request):
+    dirpath = get_filepath_from_request(request.GET, "dirpath")
+    try:
+        path = models.find_acro_metadata(dirpath)
+    except models.MultipleACROFiles as exc:
+        return errors.error(request, status=500, message=str(exc))
+    return redirect(utils.reverse_with_params({"path": str(path)}, "index"))
 
 
 @require_GET

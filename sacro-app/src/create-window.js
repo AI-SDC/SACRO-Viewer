@@ -73,20 +73,16 @@ const createWindow = async () => {
   });
 
   const result = await dialog.showOpenDialog({
-    title: "Choose ACRO outputs json file",
-    properties: ["openFile"],
+    title: "Choose directory containing outputs you wish to review",
+    properties: ["openDirectory"],
     defaultPath: os.homedir(),
-    filters: [
-      { name: "ACRO Outputs", extensions: ["json", "acro"] },
-      { name: "All files", extensions: ["*"] },
-    ],
   });
 
   if (result.canceled) {
     win.loadFile("no-file.html");
   } else {
-    const qs = querystring.stringify({ path: result.filePaths[0] });
-    const url = `${serverUrl}?${qs}`;
+    const qs = querystring.stringify({ dirpath: result.filePaths[0] });
+    const url = `${serverUrl}/load?${qs}`;
 
     const timeout = serverProcess === null ? 0 : 4000;
     waitThenLoad(url, timeout)

@@ -8,6 +8,7 @@ from sacro import errors, views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("load/", views.load, name="load"),
     path("contents/", views.contents, name="contents"),
     path("error/", errors.error, name="error"),
     path("review/", views.review_create, name="review-create"),
