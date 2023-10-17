@@ -11,6 +11,14 @@ const { waitThenLoad } = require("./utils");
 
 let TEMPDIR = null;
 
+function rtrim(x, characters) {
+  let end = x.length - 1;
+  while (characters.indexOf(x[end]) >= 0) {
+    end -= 1;
+  }
+  return x.substr(0, end + 1);
+}
+
 const createWindow = async () => {
   let serverUrl = process.env.SACRO_URL;
   let serverProcess = null;
@@ -20,6 +28,8 @@ const createWindow = async () => {
     serverUrl = url;
     serverProcess = server;
   }
+
+  serverUrl = rtrim(serverUrl, "/");
 
   console.log(`Using ${serverUrl} as backend`);
 
