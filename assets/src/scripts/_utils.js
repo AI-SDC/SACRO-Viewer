@@ -11,13 +11,14 @@ export const isCsv = (ext) => ext.toLowerCase() === "csv";
 export const isImg = (ext) =>
   ["gif", "jpg", "jpeg", "png", "svg"].includes(ext.toLowerCase());
 
+export const TEXT_TYPES = ["txt", "md", "py", "yaml", "R", "log"];
 /**
  * Confirm if file is .txt
  * @param {string} ext - file extension
  * @returns {boolean}
  */
 export function isTxt(ext) {
-  return ext.toLowerCase() === "txt";
+  return TEXT_TYPES.includes(ext.toLowerCase());
 }
 
 /**
