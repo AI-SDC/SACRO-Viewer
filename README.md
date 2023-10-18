@@ -31,14 +31,10 @@ When the installation completes, it will run the application.
 
 ## Usage
 
-To view some ACRO outputs, you need to open the ACRO generated JSON file for
-those outputs.
+To view outputs, you need to open a directory containing the output files. The Viewer will detect if there is ACRO-generated metadata, and use that to display the files. If there is no ACRO data, it will generate some, adding each file in the directory as a `custom` ACRO outputs.
 
-If you don't have any, you can use the test outputs we have included in the
-downloaded zip to get started with.
-
-Navigate to and select the `.json` file in the ACRO `outputs` directory (`results.json` by
-default). If  you are using the test outputs, it is `outputs\results.json`.
+If you don't have any outputs to hand, you can use the test outputs we have included in the
+downloaded zip to get started with: navigate to and select directory `outputs`  in the zip file.
 
 In the appliction, you should now see the list of outputs on the left, and can
 select each one to view it.
