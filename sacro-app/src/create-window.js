@@ -11,6 +11,14 @@ const { waitThenLoad } = require("./utils");
 
 let TEMPDIR = null;
 
+function rtrim(x, characters) {
+  let end = x.length - 1;
+  while (characters.indexOf(x[end]) >= 0) {
+    end -= 1;
+  }
+  return x.substr(0, end + 1);
+}
+
 const createWindow = async () => {
   let serverUrl = process.env.SACRO_URL;
   let serverProcess = null;
@@ -20,6 +28,8 @@ const createWindow = async () => {
     serverUrl = url;
     serverProcess = server;
   }
+
+  serverUrl = rtrim(serverUrl, "/");
 
   console.log(`Using ${serverUrl} as backend`);
 
@@ -73,20 +83,16 @@ const createWindow = async () => {
   });
 
   const result = await dialog.showOpenDialog({
-    title: "Choose ACRO outputs json file",
-    properties: ["openFile"],
+    title: "Choose directory containing outputs you wish to review",
+    properties: ["openDirectory"],
     defaultPath: os.homedir(),
-    filters: [
-      { name: "ACRO Outputs", extensions: ["json", "acro"] },
-      { name: "All files", extensions: ["*"] },
-    ],
   });
 
   if (result.canceled) {
     win.loadFile("no-file.html");
   } else {
-    const qs = querystring.stringify({ path: result.filePaths[0] });
-    const url = `${serverUrl}?${qs}`;
+    const qs = querystring.stringify({ dirpath: result.filePaths[0] });
+    const url = `${serverUrl}/load?${qs}`;
 
     const timeout = serverProcess === null ? 0 : 4000;
     waitThenLoad(url, timeout)

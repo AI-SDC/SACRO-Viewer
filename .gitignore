@@ -2,11 +2,14 @@
 .wenv/
 .ipynb*
 .pytest-cache/
+.ruff_cache
+.pytest_cache
 .coverage
 __pycache__
 .*.sw*
 /build
 sacro-app/dist
+sacro-app/SACRO
 node_modules/
 assets/dist
 sacro/staticfiles/

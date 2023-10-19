@@ -2,9 +2,87 @@ import hashlib
 import json
 from collections import defaultdict
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 
 from sacro import utils, versioning
+
+
+class MultipleACROFiles(Exception):
+    pass
+
+
+def find_acro_metadata(dirpath):
+    json_files = list(dirpath.glob("*.json"))
+    default = dirpath / "outputs.json"
+    path = None
+
+    if default.exists():
+        path = default
+    elif len(json_files) == 1:
+        path = dirpath / json_files[0]
+    else:
+        valid_jsons = []
+        for jf in json_files:
+            try:
+                ACROOutputs(dirpath / jf)
+            except ACROOutputs.InvalidFile:
+                pass
+            else:
+                valid_jsons.append(dirpath / jf)
+        if len(valid_jsons) == 1:
+            path = valid_jsons[0]
+        elif len(valid_jsons) > 1:
+            files = ", ".join(str(s.name) for s in valid_jsons)
+            raise MultipleACROFiles(
+                f"SACRO Viewer does not support multiple ACRO json files in the same directory\n"
+                f"Found {len(valid_jsons)}: {files}"
+            )
+
+    if path is None:
+        path = default
+        scaffold_acro_metadata(default)
+
+    return path
+
+
+def scaffold_acro_metadata(path):
+    dirpath = path.parent
+    checksums_dir = dirpath / "checksums"
+    metadata = {
+        "version": "0.4.0",
+        "results": {},
+    }
+
+    for output in dirpath.glob("*"):
+        if output.is_dir():
+            continue
+        uid = output.name
+        if uid.startswith("."):
+            continue
+        metadata["results"][uid] = {
+            "uid": uid,
+            "files": [{"name": output.name}],
+            "status": "review",
+            "type": "custom",
+            "properties": {},
+            "outcome": {},
+            "command": "custom",
+            "summary": "review",
+            "exception": None,
+            "timestamp": datetime.fromtimestamp(output.stat().st_mtime).isoformat(),
+            "comments": [
+                "This non-ACRO output metadata was auto generated the SACRO Viewer application",
+            ],
+        }
+
+        # Write the checksums at the time of first looking at the directory
+        # This is a bit of a hack. Ideally, we'd find a way to disable checksums in such cases
+        checksums_dir.mkdir(exist_ok=True)
+        checksum_path = checksums_dir / (output.name + ".txt")
+        checksum_path.write_text(hashlib.sha256(output.read_bytes()).hexdigest())
+
+    path.write_text(json.dumps(metadata, indent=2))
 
 
 def load_from_path(path):

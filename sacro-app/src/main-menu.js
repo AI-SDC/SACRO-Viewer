@@ -12,25 +12,21 @@ const mainMenu = (serverUrl) => {
       label: "File",
       submenu: [
         {
-          label: "Open File",
+          label: "Open Directory",
           accelerator: "CommandOrControl+O",
           click: async () => {
             dialog
               .showOpenDialog({
-                title: "Choose ACRO outputs json file",
-                properties: ["openFile"],
+                title: "Choose directory containing outputs you wish to review",
+                properties: ["openDirectory"],
                 defaultPath: os.homedir(),
-                filters: [
-                  { name: "ACRO Outputs", extensions: ["json", "acro"] },
-                  { name: "All files", extensions: ["*"] },
-                ],
               })
               .then((result) => {
                 if (!result.canceled) {
                   const qs = querystring.stringify({
-                    path: result.filePaths[0],
+                    dirpath: result.filePaths[0],
                   });
-                  const url = `${serverUrl}?${qs}`;
+                  const url = `${serverUrl}/load?${qs}`;
                   BrowserWindow.getFocusedWindow().loadURL(url);
                 }
               })
