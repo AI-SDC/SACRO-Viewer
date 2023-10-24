@@ -25,6 +25,7 @@ const startServer = async () => {
     SECRET_KEY: RANDOM_SECRET,
     SACRO_APP_TOKEN: RANDOM_SECRET,
     PORT: freePort,
+    PYTHONUTF8: 1,
   };
 
   const serverProcess = spawn(p, { env });
