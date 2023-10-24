@@ -7,7 +7,6 @@ from pathlib import Path
 from django.conf import settings
 from django.http import FileResponse, Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect
-from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
@@ -116,7 +115,7 @@ def approved_outputs(request, pk):
     outputs = models.ACROOutputs(review["path"])
 
     approved_outputs = [k for k, v in review["decisions"].items() if v["state"] is True]
-    in_memory_zf = zipfile.create(outputs, approved_outputs)
+    in_memory_zf = zipfile.create(outputs, review, approved_outputs)
 
     # use the directory name as the files might all just be results.json
     filename = f"{outputs.path.parent.stem}_{outputs.path.stem}.zip"
@@ -185,12 +184,8 @@ def summary(request, pk):
     if not (review := REVIEWS.get(pk)):
         raise Http404
 
-    # add ACRO status to output decisions
     outputs = models.ACROOutputs(review["path"])
-    for name, data in review["decisions"].items():
-        review["decisions"][name]["acro_status"] = outputs[name]["status"]
-
-    content = render_to_string("summary.txt", context={"review": review})
+    content = zipfile.get_summary(review, outputs)
 
     # Use an HttpResponse because FileResponse is for file handles which we
     # don't have here

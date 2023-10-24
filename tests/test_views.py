@@ -129,7 +129,7 @@ def test_approved_outputs_missing_metadata(tmp_path, monkeypatch):
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
         assert zip_obj.testzip() is None
-        assert zip_obj.namelist() == ["missing-files.txt"]
+        assert zip_obj.namelist() == ["missing-files.txt", "summary.txt"]
         contents = zip_obj.open("missing-files.txt").read().decode("utf8")
         assert "were not found" in contents
         assert "does-not-exist" in contents
@@ -159,6 +159,7 @@ def test_approved_outputs_success_all_files(test_outputs, review_summary):
                 zip_path = Path(filename).name
                 actual_path = test_outputs.get_file_path(output, filename)
                 assert actual_path.read_bytes() == zip_obj.open(zip_path).read()
+        expected_namelist.append("summary.txt")
         assert zip_obj.namelist() == expected_namelist
 
 
