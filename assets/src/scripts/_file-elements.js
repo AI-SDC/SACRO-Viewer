@@ -41,15 +41,17 @@ export function createImageElement(el, url) {
 export async function createTextElement(el, ext, url) {
   const data = await fileLoader(ext, url);
 
-  const textEl = document.createElement("pre");
+  const textEl = document.createElement("code");
   textEl.classList.add(
     "break-words",
     "text-sm",
     `language-${highlightJsName(ext)}`
   );
-  textEl.innerText = data;
+  textEl.innerHTML = data;
 
-  el.appendChild(textEl);
+  const preEl = document.createElement("pre");
+  preEl.appendChild(textEl);
+  el.appendChild(preEl);
 
   hljs.highlightAll();
 }
