@@ -11,14 +11,16 @@ export const isCsv = (ext) => ext.toLowerCase() === "csv";
 export const isImg = (ext) =>
   ["gif", "jpg", "jpeg", "png", "svg"].includes(ext.toLowerCase());
 
-export const TEXT_TYPES = ["txt", "md", "py", "yaml", "R", "log"];
+export const TEXT_TYPES = ["txt", "md", "py", "yaml", "r", "log"];
 /**
  * Confirm if file is .txt
  * @param {string} ext - file extension
  * @returns {boolean}
  */
 export function isTxt(ext) {
-  return TEXT_TYPES.includes(ext.toLowerCase());
+  return TEXT_TYPES.some((type) =>
+    type.toLowerCase().localeCompare(ext.toLowerCase())
+  );
 }
 
 /**
@@ -119,4 +121,23 @@ export function formatDate(date) {
  */
 export function hasComment(outputName) {
   return outputComments.value[outputName].trim() !== "";
+}
+
+/**
+ * @param {string} ext
+ */
+export function highlightJsName(ext) {
+  if (ext === "txt" || ext === "log") {
+    return "plaintext";
+  }
+
+  if (ext === "md") {
+    return "markdown";
+  }
+
+  if (ext === "py") {
+    return "python";
+  }
+
+  return ext.toLowerCase();
 }

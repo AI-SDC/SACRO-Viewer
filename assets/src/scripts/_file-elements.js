@@ -1,6 +1,9 @@
 /* eslint-disable no-param-reassign */
+import hljs from "highlight.js";
 import fileLoader from "./_file-loader";
 import tableBuilder from "./_table-builder";
+import "highlight.js/styles/github.css";
+import { highlightJsName } from "./_utils";
 
 /**
  * @param {Node} el
@@ -38,11 +41,19 @@ export function createImageElement(el, url) {
 export async function createTextElement(el, ext, url) {
   const data = await fileLoader(ext, url);
 
-  const textEl = document.createElement("pre");
-  textEl.classList.add("break-words", "text-sm");
-  textEl.innerText = data;
+  const textEl = document.createElement("code");
+  textEl.classList.add(
+    "break-words",
+    "text-sm",
+    `language-${highlightJsName(ext)}`
+  );
+  textEl.innerHTML = data;
 
-  el.appendChild(textEl);
+  const preEl = document.createElement("pre");
+  preEl.appendChild(textEl);
+  el.appendChild(preEl);
+
+  hljs.highlightAll();
 }
 
 /**
@@ -53,11 +64,15 @@ export async function createTextElement(el, ext, url) {
 export async function createCodeElement(el, ext, url) {
   const data = await fileLoader(ext, url);
 
-  const codeEl = document.createElement("pre");
-  codeEl.classList.add("break-words", "text-sm", "whitespace-break-spaces");
-  codeEl.innerText = JSON.stringify(data, null, 2);
+  const codeEl = document.createElement("code");
+  codeEl.classList.add("break-words", "text-sm", "language-json");
+  codeEl.innerHTML = JSON.stringify(JSON.parse(JSON.stringify(data)), null, 2);
 
-  el.appendChild(codeEl);
+  const preEl = document.createElement("pre");
+  preEl.appendChild(codeEl);
+  el.appendChild(preEl);
+
+  hljs.highlightAll();
 }
 
 /**

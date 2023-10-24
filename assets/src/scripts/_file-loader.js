@@ -13,11 +13,11 @@ async function fileLoader(ext, url) {
 
   if (canDisplay(ext)) {
     if (isCsv(ext) || isTxt(ext)) {
-      res = await response.text();
+      return response.text();
     }
 
     if (isJson(ext)) {
-      res = await response.json();
+      return response.json();
     }
   }
 
