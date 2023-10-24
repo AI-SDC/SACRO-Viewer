@@ -39,7 +39,7 @@ export async function createTextElement(el, ext, url) {
   const data = await fileLoader(ext, url);
 
   const textEl = document.createElement("pre");
-  textEl.classList.add("break-words", "text-sm", "whitespace-pre-line");
+  textEl.classList.add("break-words", "text-sm");
   textEl.innerText = data;
 
   el.appendChild(textEl);
