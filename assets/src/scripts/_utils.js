@@ -120,3 +120,22 @@ export function formatDate(date) {
 export function hasComment(outputName) {
   return outputComments.value[outputName].trim() !== "";
 }
+
+/**
+ * @param {string} ext
+ */
+export function highlightJsName(ext) {
+  if (ext === "txt" || ext === "log") {
+    return "plaintext";
+  }
+
+  if (ext === "md") {
+    return "markdown";
+  }
+
+  if (ext === "py") {
+    return "python";
+  }
+
+  return ext.toLowerCase();
+}
