@@ -1,4 +1,10 @@
-export BUILD_TARGET := if os_family() == "windows" { "pc-windows-msvc" } else { "unknown-linux-gnu" }
+export BUILD_TARGET := if os_family() == "windows" {
+    "pc-windows-msvc"
+} else if os() == "macos" {
+    "apple-darwin"
+} else {
+    "unknown-linux-gnu"
+}
 
 # run npm ci if needed
 npm-ci:
