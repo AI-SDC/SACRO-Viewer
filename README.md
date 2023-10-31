@@ -9,39 +9,46 @@ comments, and as the outcomes of any statistical analysis performed by ACRO
 tools.
 
 It allow the output checker to approve or reject the outputs, and can generate a
-zip file with approved outputs for releasing.
-
-Warning: this tool is under active development, and not all features are
-complete at this point.
+zipfile with approved outputs for releasing.
 
 ## Installation
 
-The latest development version can be found here:
+### Windows
 
-https://opensafely.org/sacro/latest-windows-build
+A Windows installer (MSI) is available. The download also includes sample data for testing.
 
-Unzip this, and install the application by double clicking on the SACRO.msi file.
+1. Download the [latest installer build](https://opensafely.org/sacro/latest-windows-build).
+2. Unzip the downloaded zipfile.
+3. Open the included `sacro 0.1.0.msi` file to install.
 
-This will install and then run the application.  Because the application is not
-yet signed, you will likely need to approve the installation, for which you may
-need admin priviledges. Depending on your local machines configuration, you may
-not be able to install it if you don't ahve admin access.
-
+Admin privileges may be required to install the viewer.
 When the installation completes, it will run the application.
+
+### Linux
+
+A Linux installer (deb) is available. The download also includes sample data for testing.
+
+1. Download the [latest installer build](https://opensafely.org/sacro/latest-linux-build).
+2. Unzip the downloaded zipfile.
+3. Install the included `sacro_0.1.0_amd64.deb` file.
 
 ## Usage
 
-To view outputs, you need to open a directory containing the output files. The Viewer will detect if there is ACRO-generated metadata, and use that to display the files. If there is no ACRO data, it will generate some, adding each file in the directory as a `custom` ACRO outputs.
+To view outputs, you need to open a directory containing the output files.
+The viewer will detect if there is ACRO-generated metadata and use that to display the files.
+If there is no ACRO daa, it will generate some,
+adding each file in the directory as a "custom" ACRO output.
 
-If you don't have any outputs to hand, you can use the test outputs we have included in the
-downloaded zip to get started with: navigate to and select directory `outputs`  in the zip file.
+(If you don't have any outputs to hand,
+you can use the test outputs we have included in the downloaded zipfile to get started.
+Navigate to and select the `outputs` directory in the zipfile.)
 
-In the appliction, you should now see the list of outputs on the left, and can
-select each one to view it.
+In the appliction, you will see the list of outputs on the left, and can
+select each one to view it. Each output must be approved or rejected.
 
-If you want to approve these outputs, you can click on the green "Approve and
-Download" button, which allow you to save a zip file with them all included. You
-can then continue with your normal release process.
+Once all outputs have been approved or rejected, complete the release by clicking "Approve and Download".
+This downloads a zipfile with all approved outputs and metadata describing the release.
+You can then continue your normal release process.
 
 ## Developer docs
 
