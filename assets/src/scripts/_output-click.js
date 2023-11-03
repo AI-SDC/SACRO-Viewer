@@ -80,7 +80,13 @@ export default async function outputClick({ outputName, metadata }) {
     filePreviewLink.setAttribute("href", url);
 
     if (isCsv(ext)) {
-      createTableElement(filePreviewContent, ext, url, outcome);
+      createTableElement({
+        element: filePreviewContent,
+        fileExtension: ext,
+        fileUrl: url,
+        outcome: filedata.cell_index,
+        fileIndex: i,
+      });
     } else if (isImg(ext)) {
       createImageElement(filePreviewContent, url);
     } else if (isTxt(ext)) {
