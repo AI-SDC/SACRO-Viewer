@@ -6,20 +6,27 @@ import "highlight.js/styles/github.css";
 import { highlightJsName } from "./_utils";
 
 /**
- * @param {Node} el
- * @param {string} ext
- * @param {string} url
- * @param {object} outcome
+ * @param {Object} params
+ * @param {HTMLElement} params.element
+ * @param {string} params.fileExtension
+ * @param {string} params.fileUrl
+ * @param {object} params.outcome
+ * @param {string} params.fileIndex
  */
-export async function createTableElement(el, ext, url, outcome) {
-  const data = await fileLoader(ext, url);
-
-  el.classList.add("overflow-x-auto");
+export async function createTableElement({
+  element,
+  fileExtension,
+  fileUrl,
+  outcome,
+  fileIndex,
+}) {
+  const data = await fileLoader(fileExtension, fileUrl);
 
   tableBuilder({
     csvString: data,
-    el,
+    el: element,
     outcome,
+    fileIndex,
   });
 }
 
