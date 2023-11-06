@@ -1,24 +1,25 @@
 import Papa from "papaparse";
 import { html } from "./_utils";
 
-const indexOfAll = (arr, val) =>
-  arr.reduce((acc, el, i) => (el !== val ? [...acc, i] : acc), []);
-
 /**
- *
- * @param {string} columnName
- * @param {object} columnOutcome
- * @param {string[]} headings
- * @returns
+ * @param {Object} params
+ * @param {Object.<string, string[]>} params.outcome
+ * @param {string} params.tableId
  */
-function highlightFailingCells(columnName, columnOutcome, headings) {
-  const rows = indexOfAll(Object.values(columnOutcome), "ok");
-  const column = headings.findIndex((val) => val === columnName);
+function highlightFailingCells({ outcome, tableId }) {
+  /** @type {HTMLElement|null} */
+  const tableBody = document.getElementById(tableId);
+  if (!tableBody) return;
 
-  const colData = rows.map((row) => {
-    const tableBody = document.getElementById("csvBody");
-    const tableRow = tableBody.children[row];
-    const tableCell = tableRow.children[column];
+  Object.keys(outcome).forEach((index) => {
+    const x = parseFloat(index.split(",")[0]) + 1;
+    const y = parseFloat(index.split(",")[1]) + 2;
+
+    /** @type {HTMLTableCellElement|null} */
+    const tableCell = tableBody.querySelector(
+      `tr:nth-child(${x}) > td:nth-child(${y})`
+    );
+    if (!tableCell) return;
 
     tableCell.classList.add(
       "bg-red-50",
@@ -30,28 +31,44 @@ function highlightFailingCells(columnName, columnOutcome, headings) {
       "cursor-pointer"
     );
 
-    const tooltipContent = Object.values(columnOutcome)
-      [row].split("; ")
-      .filter((i) => i !== "")
-      .map((i) => html`<span class="block">${i}</span>`)
+    /** @type {string} */
+    const tooltipContent = outcome[index]
+      .map(
+        (/** @type {string} */ str) => html`<span class="block">${str}</span>`
+      )
       .join("");
 
     const tooltipTemplateEl = document.getElementById(`tooltip`);
+    if (!(tooltipTemplateEl instanceof HTMLTemplateElement)) return;
+    const tooltipEl = tooltipTemplateEl?.content?.firstElementChild;
+    if (!tooltipEl) return;
 
-    const cellTooltip =
-      tooltipTemplateEl?.content?.firstElementChild.cloneNode(true);
-
-    cellTooltip.classList.add("flex", "-bottom-2");
-    cellTooltip.querySelector(`[data-sacro-el="tooltip-content"]`).innerHTML =
-      tooltipContent;
+    const cellTooltip = tooltipEl.cloneNode(true);
     tableCell.appendChild(cellTooltip);
 
-    return tableCell;
+    const tooltip = tableCell.querySelector("span:first-child");
+    if (tooltip) {
+      tooltip.classList.add("flex", "-bottom-2");
+
+      const tooltipContentSpan = tooltip?.querySelector(
+        `[data-sacro-el="tooltip-content"]`
+      );
+      if (tooltipContentSpan) {
+        tooltipContentSpan.innerHTML = tooltipContent;
+      }
+    }
   });
-  return colData;
 }
 
-function tableBuilder({ csvString, el, outcome }) {
+/**
+ *
+ * @param {object} params
+ * @param {Object.<string, string[]>} params.outcome
+ * @param {HTMLElement} params.el
+ * @param {string} params.csvString
+ * @param {string} params.fileIndex
+ */
+function tableBuilder({ csvString, el, outcome, fileIndex }) {
   const csvToJson = Papa.parse(csvString).data;
 
   const bodyCell = (row) =>
@@ -64,9 +81,9 @@ function tableBuilder({ csvString, el, outcome }) {
       : ``
   );
 
-  const table = html`
+  const tableHtmlStr = html`
     <table
-      id="csvTable"
+      id=${`csvTable${fileIndex}`}
       class="min-w-full divide-y divide-gray-300 text-left text-sm text-gray-900"
     >
       <thead class="font-semibold bg-gray-200">
@@ -80,11 +97,14 @@ function tableBuilder({ csvString, el, outcome }) {
     </table>
   `;
 
-  el.innerHTML = table; // eslint-disable-line no-param-reassign
+  if (typeof tableHtmlStr === "string") {
+    el.innerHTML = tableHtmlStr; // eslint-disable-line no-param-reassign
 
-  Object.keys(outcome).map((columnName) =>
-    highlightFailingCells(columnName, outcome[columnName], csvToJson[0])
-  );
+    highlightFailingCells({
+      outcome,
+      tableId: `csvTable${fileIndex}`,
+    });
+  }
 }
 
 export default tableBuilder;
