@@ -32,6 +32,19 @@ A Linux installer (deb) is available. The download also includes sample data for
 2. Unzip the downloaded zipfile.
 3. Install the included `sacro_0.1.0_amd64.deb` file.
 
+## macOS
+
+An Apple Disk Image (dmg) file is available. The download also includes sample data for testing.
+
+1. Download the [latest installer build](https://opensafely.org/sacro/latest-macos-build)
+1. Unzip the downloaded zipfile
+1. Move the `Sacro.app` to you Applications folder
+1. Right-mouse click on the Sacro app icon, and then click Open
+1. macOS will warn you that it cannot open the app
+1. Go to macOS Settings -> Security and find where it says
+    > "sacro.app" was blocked from use because it is not from an identified developer.
+1. Select "Open Anyway"
+
 ## Usage
 
 To view outputs, you need to open a directory containing the output files.

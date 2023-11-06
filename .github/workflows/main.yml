@@ -26,8 +26,12 @@ jobs:
       - name: Check formatting, linting and import sorting
         run: just check
 
-  test-linux:
-    runs-on: ubuntu-22.04
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-12]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
@@ -35,42 +39,8 @@ jobs:
         with:
           python-version: "3.10"
           install-just: true
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: '.node-version'
-          cache: "npm"
-          cache-dependency-path: |
-            package-lock.json
-            sacro-app/package-lock.json
-      - name: Run tests
-        run: just test
-      - name: Cypress run
-        uses: cypress-io/github-action@d69252d52b9a31bad4f418f05ba2bc83687a02eb #v5.8.3
-        with:
-          start: just run
-          wait-on: "http://localhost:8000/"
-      - uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-          if-no-files-found: ignore
-      - uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: cypress-videos
-          path: cypress/videos
-          if-no-files-found: ignore
-
-
-  test-windows:
-    runs-on: windows-2022
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: "opensafely-core/setup-action@v1"
-        with:
-          python-version: "3.11"
+      # our just setup doesn't make just available on the path
+      - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.node-version'
@@ -78,8 +48,12 @@ jobs:
           cache-dependency-path: |
             **/package-lock.json
             sacro-app/package-lock.json
-      # our just setup doesn't make just available on the path
-      - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
+      - name: dumpenv
+        if: matrix.os == 'macos-12'
+        run: |
+          echo "$DEVELOPER_DIR"
+          ls /Applications/Xcode*
+          xcode-select --print-path
       - name: Run tests
         run: just test
       - name: Cypress run
@@ -100,17 +74,35 @@ jobs:
           path: cypress/videos
           if-no-files-found: ignore
 
-  build-linux:
-    needs: [check, test-linux]
+
+  build:
+    needs: [check, test]
     permissions:
       contents: write
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-12]
+        include:
+          - os: ubuntu-22.04
+            build_name: linux
+            build_path: sacro-app/dist/@opensafely/sacro*.deb
+            upload_path: sacro*.deb
+          - os: windows-2022
+            build_name: windows
+            build_path: sacro-app/dist/SACRO*.msi
+            upload_path: SACRO*.msi
+          - os: macos-12
+            build_name: macos
+            build_path: sacro-app/dist/sacro*.dmg
+            upload_path: sacro*.dmg
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
       - uses: "opensafely-core/setup-action@v1"
         with:
-          python-version: "3.11"
+          python-version: "3.10"
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.node-version'
@@ -122,59 +114,24 @@ jobs:
       - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
       - name: Download sample data
         run: just test-outputs
-      - name: Build Python binary
+      # record asset build step separately for CI timings.
+      - name: Build assets and collect
+        run: just collectstatic
+      - name: Build Python pyoxidizer binary
         run: just build
       - name: Build app
         run: |
           mkdir -p sacro-app/dist/@opensafely
           just sacro-app/build
-      - name: Copy built deb
-        run: cp sacro-app/dist/@opensafely/sacro*.deb .
+        # copy build artifact current directory
+      - name: Copy built artifact
+        run: cp ${{ matrix.build_path }} .
       - name: Upload build
         if: success()
         uses: actions/upload-artifact@v3
         with:
-          name: SACRO-latest-linux-build
+          name: SACRO-latest-${{ matrix.build_name }}-build
           path: |
-            sacro*.deb
-            outputs/*
-            !outputs/.keep
-
-  build-windows:
-    needs: [check, test-windows]
-    permissions:
-      contents: write
-    runs-on: windows-2022
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: "opensafely-core/setup-action@v1"
-        with:
-          python-version: "3.11"
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: '.node-version'
-          cache: "npm"
-          cache-dependency-path: |
-            **/package-lock.json
-            sacro-app/package-lock.json
-      # our just setup doesn't make just available on the path
-      - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
-      - name: Download sample data
-        run: just test-outputs
-      - name: Build Python binary
-        run: just build
-      - name: Build app
-        run: just sacro-app/build
-        # this gets us cleaner paths in our artifact
-      - name: Copy built msi
-        run: cp sacro-app/dist/SACRO*.msi .
-      - name: Upload build
-        if: success()
-        uses: actions/upload-artifact@v3
-        with:
-          name: SACRO-latest-windows-build
-          path: |
-            SACRO*.msi
+            ${{ matrix.upload_path }}
             outputs/*
             !outputs/.keep

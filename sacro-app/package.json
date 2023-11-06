@@ -33,6 +33,9 @@
       "category": "Science",
       "icon": "build/icon.icns"
     },
+    "mac": {
+      "target": "dmg"
+    },
     "extraResources": [
       {
         "from": "${env.BUILD_DIR}",
