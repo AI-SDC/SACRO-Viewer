@@ -29,7 +29,7 @@ When the installation completes, it will run the application.
 
 A Linux installer (deb) is available. The download also includes sample data for testing.
 <!---(https://opensafely.org/sacro/latest-linux-build).--->
-1. Download the [latest installer build](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip). 
+1. Download the [latest installer build](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip).
 2. Unzip the downloaded zipfile.
 3. Install the included `sacro_0.1.0_amd64.deb` file.
 
