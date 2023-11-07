@@ -6,7 +6,7 @@ repos:
     hooks:
     - id: black
       name: black
-      entry:  black
+      entry: just black
       language: system
       types: [python]
       require_serial: true
