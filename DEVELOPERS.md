@@ -27,11 +27,18 @@ based browser.
   - [Vite](#vite)
 - [Links to built artefacts](#links-to-built-artefacts)
 
-## System requirements
 
-### Windows
+## System requirements for building
 
-Python 3.10: https://www.python.org/downloads/windows/
+ - Python 3.10
+ - [just](https://github.com/casey/just)
+ - Node.js v20
+
+### Windows specific build requirements
+
+Windows is a bit trickier to get up and running.
+
+Python 3.10: https://www.python.org/downloads/windows/ (recommend not using Microsoft Store version)
 Node.js v20: https://github.com/Schniz/fnm
 git-bash: https://gitforwindows.org/
 just: `choco install just` (choco: https://chocolatey.org/)
@@ -46,6 +53,7 @@ Also recommended: Windows Terminal: https://apps.microsoft.com/store/detail/wind
 You should reboot after installing all this, because Windows.
 
 Note: just commands will only work inside git-bash shell by default, as they assume bash
+
 
 ## Local development environment
 
@@ -180,7 +188,6 @@ Django is configured to use `assets/dist` as a directory to collect static files
 
 We use [nightly.link for GitHub](https://nightly.link/) as a redirect service to point users to the latest builds.
 
-The redirect URLs are stored in the [opensafely.org repo `static/_redirects` file](https://github.com/ebmdatalab/opensafely.org/blob/main/static/_redirects#L74).
-
-- [Windows link](https://www.opensafely.org/sacro/latest-windows-build)
-- [Linux link](https://www.opensafely.org/sacro/latest-linux-build)
+Windows: https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-windows-build.zip
+MacOS: https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-macos-build.zip
+Linux: https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip
