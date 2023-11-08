@@ -17,7 +17,8 @@ zipfile with approved outputs for releasing.
 
 A Windows installer (MSI) is available. The download also includes sample data for testing.
 
-1. Download the [latest installer build](https://opensafely.org/sacro/latest-windows-build).
+<!---1. Download the [latest installer build](https://opensafely.org/sacro/latest-windows-build).--->
+1. Download the [latest installer build](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-windows-build.zip).
 2. Unzip the downloaded zipfile.
 3. Open the included `sacro 0.1.0.msi` file to install.
 
@@ -27,23 +28,23 @@ When the installation completes, it will run the application.
 ### Linux
 
 A Linux installer (deb) is available. The download also includes sample data for testing.
-
-1. Download the [latest installer build](https://opensafely.org/sacro/latest-linux-build).
+<!---(https://opensafely.org/sacro/latest-linux-build).--->
+1. Download the [latest installer build](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip).
 2. Unzip the downloaded zipfile.
 3. Install the included `sacro_0.1.0_amd64.deb` file.
 
 ## macOS
 
 An Apple Disk Image (dmg) file is available. The download also includes sample data for testing.
-
-1. Download the [latest installer build](https://opensafely.org/sacro/latest-macos-build)
-1. Unzip the downloaded zipfile
-1. Move the `Sacro.app` to you Applications folder
-1. Right-mouse click on the Sacro app icon, and then click Open
-1. macOS will warn you that it cannot open the app
-1. Go to macOS Settings -> Security and find where it says
+ <!---(https://opensafely.org/sacro/latest-macos-build)--->
+1. Download the [latest installer build](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-macos-build.zip)
+2. Unzip the downloaded zipfile
+3. Move the `Sacro.app` to you Applications folder
+4. Right-mouse click on the Sacro app icon, and then click Open
+5. macOS will warn you that it cannot open the app
+6. Go to macOS Settings -> Security and find where it says
     > "sacro.app" was blocked from use because it is not from an identified developer.
-1. Select "Open Anyway"
+7. Select "Open Anyway"
 
 ## Usage
 
