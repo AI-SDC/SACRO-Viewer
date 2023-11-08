@@ -113,42 +113,36 @@ test *args: devenv test-outputs collectstatic
     $BIN/coverage report || $BIN/coverage html
 
 
-test-e2e: devenv test-outputs
+# run cypress tests suite in headless mode (needs running server)
+test-e2e: devenv test-outputs collectstatic
     npm run cypress:run
 
-
-test-cypress: devenv test-outputs
+# open cypress UI to run tests manually (needs running server)
+test-cypress: devenv test-outputs collectstatic
     npm run cypress:open
 
-
-black *args=".": devenv
-    $BIN/black --check {{ args }}
-
-ruff *args=".": devenv
-    $BIN/ruff check {{ args }}
-
-# run the various dev checks but does not change any files
-check: black ruff
+# run the various linter does not change any files
+check: devenv assets-install
+    $BIN/black --check
+    $BIN/ruff check
     npm run lint
 
 
-# fix formatting and import sort ordering
+# run various linters and fix
 fix: devenv assets-install
     $BIN/black .
     $BIN/ruff --fix .
     npm run lint:fix
 
 
-# Run the dev project
+# Run the dev python service locally
 run: devenv collectstatic test-outputs
     $BIN/python manage.py migrate
     $BIN/python manage.py runserver
 
+# Build python application
 build: collectstatic
     $BIN/pyoxidizer build --release
-
-eslint:
-    npm run lint
 
 # Install the Node.js dependencies
 assets-install:
@@ -185,10 +179,13 @@ assets-build: assets-install
     touch assets/dist/.written
 
 
+# build all js assets
 assets: assets-build
 
+# clean and rebuild all js assets
 assets-rebuild: assets-clean assets
 
+# run js tooling in dev mode
 assets-run: assets-install
   #!/usr/bin/env bash
 
@@ -202,12 +199,13 @@ assets-run: assets-install
 collectstatic: devenv assets
     ./scripts/collect-me-maybe.sh $BIN/python
 
-
+# fetch nursery test data
 test-data:
     #!/usr/bin/env bash
     if test -f data/dataset_26_nursery.arff; then exit 0; fi
     curl https://www.openml.org/data/download/26/dataset_26_nursery.arff -\o data/dataset_26_nursery.arff
 
+# build test outputs
 test-outputs: test-data devenv
     #!/usr/bin/env bash
     if test outputs/results.json -nt data/test-nursery.py; then exit 0; fi
