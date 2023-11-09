@@ -123,8 +123,11 @@ test-cypress: devenv test-outputs collectstatic
 
 # run the various linter does not change any files
 check: devenv assets-install
-    $BIN/black --check
-    $BIN/ruff check
+    $BIN/black --check .
+    $BIN/ruff check .
+
+
+eslint:
     npm run lint
 
 
