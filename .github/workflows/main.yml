@@ -41,7 +41,7 @@ jobs:
           python-version: "3.10"
           install-just: true
       # our just setup doesn't make just available on the path
-      - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
+      - uses: extractions/setup-just@dd310ad5a97d8e7b41793f8ef055398d51ad4de6
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
@@ -112,7 +112,7 @@ jobs:
             **/package-lock.json
             sacro-app/package-lock.json
       # our just setup doesn't make just available on the path
-      - uses: extractions/setup-just@69d82fb0233557aec017ef13706851d0694e0f1d
+      - uses: extractions/setup-just@dd310ad5a97d8e7b41793f8ef055398d51ad4de6
       - name: Download sample data
         run: just test-outputs
       # record asset build step separately for CI timings.
