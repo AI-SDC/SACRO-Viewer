@@ -18,7 +18,7 @@ zipfile with approved outputs for releasing.
 A Windows installer (MSI) is available. The download also includes sample data for testing.
 
 <!---1. Download the [latest installer build](https://opensafely.org/sacro/latest-windows-build).--->
-1. Download the [latest installer build](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-windows-build.zip).
+1. Download the [latest release build](https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-windows-build.zip).
 2. Unzip the downloaded zipfile.
 3. Open the included `sacro 0.1.0.msi` file to install.
 
@@ -29,15 +29,15 @@ When the installation completes, it will run the application.
 
 A Linux installer (deb) is available. The download also includes sample data for testing.
 <!---(https://opensafely.org/sacro/latest-linux-build).--->
-1. Download the [latest installer build](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip).
+1. Download the [latest release build](https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-linux-build.zip).
 2. Unzip the downloaded zipfile.
 3. Install the included `sacro_0.1.0_amd64.deb` file.
 
-## macOS
+### macOS
 
 An Apple Disk Image (dmg) file is available. The download also includes sample data for testing.
  <!---(https://opensafely.org/sacro/latest-macos-build)--->
-1. Download the [latest installer build](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-macos-build.zip)
+1. Download the [latest release build](https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-macos-build.zip).
 2. Unzip the downloaded zipfile
 3. Move the `Sacro.app` to you Applications folder
 4. Right-mouse click on the Sacro app icon, and then click Open
@@ -45,6 +45,12 @@ An Apple Disk Image (dmg) file is available. The download also includes sample d
 6. Go to macOS Settings -> Security and find where it says
     > "sacro.app" was blocked from use because it is not from an identified developer.
 7. Select "Open Anyway"
+
+### Latest Development Builds
+
+* [Windows latest](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-windows-build.zip)
+* [Linux latest](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip)
+* [masOS latest](https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-macos-build.zip)
 
 ## Usage
 
