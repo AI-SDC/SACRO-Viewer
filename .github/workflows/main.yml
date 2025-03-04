@@ -30,7 +30,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-12]
+        os: [ubuntu-22.04, windows-2022, macos-14]
 
     runs-on: ${{ matrix.os }}
 
@@ -50,7 +50,7 @@ jobs:
             **/package-lock.json
             sacro-app/package-lock.json
       - name: dumpenv
-        if: matrix.os == 'macos-12'
+        if: matrix.os == 'macos-14'
         run: |
           echo "$DEVELOPER_DIR"
           ls /Applications/Xcode*
@@ -82,7 +82,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-12]
+        os: [ubuntu-22.04, windows-2022, macos-14]
         include:
           - os: ubuntu-22.04
             build_name: linux
@@ -92,7 +92,7 @@ jobs:
             build_name: windows
             build_path: sacro-app/dist/SACRO*.msi
             upload_path: SACRO*.msi
-          - os: macos-12
+          - os: macos-14
             build_name: macos
             build_path: sacro-app/dist/sacro*.dmg
             upload_path: sacro*.dmg
