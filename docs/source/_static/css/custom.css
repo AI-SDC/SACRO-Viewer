@@ -1,0 +1,21 @@
+/* Custom CSS for SACRO Viewer documentation */
+
+/* Ensure consistent styling with other SACRO tools */
+.bd-main .bd-content .bd-article-container {
+    max-width: none;
+}
+
+/* Style for code blocks and examples */
+.highlight {
+    margin: 1em 0;
+}
+
+/* Custom styling for grid cards */
+.sd-card {
+    margin-bottom: 1rem;
+}
+
+/* Ensure proper spacing for note and warning boxes */
+.admonition {
+    margin: 1.5em 0;
+}
