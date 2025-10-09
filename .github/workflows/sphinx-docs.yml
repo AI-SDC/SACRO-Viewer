@@ -18,10 +18,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Run sphinx
+      - name: Install documentation dependencies
         run: |
-          pip install .[doc]
+          pip install sphinx>=5.0 sphinx-issues sphinx-prompt pydata-sphinx-theme sphinx-design
           sphinx-build ./docs/source ./docs/_build/html/
+
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
