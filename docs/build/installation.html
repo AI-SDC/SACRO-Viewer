@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; SACRO Viewer 0.1.0 documentation</title>
+    <title>Install &#8212; SACRO Viewer 0.1.0 documentation</title>
   
   
   
@@ -44,11 +44,11 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'installation';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Contribution Guide" href="contribution_guide.html" />
-    <link rel="prev" title="Install" href="installation.html" />
+    <link rel="next" title="User Guide" href="user_guide.html" />
+    <link rel="prev" title="Welcome to SACRO Viewer" href="introduction.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -134,15 +134,15 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="installation.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
     Install
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
 </li>
@@ -234,15 +234,15 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="installation.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
     Install
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
   </a>
 </li>
@@ -320,7 +320,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">User Guide</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Install</span></li>
   </ul>
 </nav>
 </div>
@@ -337,169 +337,110 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="user-guide">
-<h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">#</a></h1>
-<p>This guide explains how to use SACRO Viewer to review research outputs and manage the approval process for secure release.</p>
-<section id="getting-started">
-<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h2>
-<p>When you launch SACRO Viewer, you’ll be prompted to select a directory containing the outputs you wish to review. The application will automatically detect ACRO metadata and display the outputs for review.</p>
-<p><strong>Selecting Output Directory</strong></p>
+  <section id="install">
+<h1>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h1>
+<p>SACRO Viewer is distributed as pre-built installers for Windows, Linux, and macOS. No additional dependencies or setup are required - the installers include everything needed to run the application.</p>
+<section id="system-requirements">
+<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt><strong>Windows</strong></dt><dd><ul class="simple">
+<li><p>Windows 10 or later</p></li>
+<li><p>Administrator privileges may be required for installation</p></li>
+</ul>
+</dd>
+<dt><strong>Linux</strong></dt><dd><ul class="simple">
+<li><p>Ubuntu 18.04 or later (or equivalent distribution)</p></li>
+<li><p>64-bit architecture (amd64)</p></li>
+</ul>
+</dd>
+<dt><strong>macOS</strong></dt><dd><ul class="simple">
+<li><p>macOS 10.14 (Mojave) or later</p></li>
+<li><p>Intel or Apple Silicon processors supported</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="windows-installation">
+<h2>Windows Installation<a class="headerlink" href="#windows-installation" title="Link to this heading">#</a></h2>
 <ol class="arabic simple">
-<li><p>Launch SACRO Viewer</p></li>
-<li><p>A file dialog will appear asking you to choose a directory</p></li>
-<li><p>Navigate to and select the folder containing your research outputs</p></li>
-<li><p>Click “Select Folder” to load the outputs</p></li>
+<li><p>Download the <a class="reference external" href="https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-windows-build.zip">latest Windows release</a></p></li>
+<li><p>Unzip the downloaded file</p></li>
+<li><p>Run the included <code class="docutils literal notranslate"><span class="pre">sacro</span> <span class="pre">0.1.0.msi</span></code> installer</p></li>
+<li><p>Follow the installation wizard prompts</p></li>
+<li><p>The application will launch automatically when installation completes</p></li>
 </ol>
-<p>If the directory contains ACRO-generated metadata (typically <code class="docutils literal notranslate"><span class="pre">outputs.json</span></code>), the viewer will use this to display detailed information about each output. If no ACRO metadata is found, the viewer will automatically generate metadata for all files in the directory, treating them as “custom” outputs requiring review.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Administrator privileges may be required to install the application. If you encounter permission issues, right-click the MSI file and select “Run as administrator”.</p>
+</div>
 </section>
-<section id="main-interface">
-<h2>Main Interface<a class="headerlink" href="#main-interface" title="Link to this heading">#</a></h2>
-<p>The SACRO Viewer interface consists of three main areas:</p>
-<dl class="simple">
-<dt><strong>Output List (Left Panel)</strong></dt><dd><p>Shows all outputs in the selected directory with their names and types. Outputs are color-coded:</p>
-<ul class="simple">
-<li><p><strong>Red icons</strong>: Failed ACRO checks or outputs requiring attention</p></li>
-<li><p><strong>Blue icons</strong>: Passed ACRO checks or successful outputs</p></li>
-<li><p><strong>Gray icons</strong>: Custom outputs (non-ACRO files)</p></li>
-</ul>
-</dd>
-<dt><strong>File Viewer (Bottom Right)</strong></dt><dd><p>Displays the contents of the selected output file. Supports various formats:</p>
-<ul class="simple">
-<li><p><strong>CSV files</strong>: Displayed as formatted tables with cell highlighting</p></li>
-<li><p><strong>Images</strong>: PNG, JFIF, and other image formats shown inline</p></li>
-<li><p><strong>Text files</strong>: Plain text with syntax highlighting</p></li>
-<li><p><strong>JSON files</strong>: Formatted JSON with proper indentation</p></li>
-</ul>
-</dd>
-<dt><strong>Review Panel (Top Right)</strong></dt><dd><p>Contains all information needed for making approval decisions:</p>
-<ul class="simple">
-<li><p><strong>ACRO Status</strong>: Shows pass/fail status and any warnings</p></li>
-<li><p><strong>Comments</strong>: Researcher-provided comments and justifications</p></li>
-<li><p><strong>Exception Request</strong>: Any special requests from the researcher</p></li>
-<li><p><strong>Review Section</strong>: Your approval decision and comments</p></li>
-</ul>
-</dd>
-</dl>
+<section id="linux-installation">
+<h2>Linux Installation<a class="headerlink" href="#linux-installation" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Download the <a class="reference external" href="https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-linux-build.zip">latest Linux release</a></p></li>
+<li><p>Unzip the downloaded file</p></li>
+<li><p>Install the included <code class="docutils literal notranslate"><span class="pre">.deb</span></code> package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>sacro_0.1.0_amd64.deb
+</pre></div>
+</div>
+</li>
+<li><p>Launch the application from your applications menu or run <code class="docutils literal notranslate"><span class="pre">sacro</span></code> from the command line</p></li>
+</ol>
 </section>
-<section id="making-review-decisions">
-<h2>Making Review Decisions<a class="headerlink" href="#making-review-decisions" title="Link to this heading">#</a></h2>
-<p>For each output, you need to make an approval decision based on the ACRO analysis, researcher comments, and file contents.</p>
-<p><strong>Review Process</strong></p>
+<section id="macos-installation">
+<h2>macOS Installation<a class="headerlink" href="#macos-installation" title="Link to this heading">#</a></h2>
 <ol class="arabic simple">
-<li><p><strong>Select an output</strong> from the left panel to view its details</p></li>
-<li><p><strong>Examine the ACRO status</strong> - this shows the automated privacy assessment</p></li>
-<li><p><strong>Read researcher comments</strong> to understand the context and any special circumstances</p></li>
-<li><p><strong>View the file contents</strong> to verify what is being requested for release</p></li>
-<li><p><strong>Make your decision</strong> using the Approve/Reject buttons</p></li>
-<li><p><strong>Add review comments</strong> explaining your decision (optional but recommended)</p></li>
+<li><p>Download the <a class="reference external" href="https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-macos-build.zip">latest macOS release</a></p></li>
+<li><p>Unzip the downloaded file</p></li>
+<li><p>Move <code class="docutils literal notranslate"><span class="pre">Sacro.app</span></code> to your Applications folder</p></li>
+<li><p>Right-click on the Sacro app icon and select “Open”</p></li>
+<li><p>macOS will display a security warning - click “Open” to proceed</p></li>
+<li><p>If the app is blocked, go to <strong>System Preferences → Security &amp; Privacy</strong> and click “Open Anyway”</p></li>
 </ol>
-<p><strong>ACRO Status Indicators</strong></p>
-<ul class="simple">
-<li><p><strong>Pass</strong>: ACRO determined the output is safe for release</p></li>
-<li><p><strong>Fail</strong>: ACRO identified potential disclosure risks (e.g., “threshold: 4 cells may need suppressing”)</p></li>
-<li><p><strong>Review</strong>: Manual review required due to uncertainty or special circumstances</p></li>
-</ul>
-<p><strong>Approval Guidelines</strong></p>
-<ul class="simple">
-<li><p><strong>Approve</strong> outputs that pass ACRO checks and have valid researcher justifications</p></li>
-<li><p><strong>Reject</strong> outputs with clear disclosure risks or insufficient justification</p></li>
-<li><p><strong>Consider carefully</strong> outputs that failed ACRO checks but have researcher exception requests</p></li>
-</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>macOS may block the application because it’s not from an identified developer. This is normal for open-source applications. Follow the security steps above to allow the application to run.</p>
+</div>
 </section>
-<section id="file-types-and-display">
-<h2>File Types and Display<a class="headerlink" href="#file-types-and-display" title="Link to this heading">#</a></h2>
-<p>SACRO Viewer handles various output file types commonly produced in research:</p>
-<dl class="simple">
-<dt><strong>Statistical Tables (CSV)</strong></dt><dd><ul class="simple">
-<li><p>Displayed as formatted tables with proper column alignment</p></li>
-<li><p>Cells flagged by ACRO for potential disclosure risks are highlighted</p></li>
-<li><p>Cell coordinates are shown for reference in ACRO reports</p></li>
+<section id="development-builds">
+<h2>Development Builds<a class="headerlink" href="#development-builds" title="Link to this heading">#</a></h2>
+<p>For testing the latest features, development builds are available:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-windows-build.zip">Windows Development Build</a></p></li>
+<li><p><a class="reference external" href="https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip">Linux Development Build</a></p></li>
+<li><p><a class="reference external" href="https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-macos-build.zip">macOS Development Build</a></p></li>
 </ul>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Development builds are automatically generated from the latest code and may contain bugs or incomplete features. Use stable releases for production environments.</p>
+</div>
+</section>
+<section id="sample-data">
+<h2>Sample Data<a class="headerlink" href="#sample-data" title="Link to this heading">#</a></h2>
+<p>All download packages include sample data for testing the application:</p>
+<ul class="simple">
+<li><p>Sample ACRO outputs in the <code class="docutils literal notranslate"><span class="pre">outputs</span></code> directory</p></li>
+<li><p>Test files including CSV tables, images, and statistical results</p></li>
+<li><p>Example metadata showing different ACRO status types (pass/fail/review)</p></li>
+</ul>
+<p>To test the installation, launch SACRO Viewer and select the <code class="docutils literal notranslate"><span class="pre">outputs</span></code> directory from the downloaded package.</p>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
+<dl>
+<dt><strong>Windows: “Windows protected your PC” message</strong></dt><dd><p>This is normal for new applications. Click “More info” then “Run anyway” to proceed with installation.</p>
 </dd>
-<dt><strong>Images and Plots</strong></dt><dd><ul class="simple">
-<li><p>PNG, JFIF, and other image formats displayed inline</p></li>
-<li><p>Plots and charts can be viewed at full resolution</p></li>
-<li><p>“Open file” button available for viewing in external applications</p></li>
-</ul>
+<dt><strong>macOS: “Cannot open because it is from an unidentified developer”</strong></dt><dd><p>Go to System Preferences → Security &amp; Privacy → General tab and click “Open Anyway” next to the blocked application message.</p>
 </dd>
-<dt><strong>Text and Code Files</strong></dt><dd><ul class="simple">
-<li><p>Plain text files displayed with appropriate formatting</p></li>
-<li><p>Code files shown with syntax highlighting where possible</p></li>
-<li><p>Large files may be truncated for performance</p></li>
-</ul>
+<dt><strong>Linux: Permission denied errors</strong></dt><dd><p>Ensure you have sudo privileges and the downloaded <code class="docutils literal notranslate"><span class="pre">.deb</span></code> file has execute permissions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span>+x<span class="w"> </span>sacro_0.1.0_amd64.deb
+</pre></div>
+</div>
 </dd>
-<dt><strong>JSON and Metadata</strong></dt><dd><ul class="simple">
-<li><p>JSON files displayed with proper formatting and indentation</p></li>
-<li><p>ACRO metadata files show the complete analysis results</p></li>
-<li><p>Nested structures are clearly presented</p></li>
-</ul>
+<dt><strong>Application won’t start</strong></dt><dd><p>Check that your system meets the minimum requirements listed above. On older systems, try running the application from the command line to see detailed error messages.</p>
 </dd>
 </dl>
-</section>
-<section id="completing-the-review">
-<h2>Completing the Review<a class="headerlink" href="#completing-the-review" title="Link to this heading">#</a></h2>
-<p>Once you have reviewed all outputs and made approval decisions, you can generate the final release package.</p>
-<p><strong>Release Process</strong></p>
-<ol class="arabic simple">
-<li><p><strong>Review all outputs</strong> - ensure every item has an approval decision</p></li>
-<li><p><strong>Click “Release and download”</strong> button (appears when all outputs are reviewed)</p></li>
-<li><p><strong>Add final comments</strong> about the overall review in the dialog that appears</p></li>
-<li><p><strong>Confirm the release</strong> to generate the approved outputs package</p></li>
-</ol>
-<p><strong>Release Package Contents</strong></p>
-<p>The generated ZIP file contains:</p>
-<ul class="simple">
-<li><p><strong>Approved output files</strong> - only files you approved for release</p></li>
-<li><p><strong>Release metadata</strong> - summary of approval decisions and comments</p></li>
-<li><p><strong>Audit information</strong> - reviewer details and timestamps</p></li>
-<li><p><strong>Checksums</strong> - file integrity verification data</p></li>
-</ul>
-<p><strong>Audit Trail</strong></p>
-<p>SACRO Viewer maintains a complete audit trail including:</p>
-<ul class="simple">
-<li><p>Individual approval/rejection decisions for each output</p></li>
-<li><p>Reviewer comments and justifications</p></li>
-<li><p>Timestamps of all review actions</p></li>
-<li><p>File checksums for integrity verification</p></li>
-<li><p>Release package metadata</p></li>
-</ul>
-</section>
-<section id="working-with-different-output-types">
-<h2>Working with Different Output Types<a class="headerlink" href="#working-with-different-output-types" title="Link to this heading">#</a></h2>
-<dl class="simple">
-<dt><strong>ACRO-Generated Outputs</strong></dt><dd><p>These outputs include comprehensive metadata about statistical disclosure control checks, researcher comments, and automated risk assessments. Use this information to make informed decisions about release approval.</p>
-</dd>
-<dt><strong>Custom Outputs</strong></dt><dd><p>Files without ACRO metadata are treated as custom outputs requiring manual review. These appear with generic metadata and require careful examination of file contents to assess disclosure risks.</p>
-</dd>
-<dt><strong>Mixed Directories</strong></dt><dd><p>Directories containing both ACRO and non-ACRO outputs are handled seamlessly. The viewer will use ACRO metadata where available and generate custom metadata for other files.</p>
-</dd>
-</dl>
-</section>
-<section id="best-practices">
-<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">#</a></h2>
-<dl class="simple">
-<dt><strong>Review Workflow</strong></dt><dd><ul class="simple">
-<li><p>Start with outputs that passed ACRO checks - these are typically safe to approve</p></li>
-<li><p>Pay special attention to failed outputs and exception requests</p></li>
-<li><p>Document your reasoning in review comments for audit purposes</p></li>
-<li><p>Verify file contents match the researcher’s description</p></li>
-</ul>
-</dd>
-<dt><strong>Security Considerations</strong></dt><dd><ul class="simple">
-<li><p>Always verify file checksums match the expected values</p></li>
-<li><p>Be cautious with outputs containing small cell counts or potentially identifying information</p></li>
-<li><p>Consider the cumulative disclosure risk across multiple related outputs</p></li>
-<li><p>When in doubt, err on the side of caution and reject questionable outputs</p></li>
-</ul>
-</dd>
-<dt><strong>Efficiency Tips</strong></dt><dd><ul class="simple">
-<li><p>Use keyboard shortcuts where available for faster navigation</p></li>
-<li><p>Group similar outputs for batch review when appropriate</p></li>
-<li><p>Keep researcher contact information handy for clarification requests</p></li>
-<li><p>Maintain consistent approval criteria across similar output types</p></li>
-</ul>
-</dd>
-</dl>
+<p>For additional support, please visit the <a class="reference external" href="https://github.com/AI-SDC/SACRO-Viewer/issues">GitHub Issues page</a>.</p>
 </section>
 </section>
 
@@ -514,20 +455,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="installation.html"
+       href="introduction.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Install</p>
+        <p class="prev-next-title">Welcome to SACRO Viewer</p>
       </div>
     </a>
     <a class="right-next"
-       href="contribution_guide.html"
+       href="user_guide.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Contribution Guide</p>
+        <p class="prev-next-title">User Guide</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -550,13 +491,13 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#main-interface">Main Interface</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#making-review-decisions">Making Review Decisions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-types-and-display">File Types and Display</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#completing-the-review">Completing the Review</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#working-with-different-output-types">Working with Different Output Types</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices">Best Practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-requirements">System Requirements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#windows-installation">Windows Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linux-installation">Linux Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#macos-installation">macOS Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-builds">Development Builds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-data">Sample Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
   </nav></div>
 
@@ -564,7 +505,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/user_guide.rst.txt"
+      <li><a href="_sources/installation.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

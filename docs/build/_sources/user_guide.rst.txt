@@ -1,6 +1,6 @@
-=====
-Guide
-=====
+==========
+User Guide
+==========
 
 This guide explains how to use SACRO Viewer to review research outputs and manage the approval process for secure release.
 
@@ -25,14 +25,14 @@ The SACRO Viewer interface consists of three main areas:
 
 **Output List (Left Panel)**
   Shows all outputs in the selected directory with their names and types. Outputs are color-coded:
-
+  
   * **Red icons**: Failed ACRO checks or outputs requiring attention
   * **Blue icons**: Passed ACRO checks or successful outputs
   * **Gray icons**: Custom outputs (non-ACRO files)
 
 **File Viewer (Bottom Right)**
   Displays the contents of the selected output file. Supports various formats:
-
+  
   * **CSV files**: Displayed as formatted tables with cell highlighting
   * **Images**: PNG, JFIF, and other image formats shown inline
   * **Text files**: Plain text with syntax highlighting
@@ -40,7 +40,7 @@ The SACRO Viewer interface consists of three main areas:
 
 **Review Panel (Top Right)**
   Contains all information needed for making approval decisions:
-
+  
   * **ACRO Status**: Shows pass/fail status and any warnings
   * **Comments**: Researcher-provided comments and justifications
   * **Exception Request**: Any special requests from the researcher

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Developer &#8212; SACRO Viewer 0.1.0 documentation</title>
+    <title>Contribution Guide &#8212; SACRO Viewer 0.1.0 documentation</title>
   
   
   
@@ -32,7 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=f851bdee" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=3c79f7f1" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -44,11 +44,10 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guide';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'contribution_guide';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API" href="api_reference.html" />
-    <link rel="prev" title="Architecture" href="architecture.html" />
+    <link rel="prev" title="User Guide" href="user_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -135,63 +134,25 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="installation.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
-    Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="faq.html">
-    F.A.Q
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="architecture.html">
-    Architecture
+    User Guide
   </a>
 </li>
 
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    Developer
+    Contribution Guide
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="api_reference.html">
-    API
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="changelog.html">
-    Changes
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="support.html">
-    Help
-  </a>
-</li>
-
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -273,50 +234,22 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="installation.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
-    Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="faq.html">
-    F.A.Q
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="architecture.html">
-    Architecture
+    User Guide
   </a>
 </li>
 
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    Developer
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api_reference.html">
-    API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="changelog.html">
-    Changes
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="support.html">
-    Help
+    Contribution Guide
   </a>
 </li>
 
@@ -386,7 +319,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Developer</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Contribution Guide</span></li>
   </ul>
 </nav>
 </div>
@@ -403,8 +336,8 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="developer">
-<h1>Developer<a class="headerlink" href="#developer" title="Link to this heading">#</a></h1>
+  <section id="contribution-guide">
+<h1>Contribution Guide<a class="headerlink" href="#contribution-guide" title="Link to this heading">#</a></h1>
 <p>This guide provides information for developers who want to contribute to SACRO Viewer, set up a development environment, or understand the codebase structure.</p>
 <section id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h2>
@@ -821,36 +754,6 @@ just<span class="w"> </span>sacro-app/build
 </ul>
 </section>
 </section>
-<section id="architecture-decisions">
-<h2>Architecture Decisions<a class="headerlink" href="#architecture-decisions" title="Link to this heading">#</a></h2>
-<p>The project follows several architectural principles documented in ADRs:</p>
-<p><strong>Separation of Concerns:</strong></p>
-<ul class="simple">
-<li><p>Django handles data processing and business logic</p></li>
-<li><p>Electron provides desktop integration and UI</p></li>
-<li><p>Clear API boundaries between components</p></li>
-</ul>
-<p><strong>Security First:</strong></p>
-<ul class="simple">
-<li><p>Local-only operation for TRE compatibility</p></li>
-<li><p>Token-based authentication between components</p></li>
-<li><p>Strict file path validation</p></li>
-<li><p>No external network dependencies</p></li>
-</ul>
-<p><strong>Cross-Platform Support:</strong></p>
-<ul class="simple">
-<li><p>Single codebase for all platforms</p></li>
-<li><p>Platform-specific packaging and installers</p></li>
-<li><p>Native OS integration where appropriate</p></li>
-</ul>
-<p><strong>Developer Experience:</strong></p>
-<ul class="simple">
-<li><p>Hot-reload in development</p></li>
-<li><p>Comprehensive test suite</p></li>
-<li><p>Clear documentation and examples</p></li>
-<li><p>Automated quality checks</p></li>
-</ul>
-</section>
 <section id="future-development">
 <h2>Future Development<a class="headerlink" href="#future-development" title="Link to this heading">#</a></h2>
 <section id="planned-features">
@@ -904,22 +807,13 @@ just<span class="w"> </span>sacro-app/build
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="architecture.html"
+       href="user_guide.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Architecture</p>
+        <p class="prev-next-title">User Guide</p>
       </div>
-    </a>
-    <a class="right-next"
-       href="api_reference.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -984,7 +878,6 @@ just<span class="w"> </span>sacro-app/build
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#production-debugging">Production Debugging</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture-decisions">Architecture Decisions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#future-development">Future Development</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#planned-features">Planned Features</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-areas">Contributing Areas</a></li>
@@ -998,7 +891,7 @@ just<span class="w"> </span>sacro-app/build
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/developer_guide.rst.txt"
+      <li><a href="_sources/contribution_guide.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

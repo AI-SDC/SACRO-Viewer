@@ -20,12 +20,8 @@ Our tools are designed to help researchers assess the privacy disclosure risks o
    introduction
    installation
    user_guide
-   faq
-   architecture
-   developer_guide
-   api_reference
-   changelog
-   support
+   contribution_guide
+
 
 .. grid:: 2
 
@@ -96,7 +92,7 @@ SACRO Viewer is a desktop application for reviewing research outputs produced us
    **Current Version:** v0.1.0 - Cross-platform desktop application with Windows, Linux, and macOS support.
 
 What is SACRO Viewer?
-====================
+=====================
 
 SACRO Viewer is a desktop application that:
 
@@ -110,7 +106,7 @@ Core Features
 =============
 
 Comprehensive Output Review
---------------------------
+---------------------------
 
 * **ACRO Integration**: Automatically detects and loads ACRO-generated metadata
 * **File Display**: View various file types including CSV, images, and text files
@@ -120,7 +116,7 @@ Comprehensive Output Review
 * **Secure Release**: Generate zipfiles containing only approved outputs
 
 Design Principles
-----------------
+-----------------
 
 * **Desktop Application**: Runs locally without requiring internet connectivity
 * **Cross-platform**: Available for Windows, Linux, and macOS
@@ -171,7 +167,7 @@ Key Components
 * **Release Manager**: Generate approved output packages for secure release
 
 Developer Resources
-==================
+===================
 
 .. grid:: 3
 
