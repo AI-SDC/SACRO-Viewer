@@ -1,0 +1,366 @@
+=====
+F.A.Q
+=====
+
+This page answers common questions about SACRO Viewer installation, usage, and troubleshooting.
+
+General Questions
+================
+
+What is SACRO Viewer?
+--------------------
+
+SACRO Viewer is a desktop application for reviewing research outputs that have been processed by ACRO (Automatic Checking of Research Outputs) tools. It provides a graphical interface for output checkers to review files, examine statistical disclosure control assessments, and approve outputs for release from Trusted Research Environments (TREs).
+
+Who should use SACRO Viewer?
+----------------------------
+
+SACRO Viewer is designed for:
+
+* **Output checkers** responsible for reviewing research outputs before release
+* **Data managers** overseeing statistical disclosure control processes
+* **TRE administrators** managing secure research environments
+* **Researchers** who need to understand the output review process
+
+The application requires no programming knowledge and is designed for non-technical users.
+
+How does SACRO Viewer relate to ACRO?
+-------------------------------------
+
+SACRO Viewer is the final step in the ACRO workflow:
+
+1. **Researchers** use ACRO tools to analyze data and generate outputs
+2. **ACRO** performs statistical disclosure control checks and creates metadata
+3. **SACRO Viewer** loads the outputs and metadata for human review
+4. **Output checkers** use SACRO Viewer to approve/reject outputs for release
+
+What file formats does SACRO Viewer support?
+--------------------------------------------
+
+SACRO Viewer can display:
+
+* **CSV files**: Formatted tables with cell highlighting
+* **Images**: PNG, JFIF, and other common image formats
+* **Text files**: Plain text with syntax highlighting
+* **JSON files**: Formatted JSON with proper indentation
+* **Other formats**: Generic file viewer with option to open in external applications
+
+Installation Questions
+=====================
+
+Do I need to install Python or other dependencies?
+--------------------------------------------------
+
+No. SACRO Viewer includes everything needed to run:
+
+* **Self-contained**: Includes Python runtime and all dependencies
+* **No setup required**: Just install and run
+* **Offline operation**: Works without internet connectivity
+
+The installers are complete packages that don't require additional software.
+
+Why does my antivirus software flag SACRO Viewer?
+-------------------------------------------------
+
+This is common with new applications:
+
+* **False positive**: Antivirus software may flag unknown executables
+* **Code signing**: Open source applications often lack expensive code signing certificates
+* **Whitelist option**: Add SACRO Viewer to your antivirus whitelist
+* **Verify source**: Download only from official GitHub releases
+
+The application is safe and contains no malicious code.
+
+Can I install SACRO Viewer without administrator privileges?
+-----------------------------------------------------------
+
+**Windows**: Administrator privileges are typically required for MSI installers. Contact your IT department if you cannot install software.
+
+**Linux**: You can install the DEB package to your home directory using ``dpkg --force-not-root --root=$HOME``.
+
+**macOS**: You can copy the app to any folder, not just Applications.
+
+Usage Questions
+==============
+
+How do I load outputs for review?
+---------------------------------
+
+1. **Launch SACRO Viewer**
+2. **Select directory** containing your research outputs
+3. **Automatic detection**: SACRO Viewer finds ACRO metadata or creates it
+4. **Review interface**: Outputs appear in the left panel for review
+
+The application automatically handles both ACRO-generated and custom outputs.
+
+What if my directory doesn't have ACRO metadata?
+------------------------------------------------
+
+SACRO Viewer automatically creates metadata for directories without ACRO files:
+
+* **Custom outputs**: All files treated as requiring manual review
+* **Generic metadata**: Basic information generated for each file
+* **Same workflow**: Review process identical to ACRO outputs
+* **Checksum generation**: File integrity checksums created automatically
+
+This allows reviewing any research outputs, not just those from ACRO.
+
+How do I know if an output is safe to approve?
+----------------------------------------------
+
+Consider these factors:
+
+**ACRO Status:**
+  * **Pass**: ACRO determined output is safe for release
+  * **Fail**: ACRO identified potential disclosure risks
+  * **Review**: Manual assessment required
+
+**Researcher Comments:**
+  * Read justifications and context provided by researchers
+  * Look for exception requests and their reasoning
+  * Consider the research purpose and methodology
+
+**File Contents:**
+  * Verify contents match researcher descriptions
+  * Check for small cell counts or identifying information
+  * Consider cumulative disclosure risk across multiple outputs
+
+**Best Practice**: When in doubt, err on the side of caution and reject questionable outputs.
+
+Can I approve outputs in batches?
+---------------------------------
+
+Currently, SACRO Viewer requires individual approval decisions for each output:
+
+* **Individual review**: Each output must be explicitly approved or rejected
+* **Deliberate design**: Ensures careful consideration of each item
+* **Audit trail**: Maintains clear record of decisions
+* **Future enhancement**: Batch operations may be added in future versions
+
+What happens to rejected outputs?
+--------------------------------
+
+Rejected outputs are:
+
+* **Excluded from release**: Not included in the final ZIP package
+* **Recorded in audit**: Decision logged with reviewer comments
+* **Researcher feedback**: Rejection reasons can be communicated back
+* **Resubmission possible**: Researchers can address issues and resubmit
+
+The original files remain unchanged in the source directory.
+
+Technical Questions
+==================
+
+Why does SACRO Viewer use both Python and Electron?
+---------------------------------------------------
+
+This hybrid architecture provides several benefits:
+
+* **Developer expertise**: Team familiar with Python for business logic
+* **Web deployment**: Django app can be deployed as web service in future
+* **Cross-platform**: Electron provides consistent desktop experience
+* **Security**: Local operation suitable for TRE environments
+* **Flexibility**: Web technologies allow rapid UI development
+
+Can SACRO Viewer be deployed as a web application?
+--------------------------------------------------
+
+Yes, the Django backend can be deployed as a web service:
+
+* **Web deployment ready**: Django app designed for web deployment
+* **Authentication needed**: Would require user authentication system
+* **File access**: Would need secure file upload/download mechanisms
+* **TRE compatibility**: May not be suitable for all TRE environments
+
+The desktop version is currently recommended for TRE use.
+
+How does SACRO Viewer ensure security?
+--------------------------------------
+
+Several security measures are implemented:
+
+**Local Operation:**
+  * No external network connections required
+  * All processing happens on local machine
+  * No data transmitted outside TRE
+
+**File Access Control:**
+  * Strict path validation prevents directory traversal
+  * Only approved directories accessible
+  * File integrity verified with checksums
+
+**Inter-Process Security:**
+  * Random tokens secure Electron-Python communication
+  * Localhost-only HTTP binding
+  * Request validation prevents unauthorized access
+
+What are the system requirements?
+---------------------------------
+
+**Minimum Requirements:**
+
+* **Windows**: Windows 10 or later
+* **Linux**: Ubuntu 18.04 or equivalent (64-bit)
+* **macOS**: macOS 10.14 (Mojave) or later
+* **Memory**: 4GB RAM recommended
+* **Storage**: 500MB free space for installation
+
+**Performance Notes:**
+
+* Large directories (>1000 files) may load slowly
+* Individual files >200MB may display slowly
+* SSD storage recommended for better performance
+
+Troubleshooting Questions
+========================
+
+SACRO Viewer won't start - what should I do?
+--------------------------------------------
+
+Try these steps in order:
+
+1. **Restart computer**: Clears any system conflicts
+2. **Run as administrator**: Right-click and "Run as administrator" (Windows)
+3. **Check antivirus**: Temporarily disable or whitelist SACRO Viewer
+4. **Reinstall application**: Download fresh copy and reinstall
+5. **Check system requirements**: Verify OS version compatibility
+
+If problems persist, report an issue on GitHub with system details.
+
+Files aren't displaying correctly - why?
+----------------------------------------
+
+Common causes and solutions:
+
+**Corrupted Files:**
+  * Check file checksums in SACRO Viewer
+  * Verify files open correctly in other applications
+  * Regenerate outputs if possible
+
+**File Format Issues:**
+  * Ensure file extensions match actual content
+  * Try opening with external application using "Open file" button
+  * Check for special characters in filenames
+
+**Permission Problems:**
+  * Verify read access to output directory
+  * Check files aren't locked by other applications
+  * Try copying files to different location
+
+The application can't find my ACRO metadata - help!
+---------------------------------------------------
+
+SACRO Viewer looks for metadata in this order:
+
+1. **outputs.json** (preferred filename)
+2. **Single JSON file** in directory
+3. **Valid ACRO JSON** files (error if multiple found)
+4. **Creates metadata** if none found
+
+**Troubleshooting:**
+
+* Ensure JSON file is valid (check syntax)
+* Verify file contains required ACRO structure
+* Check file permissions allow reading
+* Try renaming JSON file to "outputs.json"
+
+How do I report bugs or request features?
+-----------------------------------------
+
+**GitHub Issues**: https://github.com/AI-SDC/SACRO-Viewer/issues
+
+**When reporting bugs, include:**
+
+* Operating system and version
+* SACRO Viewer version number
+* Steps to reproduce the problem
+* Error messages or screenshots
+* Sample files (if safe to share)
+
+**For feature requests:**
+
+* Describe the use case and workflow
+* Explain how it would improve your work
+* Consider contributing code if you have development skills
+
+Advanced Questions
+=================
+
+Can I customize SACRO Viewer for my organization?
+-------------------------------------------------
+
+SACRO Viewer is open source and can be customized:
+
+* **Source code**: Available on GitHub under open license
+* **Branding**: Logos and styling can be modified
+* **Functionality**: Additional features can be added
+* **Deployment**: Can be packaged for internal distribution
+
+See the Developer Guide for technical details.
+
+How do I integrate SACRO Viewer with other tools?
+-------------------------------------------------
+
+Integration options include:
+
+**File System Integration:**
+  * SACRO Viewer reads standard ACRO JSON format
+  * Outputs can be generated by any ACRO-compatible tool
+  * Release packages use standard ZIP format
+
+**API Integration:**
+  * Django backend exposes HTTP API
+  * Can be integrated with web-based workflows
+  * Programmatic access to review functionality
+
+**Workflow Integration:**
+  * Command-line tools can generate ACRO metadata
+  * Release packages can be processed by automated systems
+  * Audit logs can be integrated with compliance systems
+
+Can SACRO Viewer handle very large datasets?
+--------------------------------------------
+
+SACRO Viewer is optimized for typical research output volumes:
+
+**Supported Scales:**
+  * Hundreds of output files per directory
+  * Individual files up to several hundred MB
+  * Thousands of cells in statistical tables
+
+**Performance Considerations:**
+  * Large files may display slowly or be truncated
+  * Many files may slow initial loading
+  * Memory usage scales with directory size
+
+**Optimization Tips:**
+  * Split large outputs into smaller files when possible
+  * Use SSD storage for better performance
+  * Close other applications to free memory
+  * Consider reviewing outputs in smaller batches
+
+What's the roadmap for future development?
+-----------------------------------------
+
+Planned improvements include:
+
+**Near Term:**
+  * Enhanced file format support
+  * Improved performance for large datasets
+  * Better accessibility features
+  * Additional ACRO version compatibility
+
+**Medium Term:**
+  * Web deployment capabilities
+  * Batch operation support
+  * Enhanced audit and reporting features
+  * Plugin architecture for extensibility
+
+**Long Term:**
+  * Integration with additional TRE platforms
+  * Advanced statistical disclosure control features
+  * Machine learning-assisted review recommendations
+  * Multi-user collaboration features
+
+The development roadmap is driven by user feedback and community contributions.

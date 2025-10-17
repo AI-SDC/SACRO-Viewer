@@ -5,7 +5,7 @@ Welcome to SACRO Viewer
 SACRO Viewer is a desktop application designed for reviewing research outputs produced using the `ACRO <https://github.com/AI-SDC/ACRO>`_ tools. It provides a graphical user interface that enables output checkers to efficiently review files, researcher comments, and statistical analysis outcomes in a secure environment.
 
 What is SACRO Viewer?
-=====================
+====================
 
 SACRO Viewer serves as the final step in the statistical disclosure control workflow. After researchers have used ACRO tools to analyze their data and generate outputs with privacy assessments, SACRO Viewer allows authorized personnel to:
 

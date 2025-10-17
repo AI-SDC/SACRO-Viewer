@@ -1,0 +1,219 @@
+============
+Architecture
+============
+
+SACRO Viewer is built as a hybrid desktop application combining a Python web backend with an Electron frontend. This architecture provides the flexibility of web technologies while maintaining the security and offline capabilities required for Trusted Research Environments (TREs).
+
+System Overview
+===============
+
+The application consists of two main components:
+
+**Python Web Application**
+  A Django-based web service that handles file processing, ACRO metadata parsing, and output review logic. This component runs locally and provides a REST API for the frontend.
+
+**Electron Desktop Application**
+  A cross-platform desktop wrapper that packages the web application with a Chromium browser, providing native OS integration and file system access.
+
+Architecture Diagram
+===================
+
+.. code-block:: text
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │                    Electron Shell                           │
+    │  ┌─────────────────────────────────────────────────────┐    │
+    │  │              Chromium Browser                       │    │
+    │  │  ┌─────────────────────────────────────────────┐    │    │
+    │  │  │            Web UI (HTML/CSS/JS)             │    │    │
+    │  │  └─────────────────────────────────────────────┘    │    │
+    │  └─────────────────────────────────────────────────────┘    │
+    │                           │                                 │
+    │                      HTTP Requests                         │
+    │                           │                                 │
+    │  ┌─────────────────────────────────────────────────────┐    │
+    │  │              Python Web Server                      │    │
+    │  │  ┌─────────────────────────────────────────────┐    │    │
+    │  │  │            Django Application               │    │    │
+    │  │  │  • ACRO Metadata Parser                     │    │    │
+    │  │  │  • File Content Handler                     │    │    │
+    │  │  │  • Review Logic                             │    │    │
+    │  │  │  • ZIP Generation                           │    │    │
+    │  │  └─────────────────────────────────────────────┘    │    │
+    │  └─────────────────────────────────────────────────────┘    │
+    └─────────────────────────────────────────────────────────────┘
+                                   │
+                              File System
+                                   │
+    ┌─────────────────────────────────────────────────────────────┐
+    │                    Local File System                        │
+    │  • ACRO Output Files                                        │
+    │  • Metadata (outputs.json)                                 │
+    │  • Checksums Directory                                     │
+    │  • Generated Release Packages                              │
+    └─────────────────────────────────────────────────────────────┘
+
+Core Components
+===============
+
+Django Web Application
+---------------------
+
+**Models (sacro/models.py)**
+  * ``ACROOutputs``: Main class for parsing and managing ACRO metadata
+  * ``find_acro_metadata()``: Automatically detects ACRO files in directories
+  * ``scaffold_acro_metadata()``: Generates metadata for non-ACRO files
+
+**Views (sacro/views.py)**
+  * ``index()``: Main application interface
+  * ``contents()``: Secure file content delivery
+  * ``review_create()``: Handles approval/rejection decisions
+  * ``approved_outputs()``: Generates release packages
+
+**Security Features**
+  * Random token-based authentication between Electron and Python
+  * File path validation to prevent directory traversal
+  * Checksum verification for file integrity
+
+Electron Application
+-------------------
+
+**Main Process (sacro-app/main.js)**
+  * Application lifecycle management
+  * Python server startup and shutdown
+  * Native OS integration (file dialogs, menus)
+
+**Renderer Process**
+  * Web-based user interface
+  * File system integration
+  * Native file opening capabilities
+
+Data Flow
+=========
+
+File Loading Process
+-------------------
+
+1. **Directory Selection**: User selects output directory via Electron file dialog
+2. **Metadata Detection**: Python backend scans for ACRO metadata files
+3. **Metadata Parsing**: ACRO outputs.json is parsed and validated
+4. **File Annotation**: Checksums verified, URLs generated, cell data indexed
+5. **UI Rendering**: Outputs displayed in web interface with review controls
+
+Review Process
+-------------
+
+1. **File Display**: Selected output files rendered in appropriate viewers
+2. **Decision Capture**: User approval/rejection decisions stored in memory
+3. **Validation**: All outputs must have decisions before release
+4. **Package Generation**: Approved files packaged into ZIP with metadata
+5. **Audit Logging**: Review decisions logged for compliance
+
+Security Model
+==============
+
+Local-Only Operation
+-------------------
+
+* **No Network Dependencies**: Application runs entirely offline
+* **Local File Access**: Direct file system access for TRE compatibility
+* **Embedded Python**: Self-contained Python runtime via PyOxidizer
+
+Authentication
+-------------
+
+* **Token-Based Security**: Random tokens secure Electron-Python communication
+* **Path Validation**: Strict validation prevents unauthorized file access
+* **Checksum Verification**: File integrity checks prevent tampering
+
+File System Security
+-------------------
+
+* **Sandboxed Access**: Only approved directories accessible
+* **Read-Only Operations**: Original files never modified
+* **Secure Packaging**: Release packages contain only approved content
+
+Technology Stack
+================
+
+Backend Technologies
+-------------------
+
+* **Python 3.10**: Core runtime environment
+* **Django**: Web framework for HTTP API and templating
+* **PyOxidizer**: Python application packaging and distribution
+
+Frontend Technologies
+--------------------
+
+* **Electron**: Cross-platform desktop application framework
+* **HTML/CSS/JavaScript**: Web-based user interface
+* **Vite**: Modern build tool for frontend assets
+* **Tailwind CSS**: Utility-first CSS framework
+
+Build and Distribution
+=====================
+
+Development Workflow
+-------------------
+
+* **just**: Task runner for development commands
+* **Vite Dev Server**: Hot-reload development environment
+* **Cypress**: End-to-end testing framework
+* **pytest**: Python unit testing
+
+Production Build
+---------------
+
+* **PyOxidizer**: Compiles Python to native executable
+* **Electron Builder**: Creates platform-specific installers
+* **GitHub Actions**: Automated CI/CD pipeline
+
+Platform Support
+---------------
+
+* **Windows**: MSI installer packages
+* **Linux**: DEB packages for Ubuntu/Debian
+* **macOS**: DMG disk images with app bundles
+
+Design Decisions
+================
+
+Architecture Decision Records (ADRs) document key technical decisions:
+
+* **ADR-001**: Use of Architecture Decision Records for documentation
+* **ADR-002**: Cypress for end-to-end testing framework
+* **ADR-003**: Python with PyOxidizer for application logic
+* **ADR-004**: Electron for cross-platform desktop packaging
+* **ADR-005**: Django framework for web application structure
+
+These decisions prioritize:
+
+* **Developer Familiarity**: Python expertise over JavaScript
+* **Future Flexibility**: Web app can be deployed as service
+* **Security Requirements**: Offline operation for TRE environments
+* **Cross-Platform Support**: Single codebase for all platforms
+
+Performance Considerations
+=========================
+
+File Handling
+------------
+
+* **Lazy Loading**: Files loaded only when viewed
+* **Checksum Caching**: File integrity checks cached for performance
+* **Memory Management**: Large files handled via streaming
+
+UI Responsiveness
+----------------
+
+* **Asynchronous Operations**: Non-blocking file operations
+* **Progressive Enhancement**: Core functionality works without JavaScript
+* **Efficient Rendering**: Minimal DOM updates for large file lists
+
+Scalability Limits
+-----------------
+
+* **Directory Size**: Optimized for typical research output volumes
+* **File Count**: Tested with hundreds of outputs per directory
+* **File Size**: Individual files up to several hundred MB supported
