@@ -83,10 +83,6 @@ Electron Application
   * Python server startup and shutdown
   * Native OS integration (file dialogs, menus)
 
-**Renderer Process**
-  * Web-based user interface
-  * File system integration
-  * Native file opening capabilities
 
 Data Flow
 =========
