@@ -87,15 +87,6 @@ Electron Application
 Data Flow
 =========
 
-File Loading Process
--------------------
-
-1. **Directory Selection**: User selects output directory via Electron file dialog
-2. **Metadata Detection**: Python backend scans for ACRO metadata files
-3. **Metadata Parsing**: ACRO outputs.json is parsed and validated
-4. **File Annotation**: Checksums verified, URLs generated, cell data indexed
-5. **UI Rendering**: Outputs displayed in web interface with review controls
-
 Review Process
 -------------
 
