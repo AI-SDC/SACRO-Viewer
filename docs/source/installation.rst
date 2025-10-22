@@ -91,9 +91,9 @@ Troubleshooting
 
 **Linux: Permission denied errors**
   Ensure you have sudo privileges and the downloaded ``.deb`` file has execute permissions:
-  
+
   .. code-block:: bash
-  
+
      chmod +x sacro_0.1.0_amd64.deb
 
 **Application won't start**

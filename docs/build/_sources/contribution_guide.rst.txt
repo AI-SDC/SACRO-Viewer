@@ -80,7 +80,7 @@ For frontend development with hot-reload:
 
    # Start Django server first
    just run &
-   
+
    # Set the URL and start Electron
    export SACRO_URL=http://127.0.0.1:8000
    just sacro-app/run
@@ -134,10 +134,10 @@ Key functions:
 
    # Load ACRO outputs from a directory
    outputs = models.load_from_path(path_to_json)
-   
+
    # Get file path for an output
    file_path = outputs.get_file_path(output_id, filename)
-   
+
    # Auto-detect ACRO metadata
    metadata_path = models.find_acro_metadata(directory_path)
 
@@ -177,10 +177,10 @@ Handles:
 
    // Start Python server
    const server = startServer();
-   
+
    // Create application window
    const window = createWindow(serverUrl);
-   
+
    // Handle file dialogs
    const directory = await dialog.showOpenDialog({
      properties: ['openDirectory']
@@ -245,10 +245,10 @@ Python unit tests using pytest:
 
    # Run all tests
    just test
-   
+
    # Run specific test file
    just test tests/test_models.py
-   
+
    # Run with coverage
    just test --cov
 
@@ -268,7 +268,7 @@ Cypress tests for full application workflows:
 
    # Interactive test runner
    npm run cypress:open
-   
+
    # Headless test execution
    npm run cypress:run
 
@@ -291,10 +291,10 @@ Linting and Formatting
 
    # Format code
    just format
-   
+
    # Check style
    just lint
-   
+
    # Type checking
    just check
 
@@ -304,7 +304,7 @@ Linting and Formatting
 
    # Lint JavaScript
    npm run lint
-   
+
    # Format code
    npm run format
 
@@ -316,7 +316,7 @@ The project uses pre-commit hooks to ensure code quality:
 
    # Install hooks
    pre-commit install
-   
+
    # Run manually
    pre-commit run --all-files
 
@@ -418,7 +418,7 @@ Development Debugging
 
    # Add breakpoints
    import pdb; pdb.set_trace()
-   
+
    # Use Django debug toolbar
    # Enable in settings.py for detailed request info
 
@@ -428,7 +428,7 @@ Development Debugging
 
    // Open DevTools
    mainWindow.webContents.openDevTools();
-   
+
    // Console logging
    console.log('Debug info:', data);
 

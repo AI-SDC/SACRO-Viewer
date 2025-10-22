@@ -23,24 +23,39 @@ Main Interface
 
 The SACRO Viewer interface consists of three main areas:
 
+.. image:: images/Output_List.png
+   :alt: Main Interface
+   :align: center
+   :width: 80%
+
 **Output List (Left Panel)**
   Shows all outputs in the selected directory with their names and types. Outputs are color-coded:
-  
+
   * **Red icons**: Failed ACRO checks or outputs requiring attention
   * **Blue icons**: Passed ACRO checks or successful outputs
   * **Gray icons**: Custom outputs (non-ACRO files)
 
+.. image:: images/File_Viewer.png
+   :alt: Main Interface
+   :align: center
+   :width: 80%
+
 **File Viewer (Bottom Right)**
   Displays the contents of the selected output file. Supports various formats:
-  
+
   * **CSV files**: Displayed as formatted tables with cell highlighting
   * **Images**: PNG, JFIF, and other image formats shown inline
   * **Text files**: Plain text with syntax highlighting
   * **JSON files**: Formatted JSON with proper indentation
 
+.. image:: images/Review_Panel.png
+   :alt: Main Interface
+   :align: center
+   :width: 80%
+
 **Review Panel (Top Right)**
   Contains all information needed for making approval decisions:
-  
+
   * **ACRO Status**: Shows pass/fail status and any warnings
   * **Comments**: Researcher-provided comments and justifications
   * **Exception Request**: Any special requests from the researcher
