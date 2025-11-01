@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: "3.10"
           install-just: true
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: "npm"
@@ -42,7 +42,7 @@ jobs:
           install-just: true
       # our just setup doesn't make just available on the path
       - uses: extractions/setup-just@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: "npm"
@@ -104,7 +104,7 @@ jobs:
       - uses: "opensafely-core/setup-action@v1"
         with:
           python-version: "3.10"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: "npm"
