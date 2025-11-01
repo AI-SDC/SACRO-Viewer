@@ -58,7 +58,7 @@ jobs:
       - name: Run tests
         run: just test
       - name: Cypress run
-        uses: cypress-io/github-action@6c143abc292aa835d827652c2ea025d098311070 #v6.10.1
+        uses: cypress-io/github-action@e65cba2e7319696fc0fdc4d5a319b737aec4ba1c #v6.10.3
         with:
           start: just run
           wait-on: "http://localhost:8000/"
