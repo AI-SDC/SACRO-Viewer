@@ -69,5 +69,8 @@ napoleon_use_rtype = True
 # Intersphinx mapping for external documentation
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    "django": ("https://docs.djangoproject.com/en/stable/", "https://docs.djangoproject.com/en/stable/_objects/"),
+    "django": (
+        "https://docs.djangoproject.com/en/stable/",
+        "https://docs.djangoproject.com/en/stable/_objects/",
+    ),
 }
