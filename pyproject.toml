@@ -52,5 +52,8 @@ extend-ignore = [
   "E731",
 ]
 
+[tool.ruff.lint.extend-per-file-ignores]
+"docs/source/*" = ["A001", "INP001", "I001"]
+
 [tool.ruff.isort]
 lines-after-imports = 2
