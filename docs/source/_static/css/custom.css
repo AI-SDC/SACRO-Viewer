@@ -1,3 +1,22 @@
+.bd-main .bd-content .bd-article-container {
+    max-width: none;
+}
+
+
+.highlight {
+    margin: 1em 0;
+}
+
+
+.sd-card {
+    margin-bottom: 1rem;
+}
+
+
+.admonition {
+    margin: 1.5em 0;
+}
+
 
 .sd-card {
     transition: transform 0.2s ease-in-out;

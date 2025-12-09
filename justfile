@@ -121,6 +121,14 @@ test-e2e: devenv test-outputs collectstatic
 test-cypress: devenv test-outputs collectstatic
     npm run cypress:open
 
+# run black formatter
+black: devenv
+    $BIN/black .
+
+# run ruff linter
+ruff: devenv
+    $BIN/ruff check --fix .
+
 # run the various linter does not change any files
 check: devenv assets-install
     $BIN/black --check .
@@ -200,6 +208,7 @@ assets-run: assets-install
 
 # Ensure django's collectstatic is run if needed
 collectstatic: devenv assets
+    chmod +x ./scripts/collect-me-maybe.sh
     ./scripts/collect-me-maybe.sh $BIN/python
 
 # fetch nursery test data

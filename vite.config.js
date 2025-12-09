@@ -9,6 +9,7 @@ export default defineConfig({
         "./assets/src/scripts/base.js",
         "./assets/src/scripts/index.js",
         "./assets/src/scripts/review.js",
+        "./assets/src/scripts/researcher.js",
       ],
     },
     outDir: "assets/dist",

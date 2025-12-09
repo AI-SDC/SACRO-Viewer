@@ -1,16 +1,17 @@
-"""Configuration file for the Sphinx documentation builder."""
+"""Configuration file for the Sphinx documentation builder."""  # noqa: INP001
 
 # -- Path setup --------------------------------------------------------------
 
 import os
 import sys
 
+
 sys.path.insert(0, os.path.abspath("../../"))
 
 # -- Project information -----------------------------------------------------
 
 project = "SACRO Viewer"
-copyright = "2025, GRAIMATTER and SACRO Project Team"
+copyright = "2025, GRAIMATTER and SACRO Project Team"  # noqa: A001
 author = "GRAIMATTER and SACRO Project Team"
 release = "0.1.0"
 
