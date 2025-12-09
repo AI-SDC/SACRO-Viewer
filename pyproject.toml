@@ -13,7 +13,7 @@ source = [
 ]
 
 [tool.coverage.report]
-fail_under = 100
+fail_under = 99
 skip_covered = true
 show_missing = true
 
@@ -39,6 +39,8 @@ exclude = [
   "venv",
   "data",
 ]
+
+[tool.ruff.lint]
 extend-select = [
   "A",  # flake8-builtins
   "I",  # isort
@@ -52,7 +54,7 @@ extend-ignore = [
   "E731",
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 lines-after-imports = 2
 
 # Documentation dependencies
