@@ -13,7 +13,7 @@ source = [
 ]
 
 [tool.coverage.report]
-fail_under = 99
+fail_under = 100
 skip_covered = true
 show_missing = true
 
@@ -39,8 +39,6 @@ exclude = [
   "venv",
   "data",
 ]
-
-[tool.ruff.lint]
 extend-select = [
   "A",  # flake8-builtins
   "I",  # isort
@@ -54,15 +52,8 @@ extend-ignore = [
   "E731",
 ]
 
-[tool.ruff.lint.isort]
-lines-after-imports = 2
+[tool.ruff.per-file-ignores]
+"docs/source/conf.py" = ["A001", "INP001", "I001"]
 
-# Documentation dependencies
-[project.optional-dependencies]
-docs = [
-  "sphinx>=5.0",
-  "sphinx-issues",
-  "sphinx-prompt",
-  "pydata-sphinx-theme",
-  "sphinx-design",
-]
+[tool.ruff.isort]
+lines-after-imports = 2

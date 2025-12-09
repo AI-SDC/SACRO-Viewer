@@ -1,6 +1,6 @@
 describe("Start to finish user journey for rejecting all outputs and downloading the empty zip", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:8000");
+    cy.visit("http://localhost:8000/checker/?path=outputs/results.json");
   });
 
   it("Rejects all files, visits the summary page, and review details", () => {

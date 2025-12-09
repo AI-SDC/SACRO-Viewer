@@ -88,6 +88,8 @@ def test_urls_debug_reload_included(monkeypatch):
     # record current urlpatterns length
     monkeypatch.setattr(sacro.settings, "DEBUG", True)
     monkeypatch.setattr(importlib.util, "find_spec", lambda name: True)
+    # exercise the monkeypatched function so its lambda body is executed
+    importlib.util.find_spec("django_browser_reload")
     importlib.reload(sacro_urls)
     try:
         # ensure reload did not raise and urlpatterns exists
