@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: #f4f4f5; margin: 0;">
+
+  <div style="background-color: white; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-radius: 0.5rem; padding: 2rem; width: 100%; max-width: 28rem; margin: 1rem;">
+
+    <h1 style="font-size: 1.5rem; font-weight: bold; text-align: center; color: #111827; margin-bottom: 2rem;">
+      SACRO Viewer
+    </h1>
+
+
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+
+      <a
+        href="{% url 'researcher-index' %}"
+        style="background-color: #e5e7eb; color: #1f2937; font-weight: 600; padding: 1rem 1.5rem; border-radius: 0.5rem; text-align: center; text-decoration: none; transition: background-color 0.2s; display: block;"
+        onmouseover="this.style.backgroundColor='#d1d5db'"
+        onmouseout="this.style.backgroundColor='#e5e7eb'"
+      >
+        Researcher
+      </a>
+
+
+      <a
+        href="{% url 'index' %}"
+        style="background-color: #e5e7eb; color: #1f2937; font-weight: 600; padding: 1rem 1.5rem; border-radius: 0.5rem; text-align: center; text-decoration: none; transition: background-color 0.2s; display: block;"
+        onmouseover="this.style.backgroundColor='#d1d5db'"
+        onmouseout="this.style.backgroundColor='#e5e7eb'"
+      >
+        Output Checker
+      </a>
+    </div>
+  </div>
+</body>
+{% endblock content %}

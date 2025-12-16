@@ -2,10 +2,17 @@ import getpass
 import html
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
 
 from django.conf import settings
-from django.http import FileResponse, Http404, HttpResponse, HttpResponseBadRequest
+from django.http import (
+    FileResponse,
+    Http404,
+    HttpResponse,
+    HttpResponseBadRequest,
+    JsonResponse,
+)
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -17,7 +24,11 @@ from sacro.adapters import local_audit, zipfile
 
 logger = logging.getLogger(__name__)
 
+
 REVIEWS = {}
+
+
+RESEARCHER_SESSIONS = {}
 
 
 def get_filepath_from_request(data, name):
@@ -52,7 +63,6 @@ def load(request):
 @require_GET
 def index(request):
     """Render the template with all details"""
-    # quick fix for loading data in dev w/o having to mess with paths in querystrings
     data = request.GET
     if "path" not in request.GET and settings.DEBUG:
         data = {"path": "outputs/results.json"}
@@ -194,3 +204,188 @@ def summary(request, pk):
         content_type="text/plain",
         headers={"Content-Disposition": "attachment;filename=summary.txt"},
     )
+
+
+@require_GET
+def role_selection(request):
+    """
+    Landing page that shows two buttons:
+    - Researcher: for researchers to build ACRO metadata via GUI
+    - Output Checker: for output checkers to review and approve outputs
+    """
+    return TemplateResponse(request, "role_selection.html")
+
+
+@require_GET
+def researcher_index(request):
+    """
+    Main researcher interface - similar to output checker index but with
+    researcher-specific actions (add comments, add exceptions, save draft, finalize).
+
+    This view loads existing ACRO metadata or creates scaffold metadata if none exists.
+    Researchers can then add comments and exceptions via the GUI instead of writing code.
+    """
+
+    data = request.GET
+    if "path" not in request.GET and settings.DEBUG:
+        data = {"path": "outputs/results.json"}
+
+    outputs = get_outputs_from_request(data)
+
+    draft_path = outputs.path.parent / "results.json"
+    if draft_path.exists():
+        outputs = models.load_from_path(draft_path)
+
+    return TemplateResponse(
+        request,
+        "researcher_index.html",
+        context={
+            "outputs": dict(outputs),
+            "config": outputs.config,
+            "version": outputs.version,
+            "path": str(outputs.path),
+        },
+    )
+
+
+@require_GET
+def researcher_load(request):
+    """
+    Load a directory for researcher to work on.
+    Finds ACRO metadata in the directory or scaffolds new metadata if none exists.
+    """
+    dirpath = get_filepath_from_request(request.GET, "dirpath")
+    try:
+        path = models.find_acro_metadata(dirpath)
+    except models.MultipleACROFiles as exc:
+        return errors.error(request, status=500, message=str(exc))
+    return redirect(utils.reverse_with_params({"path": str(path)}, "researcher-index"))
+
+
+@require_POST
+def researcher_save_session(request):
+    """
+    Save researcher's current work as a draft session.
+    Saves to results.json file in the outputs directory.
+    """
+    try:
+        outputs = get_outputs_from_request(request.GET)
+        session_data = json.loads(request.POST.get("session_data", "{}"))
+
+        # Ensure proper structure
+        if "version" not in session_data:
+            session_data["version"] = outputs.version
+        if "results" not in session_data:
+            session_data["results"] = {}
+
+        draft_path = outputs.path.parent / "results.json"
+        with open(draft_path, "w") as f:
+            json.dump(session_data, f, indent=2)
+
+        logger.info(f"Saved draft session to {draft_path}")
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Draft saved successfully",
+                "saved_at": datetime.now().isoformat(),
+            }
+        )
+
+    except Exception as e:
+        logger.error(f"Error saving session: {e}")
+        return JsonResponse(
+            {
+                "success": False,
+                "message": str(e),
+            },
+            status=500,
+        )
+
+
+@require_GET
+def researcher_load_session(request):
+    """
+    Load a previously saved draft session from results.json.
+    """
+    try:
+        outputs = get_outputs_from_request(request.GET)
+        draft_path = outputs.path.parent / "results.json"
+
+        if not draft_path.exists():
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "No draft session found",
+                },
+                status=404,
+            )
+
+        with open(draft_path) as f:
+            session_data = json.load(f)
+
+        return JsonResponse(
+            {
+                "success": True,
+                "data": session_data,
+                "saved_at": draft_path.stat().st_mtime,
+            }
+        )
+
+    except Exception as e:
+        logger.error(f"Error loading session: {e}")
+        return JsonResponse(
+            {
+                "success": False,
+                "message": str(e),
+            },
+            status=500,
+        )
+
+
+@require_POST
+def researcher_finalize(request):
+    """
+    Finalize researcher's work and create final results.json.
+    This is the GUI equivalent of acro.finalize().
+    """
+    try:
+        outputs = get_outputs_from_request(request.GET)
+        session_data = json.loads(request.POST.get("session_data", "{}"))
+
+        if "version" not in session_data:
+            session_data["version"] = outputs.version
+        if "results" not in session_data:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "Invalid session data: missing results",
+                },
+                status=400,
+            )
+
+        with open(outputs.path, "w") as f:
+            json.dump(session_data, f, indent=2)
+
+        draft_path = outputs.path.parent / "results.json"
+        if draft_path.exists():
+            draft_path.unlink()
+
+        logger.info(f"Finalized session for {outputs.path}")
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Session finalized successfully. Ready for output checker review.",
+            }
+        )
+
+    except Exception as e:
+        logger.error(f"Error finalizing session: {e}")
+        return JsonResponse(
+            {
+                "success": False,
+                "message": str(e),
+            },
+            status=500,
+        )
