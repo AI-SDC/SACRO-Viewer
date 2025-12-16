@@ -39,7 +39,9 @@ html_theme = "pydata_sphinx_theme"
 html_theme_options = {"navigation_depth": 2}
 
 html_static_path = ["_static"]
-html_css_files = ["css/custom.css"]
+html_css_files = [
+    "css/custom.css",
+]
 
 # -- -------------------------------------------------------------------------
 
