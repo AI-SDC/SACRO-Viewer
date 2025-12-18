@@ -1,0 +1,49 @@
+{
+  "name": "@opensafely/sacro",
+  "productName": "sacro",
+  "version": "0.1.0",
+  "main": "main.js",
+  "description": "SACRO Output Viewer",
+  "author": "OpenSAFELY <tech@opensafely.org>",
+  "homepage": "https://github.com/opensafely-core/sacro",
+  "scripts": {
+    "dev": "electron . --no-sandbox",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "electron-log": "^4.4.8",
+    "minimatch": "^9.0.2",
+    "portfinder": "^1.0.32"
+  },
+  "devDependencies": {
+    "electron": "^25.2.0",
+    "electron-builder": "^23.6.0"
+  },
+  "build": {
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "msi"
+      ]
+    },
+    "linux": {
+      "target": "deb",
+      "category": "Science",
+      "icon": "build/icon.icns"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "extraResources": [
+      {
+        "from": "${env.BUILD_DIR}",
+        "to": "sacro/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}

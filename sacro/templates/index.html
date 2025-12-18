@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% load django_vite %}
+{% load static %}
+
+{% block extra_head %}
+{% vite_asset "assets/src/scripts/index.js" %}
+{% endblock %}
+
+{% block content %}
+<body class="grid h-screen overflow-hidden bg-zinc-100">
+  {% #header %}
+    {% #button disabled=True id="openModalBtn" type="submit" %}
+      Release and download
+    {% /button %}
+  {% /header %}
+
+
+  <aside class="overflow-y-auto bg-white border-r border-zinc-200 py-2">
+    <h2 id="outputListHeader" class="sr-only">Output list</h2>
+    <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of outputs" id="outputList" data-sacro-el="outputList">
+      {% for name, output in outputs.items%}
+      <li
+        aria-label="Output: {{ name }}"
+        class="
+          relative group py-0.5 px-1 hover:bg-slate-50
+          {% if output.status == "fail" %}
+          text-red-800
+          {% elif output.status == "pass" %}
+          text-blue-800
+          {% elif output.status == "review" %}
+          text-fuchsia-900
+          {% endif %}
+
+          data-[review-status=true]:bg-green-100/50
+          data-[review-status=false]:bg-red-100/50
+        "
+
+        data-output-name="{{ name }}"
+        data-review-status="none"
+      >
+        <dl class="flex flex-row gap-x-2 items-center" aria-label="Output information">
+          <div class="order-2 cursor-pointer">
+            <dt class="sr-only">Output name:</dt>
+            <dd>
+              <a class="before:absolute before:inset-0 before:w-full before:h-full">
+                <span class="relative">
+                  {{ name }}
+                </span>
+              </a>
+            </dd>
+          </div>
+          <div class="order-1">
+            <dt class="sr-only">ACRO status:</dt>
+            <dd>
+              <span class="sr-only">{{ output.status }}</span>
+              {% if output.status == "fail" %}
+              {% icon_file_x class="h-5 w-5 stroke-red-700" %}
+              {% elif output.status == "pass" %}
+              {% icon_file class="h-5 w-5 stroke-blue-700" %}
+              {% elif output.status == "review" %}
+              {% icon_file_unknown class="h-5 w-5 stroke-fuchsia-700" %}
+              {% endif %}
+            </dd>
+          </div>
+          <div class="order-3 ml-auto text-right">
+            <dt class="sr-only">Output type:</dt>
+            <dd>{{ output.properties.method|default_if_none:"" }} {{ output.type }}</dd>
+          </div>
+          <div class="order-4" data-sacro-el="file-list-review-status">
+            <dt class="sr-only">Review status:</dt>
+            <dd>
+              <span class="hidden group-data-[review-status=none]:block" data-sacro-el="file-list-review-status-null">
+                <span class="sr-only">Not yet reviewed</span>
+                <svg class="h-5 w-5"></svg>
+              </span>
+              <span class="hidden group-data-[review-status=true]:block" data-sacro-el="file-list-review-status-approved">
+                <span class="sr-only">Approved</span>
+                {% icon_check class="h-5 w-5 text-green-600" %}
+              </span>
+              <span class="hidden group-data-[review-status=false]:block" data-sacro-el="file-list-review-status-rejected">
+                <span class="sr-only">Rejected</span>
+                {% icon_x_mark class="h-5 w-5 text-red-600" %}
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+  <main class="container overflow-y-scroll">
+    {{ outputs|json_script:"outputData" }}
+
+    <details class="overflow-hidden bg-white shadow mb-3" id="riskProfile">
+      <summary class="pl-4 pr-2 py-2">
+        <h3 class="ml-1 text-base font-medium leading-7 text-gray-900">
+          ACRO risk profile
+        </h3>
+      </summary>
+      <p class="text-sm px-6 pb-2">
+        These results were generated with the following
+        <abbr title="Automated Checking of Research Outputs">ACRO</abbr>
+        risk profile:
+      </p>
+      <div class="border-t border-gray-100 pb-1">
+        <dl class="divide-y divide-gray-100">
+          {% for k, v in config.items %}
+          <div class="grid grid-cols-3 gap-4 px-6 py-2 leading-none text-sm">
+            <dt class="font-medium text-gray-900 break-words">
+              {{ k }}
+            </dt>
+            <dd class="text-gray-700 col-span-2">
+              {{ v }}
+            </dd>
+          </div>
+          {% endfor %}
+        </dl>
+      </div>
+    </details>
+
+    <div class="grid gap-y-4">
+      <div class="overflow-hidden bg-white shadow">
+        <div class="p-4">
+          <h1 class="text-xl font-semibold leading-7 text-gray-900" data-sacro-el="outputTitle">
+            Select an output
+          </h1>
+        </div>
+        <div class="border-t border-gray-100">
+          <dl class="divide-y divide-gray-100">
+            <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+              <dt class="text-sm font-medium text-gray-900">Created at</dt>
+              <dd class="text-sm leading-6 text-gray-700 col-span-3" data-sacro-el="outputCreatedDate"></dd>
+            </div>
+            <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+              <dt class="text-sm font-medium text-gray-900">Output type</dt>
+              <dd class="text-sm leading-6 text-gray-700 col-span-3" data-sacro-el="outputType"></dd>
+            </div>
+            <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+              <dt class="text-sm font-medium text-gray-900">ACRO status</dt>
+              <dd class="text-sm leading-6 text-gray-700 col-span-3">
+                <span data-sacro-el="outputDetailsStatus"></span>
+                <span data-sacro-el="outputDetailsSummary"></span>
+              </dd>
+            </div>
+            <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+              <dt class="text-sm font-medium text-gray-900">Comments</dt>
+              <dd class="text-sm leading-6 text-gray-700 col-span-3">
+                <ul data-sacro-el="outputDetailsComments" class="list-disc ml-4">
+                </ul>
+              </dd>
+            </div>
+            <div class="px-4 py-2 grid grid-cols-4 gap-4 hidden" hidden>
+              <dt class="text-sm font-medium text-gray-900">Exception request</dt>
+              <dd class="text-sm leading-6 text-gray-700 col-span-3">
+                <span data-sacro-el="outputExceptionRequest"></span>
+              </dd>
+            </div>
+          </dl>
+          <div id="reviewForm"></div>
+          <template data-sacro-el="output-details-review-form">
+            <form class="border-t border-gray-100 px-4 py-2 grid grid-cols-4 gap-4">
+              <h2 class="text-sm font-medium text-gray-900">Review</h2>
+              <div class="text-sm leading-6 text-gray-700 col-span-3">
+                <fieldset aria-describedby="reviewStatusHint">
+                  <legend class="sr-only">
+                    <h3>Select a review status</h3>
+                  </legend>
+                  <div class="text-sm font-medium text-slate-700 mb-2" id="reviewStatusHint" data-sacro-el="output-details-review-hint"></div>
+                  <div class="flex flex-row">
+                    <label for="approveRadio" class="cursor-pointer">
+                      <input
+                        class="sr-only peer"
+                        data-sacro-el="output-details-review-approve"
+                        id="approveRadio"
+                        name="reviewStatus"
+                        type="radio"
+                        value="approve"
+                      >
+                      <span
+                        class="
+                          rounded-l-md border-r-slate-400
+                          inline-flex items-center justify-center shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium
+                          hover:shadow-lg
+                          bg-transparent border border-green-700 text-green-700 hover:bg-green-100 peer-focus:bg-green-100 peer-focus:ring-green-500 peer-focus:ring-offset-white
+                          peer-checked:!bg-green-600 peer-checked:!text-white peer-checked:border peer-checked:border-green-600 peer-checked:hover:bg-green-700 peer-checked:focus:bg-green-700 peer-checked:focus:ring-green-500 peer-checked:focus:ring-offset-white
+                          peer-disabled:cursor-not-allowed peer-disabled:!bg-slate-300 peer-disabled:!text-slate-800 peer-disabled:!border-slate-400 peer-disabled:hover:shadow-none
+                        "
+                      >
+                        Approve
+                      </span>
+                    </label>
+                    <label for="rejectRadio" class="cursor-pointer">
+                      <input
+                        class="sr-only peer"
+                        data-sacro-el="output-details-review-reject"
+                        id="rejectRadio"
+                        name="reviewStatus"
+                        type="radio"
+                        value="reject"
+                      >
+                      <span
+                        class="
+                          rounded-r-md border-l-slate-400 -ml-[1px]
+                          inline-flex items-center justify-center shadow-sm transition-buttons duration-200 px-4 py-2 text-sm font-medium
+                          hover:shadow-lg
+                          bg-transparent border border-red-700 text-red-700 hover:bg-red-100 peer-focus:bg-red-100 peer-focus:ring-red-500 peer-focus:ring-offset-white
+                          peer-checked:!bg-red-600 peer-checked:!text-white peer-checked:border peer-checked:border-red-600 peer-checked:hover:bg-red-700 peer-checked:focus:bg-red-700 peer-checked:focus:ring-red-500 peer-checked:focus:ring-offset-white
+                          peer-disabled:cursor-not-allowed peer-disabled:!bg-slate-300 peer-disabled:!text-slate-800 peer-disabled:!border-slate-400 peer-disabled:hover:shadow-none
+                        "
+                      >
+                        Reject
+                      </span>
+                    </label>
+                  </div>
+                </fieldset>
+
+                <label
+                  class="mt-3 inline-block font-semibold text-slate-900 cursor-pointer"
+                  data-sacro-el="output-details-review-comment-label"
+                  for="comments"
+                ></label>
+                <textarea
+                  class="
+                  comments
+                  mt-1 mb-2 block w-full rounded-md border-slate-300 text-slate-900 shadow-sm resize-none
+                  sm:text-sm
+                  focus:border-oxford-500 focus:ring-oxford-500
+                  invalid:border-bn-ribbon-600 invalid:ring-bn-ribbon-600 invalid:ring-1
+                "
+                  data-sacro-el="output-details-review-comment"
+                  name="comments"
+                  id="comments"
+                  type="text"
+                ></textarea>
+              </div>
+            </form>
+          </template>
+        </div>
+      </div>
+
+      <div class="grid grid-col gap-y-4" id="filePreviewContainer"></div>
+
+      <template data-sacro-el="file-preview-template">
+        <section class="bg-white shadow">
+          <div class="flex flex-row items-center gap-4 justify-between flex-wrap px-4 py-2">
+            <h2 data-sacro-el="file-preview-template-title" class="text-lg font-semibold tracking-tight text-slate-900"></h2>
+            {% #button data_sacro_el="file-preview-template-link" href="#" small type="link" variant="secondary-outline" %}
+              Open file
+            {% /button %}
+          </div>
+          <p data-sacro-el="file-preview-template-checksum" class="relative z-10 -mb-[1px] px-4 py-2 text-sm font-semibold text-red-700 text-center bg-red-50 border-x-4 border-red-700"></p>
+          <div data-sacro-el="file-preview-template-content" class="px-4 py-3 md:px-6 border-t border-slate-200 md:py-5"></div>
+        </section>
+      </template>
+
+    </div>
+  </main>
+
+  <template id="tooltip">
+    {% tooltip %}
+  </template>
+
+  {% #modal id="submitModal" title="Release and download" subtitle='<span class="count"></span> files are ready to be released' %}
+    <form action="{{ create_url }}" method="post" id="approveForm" class="flex flex-col gap-3">
+      {% csrf_token %}
+
+      <p>Record your assessment of the whole release request below.</p>
+      <p>
+        For example, if there are disclosivity concerns that span multiple
+        outputs, or if significant changes are needed to the whole study before
+        it can be released.
+      </p>
+
+      <textarea name="comment"
+        class="
+          my-1 block w-full rounded-md border-slate-300 text-slate-900 shadow-sm resize-none
+          sm:text-sm
+          focus:border-oxford-500 focus:ring-oxford-500
+          invalid:border-bn-ribbon-600 invalid:ring-bn-ribbon-600 invalid:ring-1
+        "
+        id="id_comment"
+        data-sacro-el="submissionComment"
+        type="text"
+      ></textarea>
+
+      <p>Click the button below submit your review. You will then be able to
+      download any approved outputs for publishing, or any review comments for
+      the researcher.</p>
+
+      <div>
+        {% #button type="submit" disabled=True %}
+          Submit
+        {% /button %}
+      </div>
+    </form>
+
+  {% /modal %}
+</body>
+{% endblock content %}

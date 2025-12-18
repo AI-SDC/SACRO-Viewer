@@ -1,0 +1,31 @@
+<div {% attrs id %}
+  class="
+    hidden
+    absolute top-0 left-0 w-full h-full
+    backdrop-blur-sm
+    flex justify-center items-center
+  ">
+  <section class="bg-white border border-slate-200 max-w-[65ch] rounded shadow-xl" aria-labelledby="{{ title | slugify }}-title">
+
+    <div class="flex flex-wrap gap-2 items-center justify-between px-4 py-2 sm:px-6 sm:py-4 sm:flex-nowrap">
+      <div>
+        <h2 id="{{ title | slugify }}-title" class="text-xl font-semibold tracking-tight text-slate-900">
+          {{ title }}
+        </h2>
+        <p class="text-slate-600 text-sm leading-tight">{{ subtitle }}</p>
+      </div>
+
+      <span class="rounded-full hover:bg-gray-600 hover:text-white p-0.5">
+        {% icon_x_mark class="cancel h-4 w-4" %}
+      </span>
+    </div>
+
+    <div class="
+      px-4 py-3 md:px-6 md:py-5
+      border-t border-slate-200
+    ">
+      {{ children }}
+    </div>
+
+  </section>
+</div>
