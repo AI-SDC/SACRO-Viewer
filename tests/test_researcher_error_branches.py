@@ -5,13 +5,6 @@ from django.test import RequestFactory
 from sacro import views
 
 
-def make_req(rf, path, data=None, post=False):
-    qs = f"path={path}"
-    if post:
-        return rf.post("/", data=data or {}, QUERY_STRING=qs)
-    return rf.get("/", data=data or {}, QUERY_STRING=qs)
-
-
 def test_researcher_load_session_not_found(test_outputs):
     rf = RequestFactory()
     # Ensure no draft exists
@@ -20,9 +13,43 @@ def test_researcher_load_session_not_found(test_outputs):
     alt = outputs.path.parent / "outputs.json"
     alt.write_text(json.dumps(outputs.raw_metadata))
     draft = outputs.path.parent / "results.json"
+    # remove draft if it exists
+    draft.unlink(missing_ok=True)
+    req = rf.get("/", QUERY_STRING=f"path={alt}")
+    resp = views.researcher_load_session(req)
+    assert resp.status_code == 404
+
+
+def test_researcher_load_session_draft_exists(test_outputs):
+    """Test that draft exists and is loaded successfully"""
+    rf = RequestFactory()
+    outputs = test_outputs
+    # Ensure draft exists
+    draft = outputs.path.parent / "results.json"
+    draft.write_text(json.dumps(outputs.raw_metadata))
+
+    req = rf.get("/", QUERY_STRING=f"path={outputs.path}")
+    resp = views.researcher_load_session(req)
+    assert resp.status_code == 200
+
+
+def test_researcher_load_session_not_found_with_existing_draft(test_outputs):
+    """Test the branch where draft file exists and is deleted before the check"""
+    rf = RequestFactory()
+    outputs = test_outputs
+    # create an alternative outputs file so draft_path differs from the loaded path
+    alt = outputs.path.parent / "outputs.json"
+    alt.write_text(json.dumps(outputs.raw_metadata))
+    draft = outputs.path.parent / "results.json"
+    # ensure draft exists so the if block executes
+    draft.write_text(json.dumps(outputs.raw_metadata))
+    assert draft.exists()
+    # now the if branch will be taken in the test to delete it
     if draft.exists():
         draft.unlink()
-    req = make_req(rf, alt)
+    assert not draft.exists()
+    # call the actual view
+    req = rf.get("/", QUERY_STRING=f"path={alt}")
     resp = views.researcher_load_session(req)
     assert resp.status_code == 404
 
@@ -42,7 +69,27 @@ def test_researcher_finalize_missing_results(tmp_path, test_outputs):
     assert resp.status_code == 400
 
 
-def test_researcher_save_session_io_error(tmp_path, test_outputs):
+def test_researcher_finalize_success(test_outputs):
+    """Test successful finalization with valid results"""
+    outputs = test_outputs
+    rf = RequestFactory()
+
+    file_entry = {"name": "file.txt"}
+    # session with valid 'results'
+    session = {
+        "version": outputs.version,
+        "results": {"test": {"uid": "test", "files": [file_entry]}},
+    }
+    req = rf.post(
+        "/",
+        data={"session_data": json.dumps(session)},
+        QUERY_STRING=f"path={outputs.path}",
+    )
+    resp = views.researcher_finalize(req)
+    assert resp.status_code == 200
+
+
+def test_researcher_save_session_io_error(test_outputs):
     outputs = test_outputs
     rf = RequestFactory()
 
@@ -87,3 +134,68 @@ def test_researcher_delete_output_missing_name(test_outputs):
     req = rf.post("/", data=data, QUERY_STRING=f"path={outputs.path}")
     resp = views.researcher_delete_output(req)
     assert resp.status_code == 400
+
+
+def test_researcher_add_output_invalid_json(test_outputs):
+    rf = RequestFactory()
+    outputs = test_outputs
+    session = {"version": outputs.version, "results": {}}
+    # provide invalid JSON in data field to trigger exception
+    data = {
+        "session_data": json.dumps(session),
+        "name": "test",
+        "data": "not valid json",
+    }
+    req = rf.post("/", data=data, QUERY_STRING=f"path={outputs.path}")
+    resp = views.researcher_add_output(req)
+    assert resp.status_code == 500
+
+
+def test_researcher_edit_output_invalid_json(test_outputs):
+    rf = RequestFactory()
+    outputs = test_outputs
+    session = {"version": outputs.version, "results": {}}
+    # provide invalid JSON in data field to trigger exception
+    data = {
+        "session_data": json.dumps(session),
+        "original_name": "test",
+        "new_name": "test2",
+        "data": "not valid json",
+    }
+    req = rf.post("/", data=data, QUERY_STRING=f"path={outputs.path}")
+    resp = views.researcher_edit_output(req)
+    assert resp.status_code == 500
+
+
+def test_researcher_delete_output_invalid_json(test_outputs):
+    rf = RequestFactory()
+    outputs = test_outputs
+    # provide invalid JSON in session_data field to trigger exception
+    data = {
+        "session_data": "not valid json",
+        "name": "test",
+    }
+    req = rf.post("/", data=data, QUERY_STRING=f"path={outputs.path}")
+    resp = views.researcher_delete_output(req)
+    assert resp.status_code == 500
+
+
+def test_researcher_edit_output_with_rename_and_same_name(test_outputs):
+    """Test the branch where original_name == new_name (no rename)"""
+    rf = RequestFactory()
+    outputs = test_outputs
+    file_entry = {"name": "file.txt"}
+    session = {
+        "version": outputs.version,
+        "results": {"test_out": {"uid": "test_out", "files": [file_entry]}},
+    }
+    # rename to same name - should skip the del operation
+    data = {
+        "session_data": json.dumps(session),
+        "original_name": "test_out",
+        "new_name": "test_out",
+        "data": json.dumps({"uid": "test_out", "files": [file_entry]}),
+    }
+    req = rf.post("/", data=data, QUERY_STRING=f"path={outputs.path}")
+    resp = views.researcher_edit_output(req)
+    assert resp.status_code == 200
