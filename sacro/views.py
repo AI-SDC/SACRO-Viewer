@@ -14,6 +14,7 @@ from django.http import (
     JsonResponse,
 )
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
@@ -244,6 +245,7 @@ def researcher_index(request):
             "config": outputs.config,
             "version": outputs.version,
             "path": str(outputs.path),
+            "username": getpass.getuser(),
         },
     )
 
@@ -389,3 +391,100 @@ def researcher_finalize(request):
             },
             status=500,
         )
+
+
+@require_POST
+def researcher_add_output(request):
+    try:
+        outputs = get_outputs_from_request(request.GET)
+        session_data = json.loads(request.POST.get("session_data", "{}"))
+        new_output_name = request.POST.get("name")
+        new_output_data = json.loads(request.POST.get("data", "{}"))
+
+        if not new_output_name:
+            return JsonResponse(
+                {"success": False, "message": "Output name is required"}, status=400
+            )
+
+        new_output_data["uid"] = new_output_name
+        session_data["results"][new_output_name] = new_output_data
+
+        draft_path = outputs.path.parent / "results.json"
+        with open(draft_path, "w") as f:
+            json.dump(session_data, f, indent=2)
+
+        item_html = render_to_string(
+            "_researcher_output_list_item.html",
+            {"name": new_output_name, "output": new_output_data},
+        )
+
+        return JsonResponse(
+            {"success": True, "message": "Output added successfully", "html": item_html}
+        )
+    except Exception as e:
+        logger.error(f"Error adding output: {e}")
+        return JsonResponse({"success": False, "message": str(e)}, status=500)
+
+
+@require_POST
+def researcher_edit_output(request):
+    try:
+        outputs = get_outputs_from_request(request.GET)
+        session_data = json.loads(request.POST.get("session_data", "{}"))
+        original_name = request.POST.get("original_name")
+        new_name = request.POST.get("new_name")
+        new_data = json.loads(request.POST.get("data", "{}"))
+
+        if not original_name or not new_name:
+            return JsonResponse(
+                {"success": False, "message": "Output names are required"}, status=400
+            )
+
+        if original_name != new_name:
+            if new_name in session_data["results"]:
+                return JsonResponse(
+                    {"success": False, "message": "Output name already exists"},
+                    status=400,
+                )
+            del session_data["results"][original_name]
+
+        new_data["uid"] = new_name
+        session_data["results"][new_name] = new_data
+
+        draft_path = outputs.path.parent / "results.json"
+        with open(draft_path, "w") as f:
+            json.dump(session_data, f, indent=2)
+
+        return JsonResponse({"success": True, "message": "Output updated successfully"})
+    except Exception as e:
+        logger.error(f"Error editing output: {e}")
+        return JsonResponse({"success": False, "message": str(e)}, status=500)
+
+
+@require_POST
+def researcher_delete_output(request):
+    try:
+        outputs = get_outputs_from_request(request.GET)
+        session_data = json.loads(request.POST.get("session_data", "{}"))
+        output_name = request.POST.get("name")
+
+        if not output_name:
+            return JsonResponse(
+                {"success": False, "message": "Output name is required"}, status=400
+            )
+
+        if output_name in session_data["results"]:
+            del session_data["results"][output_name]
+        else:
+            return JsonResponse(
+                {"success": False, "message": "Output not found"}, status=404
+            )
+
+        draft_path = outputs.path.parent / "results.json"
+        with open(draft_path, "w") as f:
+            json.dump(session_data, f, indent=2)
+
+        return JsonResponse({"success": True, "message": "Output deleted successfully"})
+    except Exception as e:
+        logger.error(f"Error deleting output: {e}")
+        return JsonResponse({"success": False, "message": str(e)}, status=500)

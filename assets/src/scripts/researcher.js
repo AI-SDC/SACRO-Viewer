@@ -31,6 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setupResearcherInterface();
 
+  function updateOutputCount() {
+    const outputCountElement = document.getElementById("outputCount");
+    if (outputCountElement) {
+      outputCountElement.textContent = Object.keys(sessionData.results).length;
+    }
+  }
+
   function setupResearcherInterface() {
     setupOutputList();
     setupAddCommentButton();
@@ -40,42 +47,48 @@ document.addEventListener("DOMContentLoaded", () => {
     setupSaveDraftButton();
     setupFinalizeButton();
     setupOutputManagement();
+    setupUploadZone();
+    updateOutputCount();
   }
 
   function setupOutputList() {
-    const outputItems = document.querySelectorAll("#outputList li");
+    const outputList = document.getElementById("outputList");
     const form = document.querySelector("#researcherForm form");
 
-    outputItems.forEach((item) => {
-      item.addEventListener("click", async (e) => {
-        if (
-          e.target.classList.contains("edit-output-btn") ||
-          e.target.classList.contains("delete-output-btn")
-        ) {
-          return;
-        }
+    if (!outputList) return;
 
-        const outputName = item.getAttribute("data-output-name");
-        const metadata = outputs[outputName];
+    outputList.addEventListener("click", async (e) => {
+      const item = e.target.closest("li[data-output-name]");
+      if (!item) return;
 
-        await outputClick({ outputName, metadata });
+      if (
+        e.target.closest(".edit-output-btn") ||
+        e.target.closest(".delete-output-btn")
+      ) {
+        return;
+      }
 
-        outputItems.forEach((el) => el.classList.remove("bg-blue-50"));
-        item.classList.add("bg-blue-50");
+      const outputName = item.getAttribute("data-output-name");
+      const metadata = sessionData.results[outputName];
 
-        if (form) form.style.display = "grid";
+      await outputClick({ outputName, metadata });
 
-        updateCommentsDisplay(outputName);
-        updateExceptionDisplay(outputName);
-
-        const exceptionTextarea = document.querySelector(
-          '[data-sacro-el="researcher-exception-request"]'
-        );
-        if (exceptionTextarea) {
-          exceptionTextarea.value =
-            sessionData.results[outputName].exception || "";
-        }
+      document.querySelectorAll("#outputList li").forEach((el) => {
+        el.classList.remove("bg-blue-50");
       });
+      item.classList.add("bg-blue-50");
+
+      if (form) form.style.display = "grid";
+
+      updateCommentsDisplay(outputName);
+      updateExceptionDisplay(outputName);
+
+      const exceptionTextarea = document.querySelector(
+        '[data-sacro-el="researcher-exception-request"]'
+      );
+      if (exceptionTextarea) {
+        exceptionTextarea.value = sessionData.results[outputName].exception || "";
+      }
     });
   }
 
@@ -365,20 +378,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setupModalClose() {
-    const modal = document.getElementById("commentsModal");
-    if (!modal) return;
+    const modals = document.querySelectorAll("#commentsModal, #addOutputModal, #editOutputModal, #deleteOutputModal");
+    modals.forEach(modal => {
+      if (!modal) return;
 
-    const closeBtn = modal.querySelector(".cancel");
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => {
-        modal.classList.add("hidden");
-      });
-    }
-
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        modal.classList.add("hidden");
+      const closeBtn = modal.querySelector(".cancel");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+          modal.classList.add("hidden");
+        });
       }
+
+      const closeX = modal.querySelector(".close-x");
+      if(closeX) {
+        closeX.addEventListener("click", () => {
+          modal.classList.add("hidden");
+        });
+      }
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.add("hidden");
+        }
+      });
     });
   }
 
@@ -497,20 +519,50 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function setupUploadZone() {
+    const uploadZone = document.getElementById("uploadZone");
+    const addModal = document.getElementById("addOutputModal");
+    const fileInput = document.getElementById("addOutputFile");
+
+    if (!uploadZone || !addModal || !fileInput) return;
+
+    uploadZone.addEventListener("click", () => {
+      addModal.classList.remove("hidden");
+    });
+
+    uploadZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      uploadZone.classList.add("border-blue-500", "bg-blue-100");
+    });
+
+    uploadZone.addEventListener("dragleave", () => {
+      uploadZone.classList.remove("border-blue-500", "bg-blue-100");
+    });
+
+    uploadZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove("border-blue-500", "bg-blue-100");
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(files[0]);
+        fileInput.files = dataTransfer.files;
+
+        const nameInput = document.getElementById("addOutputName");
+        nameInput.value = files[0].name.split(".").slice(0, -1).join(".");
+
+        addModal.classList.remove("hidden");
+      }
+    });
+  }
+
   function setupOutputManagement() {
-    const addBtn = document.getElementById("addOutputBtn");
     const addModal = document.getElementById("addOutputModal");
     const editModal = document.getElementById("editOutputModal");
     const deleteModal = document.getElementById("deleteOutputModal");
 
     let currentEditOutput = null;
     let currentDeleteOutput = null;
-
-    if (addBtn) {
-      addBtn.addEventListener("click", () => {
-        addModal.classList.remove("hidden");
-      });
-    }
 
     document
       .getElementById("cancelAddOutput")
@@ -526,45 +578,57 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = document.getElementById("addOutputName").value.trim();
         const file = document.getElementById("addOutputFile").files[0];
 
-        if (!name) {
-          alert("Please enter an output name");
+        if (!name || !file) {
+          alert("Please provide a name and a file.");
           return;
         }
 
-        if (!file) {
-          alert("Please select a file");
-          return;
-        }
-
-        sessionData.results[name] = {
+        const newOutputData = {
+          uid: name,
           type: "custom",
           status: "review",
           properties: { method: file.type },
-          files: [file.name],
+          files: [{ name: file.name }],
           comments: [],
           exception: null,
         };
 
-        refreshOutputList();
-        addModal.classList.add("hidden");
-        document.getElementById("addOutputName").value = "";
-        document.getElementById("addOutputFile").value = "";
+        const formData = new FormData();
+        formData.append("session_data", JSON.stringify(sessionData));
+        formData.append("name", name);
+        formData.append("data", JSON.stringify(newOutputData));
 
-        console.log("Added output:", name);
+        fetch(
+          `/researcher/output/add/?path=${encodeURIComponent(currentPath)}`,
+          {
+            method: "POST",
+            body: formData,
+            headers: { "X-CSRFToken": getCsrfToken() },
+          }
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.success) {
+              sessionData.results[name] = newOutputData;
+              const outputList = document.getElementById("outputList");
+              outputList.insertAdjacentHTML("beforeend", result.html);
+              updateOutputCount();
+              addModal.classList.add("hidden");
+              document.getElementById("addOutputName").value = "";
+              document.getElementById("addOutputFile").value = "";
+            } else {
+              alert(`Error: ${result.message}`);
+            }
+          })
+          .catch((error) => alert(`Error: ${error}`));
       });
 
     document.addEventListener("click", (e) => {
-      console.log(
-        "Click detected on:",
-        e.target,
-        "Classes:",
-        e.target.classList.toString()
-      );
-      if (e.target.classList.contains("edit-output-btn")) {
-        console.log("Edit button clicked!");
+      const target = e.target.closest(".edit-output-btn");
+      if (target) {
         e.preventDefault();
         e.stopPropagation();
-        currentEditOutput = e.target.dataset.outputName;
+        currentEditOutput = target.dataset.outputName;
         document.getElementById("editOutputName").value = currentEditOutput;
         editModal?.classList.remove("hidden");
       }
@@ -592,26 +656,52 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        if (newName !== currentEditOutput) {
-          sessionData.results[newName] = sessionData.results[currentEditOutput];
-          delete sessionData.results[currentEditOutput];
-        }
+        const updatedData = sessionData.results[currentEditOutput];
 
-        refreshOutputList();
-        editModal?.classList.add("hidden");
-        currentEditOutput = null;
+        const formData = new FormData();
+        formData.append("session_data", JSON.stringify(sessionData));
+        formData.append("original_name", currentEditOutput);
+        formData.append("new_name", newName);
+        formData.append("data", JSON.stringify(updatedData));
 
-        console.log("Renamed output to:", newName);
+        fetch(
+          `/researcher/output/edit/?path=${encodeURIComponent(currentPath)}`,
+          {
+            method: "POST",
+            body: formData,
+            headers: { "X-CSRFToken": getCsrfToken() },
+          }
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.success) {
+              sessionData.results[newName] = sessionData.results[currentEditOutput];
+              delete sessionData.results[currentEditOutput];
+
+              const item = document.querySelector(`li[data-output-name="${currentEditOutput}"]`);
+              if(item) {
+                item.setAttribute("data-output-name", newName);
+                item.querySelector(".relative").textContent = newName;
+                item.querySelectorAll("button").forEach(btn => btn.dataset.outputName = newName);
+              }
+
+              updateOutputCount();
+              editModal?.classList.add("hidden");
+              currentEditOutput = null;
+            } else {
+              alert(`Error: ${result.message}`);
+            }
+          })
+          .catch((error) => alert(`Error: ${error}`));
       });
 
     document.addEventListener("click", (e) => {
-      if (e.target.classList.contains("delete-output-btn")) {
-        console.log("Delete button clicked!");
+      const target = e.target.closest(".delete-output-btn");
+      if (target) {
         e.preventDefault();
         e.stopPropagation();
-        currentDeleteOutput = e.target.dataset.outputName;
-        document.getElementById("deleteOutputName").textContent =
-          currentDeleteOutput;
+        currentDeleteOutput = target.dataset.outputName;
+        document.getElementById("deleteOutputName").textContent = currentDeleteOutput;
         deleteModal?.classList.remove("hidden");
       }
     });
@@ -626,71 +716,34 @@ document.addEventListener("DOMContentLoaded", () => {
     document
       .getElementById("confirmDeleteOutput")
       ?.addEventListener("click", () => {
-        delete sessionData.results[currentDeleteOutput];
-        refreshOutputList();
-        deleteModal?.classList.add("hidden");
-        currentDeleteOutput = null;
+        const outputName = currentDeleteOutput;
+        const formData = new FormData();
+        formData.append("session_data", JSON.stringify(sessionData));
+        formData.append("name", outputName);
 
-        console.log("Deleted output:", currentDeleteOutput);
+        fetch(
+          `/researcher/output/delete/?path=${encodeURIComponent(currentPath)}`,
+          {
+            method: "POST",
+            body: formData,
+            headers: { "X-CSRFToken": getCsrfToken() },
+          }
+        )
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.success) {
+              delete sessionData.results[outputName];
+              const item = document.querySelector(`li[data-output-name="${outputName}"]`);
+              if (item) item.remove();
+              updateOutputCount();
+              deleteModal?.classList.add("hidden");
+              currentDeleteOutput = null;
+            } else {
+              alert(`Error: ${result.message}`);
+            }
+          })
+          .catch((error) => alert(`Error: ${error}`));
       });
-  }
-
-  function refreshOutputList() {
-    const outputList = document.getElementById("outputList");
-    if (!outputList) return;
-
-    outputList.innerHTML = "";
-
-    Object.keys(sessionData.results).forEach((name) => {
-      const output = sessionData.results[name];
-      const li = document.createElement("li");
-      li.className = `relative group py-0.5 px-1 hover:bg-slate-50 ${
-        output.status === "fail"
-          ? "text-red-800"
-          : output.status === "pass"
-          ? "text-blue-800"
-          : "text-fuchsia-900"
-      }`;
-      li.setAttribute("data-output-name", name);
-
-      li.innerHTML = `
-        <dl class="flex flex-row gap-x-2 items-center" aria-label="Output information">
-          <div class="order-2 cursor-pointer flex-1">
-            <dt class="sr-only">Output name:</dt>
-            <dd>
-              <a class="before:absolute before:inset-0 before:right-20 before:h-full">
-                <span class="relative">${name}</span>
-              </a>
-            </dd>
-          </div>
-          <div class="order-1">
-            <dt class="sr-only">ACRO status:</dt>
-            <dd>
-              <span class="sr-only">${output.status}</span>
-              <span class="h-5 w-5">${
-                output.status === "fail"
-                  ? "❌"
-                  : output.status === "pass"
-                  ? "📄"
-                  : "❓"
-              }</span>
-            </dd>
-          </div>
-          <div class="order-3 ml-auto text-right">
-            <dt class="sr-only">Output type:</dt>
-            <dd>${output.properties?.method || ""} ${output.type}</dd>
-          </div>
-          <div class="order-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style="z-index: 10; position: relative;">
-            <button class="edit-output-btn w-7 h-7 border border-gray-300 bg-white rounded cursor-pointer flex items-center justify-center text-sm hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-colors" data-output-name="${name}" title="Edit">✏️</button>
-            <button class="delete-output-btn w-7 h-7 border border-gray-300 bg-white rounded cursor-pointer flex items-center justify-center text-sm hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-colors" data-output-name="${name}" title="Delete">🗑️</button>
-          </div>
-        </dl>
-      `;
-
-      outputList.appendChild(li);
-    });
-
-    setupOutputList();
   }
 
   function getCsrfToken() {
