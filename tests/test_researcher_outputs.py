@@ -28,6 +28,10 @@ def test_researcher_add_edit_delete_flow(tmp_path, test_outputs):
     assert "html" in body
 
     # now edit that output (rename)
+    file_entry = {
+        "name": "file.txt",
+        "url": "/contents/?path=p&output=new_out&filename=file.txt",
+    }
     session = {
         "version": outputs.version,
         "results": {"new_out": {"uid": "new_out", "files": [file_entry]}},
@@ -43,6 +47,28 @@ def test_researcher_add_edit_delete_flow(tmp_path, test_outputs):
     assert resp.status_code == 200
     body = json.loads(resp.content)
     assert body["success"] is True
+    # Verify URL was updated
+    assert "output_data" in body
+    assert (
+        body["output_data"]["files"][0]["url"]
+        == "/contents/?path=p&output=renamed&filename=file.txt"
+    )
+
+    # test renaming an output without files (coverage for if "files" in new_data)
+    session["results"]["no_files"] = {"uid": "no_files"}
+    edit_no_files = {
+        "session_data": json.dumps(session),
+        "original_name": "no_files",
+        "new_name": "no_files_renamed",
+        "data": json.dumps({"uid": "no_files_renamed"}),
+    }
+    req = rf.post("/", data=edit_no_files, QUERY_STRING=f"path={outputs.path}")
+    resp = views.researcher_edit_output(req)
+    assert resp.status_code == 200
+
+    # restore valid results.json for subsequent tests
+    with open(outputs.path.parent / "results.json", "w") as f:
+        json.dump(outputs.raw_metadata, f, default=str)
 
     # attempt to edit with conflicting name
     session = {

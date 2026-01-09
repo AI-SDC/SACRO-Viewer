@@ -1,6 +1,7 @@
 import "../styles/index.css";
 import outputs from "./_data";
 import outputClick from "./_output-click";
+import { isDocumentFile, getFileExt } from "./_utils";
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Researcher JS loaded");
@@ -83,9 +84,32 @@ document.addEventListener("DOMContentLoaded", () => {
       updateCommentsDisplay(outputName);
       updateExceptionDisplay(outputName);
 
+
+      const hasDocumentFiles = metadata.files && metadata.files.some((file) => {
+        const ext = getFileExt(file.name);
+        return isDocumentFile(ext);
+      });
+
+
+      const exceptionLabel = document.querySelector('label[for="exceptionRequest"]');
       const exceptionTextarea = document.querySelector(
         '[data-sacro-el="researcher-exception-request"]'
       );
+      const exceptionButton = document.querySelector(
+        '[data-sacro-el="researcher-add-exception-btn"]'
+      );
+
+      if (hasDocumentFiles) {
+
+        if (exceptionLabel) exceptionLabel.style.display = "none";
+        if (exceptionTextarea) exceptionTextarea.style.display = "none";
+        if (exceptionButton) exceptionButton.style.display = "none";
+      } else {
+        if (exceptionLabel) exceptionLabel.style.display = "block";
+        if (exceptionTextarea) exceptionTextarea.style.display = "block";
+        if (exceptionButton) exceptionButton.style.display = "inline-flex";
+      }
+
       if (exceptionTextarea) {
         exceptionTextarea.value = sessionData.results[outputName].exception || "";
       }
@@ -303,9 +327,8 @@ document.addEventListener("DOMContentLoaded", () => {
           "p-3 bg-gray-50 rounded flex justify-between items-start gap-2";
         div.innerHTML = `
           <div class="flex-1">
-            <p class="text-sm font-medium text-gray-900">Comment ${
-              index + 1
-            }</p>
+            <p class="text-sm font-medium text-gray-900">Comment ${index + 1
+          }</p>
             <p class="text-sm text-gray-700 mt-1">${comment}</p>
           </div>
           <div class="flex gap-2">
@@ -338,9 +361,8 @@ document.addEventListener("DOMContentLoaded", () => {
               "p-3 bg-gray-50 rounded flex justify-between items-start gap-2";
             div.innerHTML = `
               <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900">Comment ${
-                  idx + 1
-                }</p>
+                <p class="text-sm font-medium text-gray-900">Comment ${idx + 1
+              }</p>
                 <p class="text-sm text-gray-700 mt-1">${comment}</p>
               </div>
               <div class="flex gap-2">
@@ -390,7 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const closeX = modal.querySelector(".close-x");
-      if(closeX) {
+      if (closeX) {
         closeX.addEventListener("click", () => {
           modal.classList.add("hidden");
         });
@@ -597,6 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("session_data", JSON.stringify(sessionData));
         formData.append("name", name);
         formData.append("data", JSON.stringify(newOutputData));
+        formData.append("file", file);
 
         fetch(
           `/researcher/output/add/?path=${encodeURIComponent(currentPath)}`,
@@ -609,7 +632,7 @@ document.addEventListener("DOMContentLoaded", () => {
           .then((response) => response.json())
           .then((result) => {
             if (result.success) {
-              sessionData.results[name] = newOutputData;
+              sessionData.results[name] = result.output_data;
               const outputList = document.getElementById("outputList");
               outputList.insertAdjacentHTML("beforeend", result.html);
               updateOutputCount();
@@ -675,11 +698,11 @@ document.addEventListener("DOMContentLoaded", () => {
           .then((response) => response.json())
           .then((result) => {
             if (result.success) {
-              sessionData.results[newName] = sessionData.results[currentEditOutput];
+              sessionData.results[newName] = result.output_data || sessionData.results[currentEditOutput];
               delete sessionData.results[currentEditOutput];
 
               const item = document.querySelector(`li[data-output-name="${currentEditOutput}"]`);
-              if(item) {
+              if (item) {
                 item.setAttribute("data-output-name", newName);
                 item.querySelector(".relative").textContent = newName;
                 item.querySelectorAll("button").forEach(btn => btn.dataset.outputName = newName);

@@ -18,9 +18,7 @@ export const TEXT_TYPES = ["txt", "md", "py", "yaml", "r", "log"];
  * @returns {boolean}
  */
 export function isTxt(ext) {
-  return TEXT_TYPES.some((type) =>
-    type.toLowerCase().localeCompare(ext.toLowerCase())
-  );
+  return TEXT_TYPES.includes(ext.toLowerCase());
 }
 
 /**
@@ -33,12 +31,40 @@ export function isJson(ext) {
 }
 
 /**
+ * Confirm if file is .doc or .docx
+ * @param {string} ext - file extension
+ * @returns {boolean}
+ */
+export function isDoc(ext) {
+  return ["doc", "docx"].includes(ext.toLowerCase());
+}
+
+/**
+ * Confirm if file is .pdf
+ * @param {string} ext - file extension
+ * @returns {boolean}
+ */
+export function isPdf(ext) {
+  return ext.toLowerCase() === "pdf";
+}
+
+/**
+ * Confirm if file is a document type (doc, docx, pdf)
+ * Document files should not have exception request forms
+ * @param {string} ext - file extension
+ * @returns {boolean}
+ */
+export function isDocumentFile(ext) {
+  return isDoc(ext) || isPdf(ext);
+}
+
+/**
  * Confirm if file the file is allowed to be displayed
  * @param {string} ext - file extension
  * @returns {boolean}
  */
 export function canDisplay(ext) {
-  return isCsv(ext) || isImg(ext) || isTxt(ext) || isJson(ext);
+  return isCsv(ext) || isImg(ext) || isTxt(ext) || isJson(ext) || isDocumentFile(ext);
 }
 
 /**
