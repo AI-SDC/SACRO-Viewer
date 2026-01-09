@@ -30,9 +30,6 @@ logger = logging.getLogger(__name__)
 REVIEWS = {}
 
 
-RESEARCHER_SESSIONS = {}
-
-
 def format_mime_type(mime_type):
     """
     Convert MIME types to user-friendly display names.
