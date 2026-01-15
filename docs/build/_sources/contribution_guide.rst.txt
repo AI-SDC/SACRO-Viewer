@@ -8,7 +8,7 @@ Getting Started
 ===============
 
 System Requirements
-===================
+------------------
 
 **Required Software:**
 
@@ -33,10 +33,10 @@ System Requirements
   * Homebrew (recommended package manager)
 
 Setting Up Development Environment
-===================================
+=================================
 
 Clone and Setup
-===============
+--------------
 
 .. code-block:: bash
 
@@ -54,7 +54,7 @@ Clone and Setup
    just test-outputs
 
 Running in Development Mode
-============================
+--------------------------
 
 **Start the Django Development Server:**
 
@@ -86,7 +86,7 @@ For frontend development with hot-reload:
    just sacro-app/run
 
 Project Structure
-=================
+================
 
 .. code-block:: text
 
@@ -114,10 +114,10 @@ Project Structure
    └── justfile                # Task definitions
 
 Core Components
-===============
+==============
 
 Django Web Application
-======================
+---------------------
 
 **Models (sacro/models.py)**
 
@@ -160,7 +160,7 @@ Django templates using:
 * Minimal JavaScript for interactivity
 
 Electron Application
-====================
+-------------------
 
 **Main Process (sacro-app/main.js)**
 
@@ -187,7 +187,7 @@ Handles:
    });
 
 Frontend Assets
-===============
+--------------
 
 **Build System (Vite)**
 
@@ -208,10 +208,10 @@ Vanilla JavaScript for:
 * Native file opening integration
 
 Development Workflow
-====================
+===================
 
 Making Changes
-==============
+-------------
 
 **Backend Changes (Python):**
 
@@ -234,10 +234,10 @@ Making Changes
 3. Test packaging: ``just sacro-app/build``
 
 Testing
-=======
+======
 
 Unit Tests
-==========
+---------
 
 Python unit tests using pytest:
 
@@ -260,7 +260,7 @@ Python unit tests using pytest:
 * ``tests/conftest.py``: Shared test fixtures
 
 End-to-End Tests
-================
+---------------
 
 Cypress tests for full application workflows:
 
@@ -280,10 +280,10 @@ Cypress tests for full application workflows:
 * Error handling and edge cases
 
 Code Quality
-============
+===========
 
 Linting and Formatting
-======================
+---------------------
 
 **Python:**
 
@@ -321,10 +321,10 @@ The project uses pre-commit hooks to ensure code quality:
    pre-commit run --all-files
 
 Building and Packaging
-======================
+=====================
 
 Development Builds
-==================
+-----------------
 
 **Python Application:**
 
@@ -345,7 +345,7 @@ This creates a standalone executable in ``build/`` directory.
 Creates platform-specific installers in ``sacro-app/dist/``.
 
 Release Process
-===============
+--------------
 
 1. **Version Bump**: Update version numbers in relevant files
 2. **Test Suite**: Ensure all tests pass
@@ -363,10 +363,10 @@ GitHub Actions automatically:
 * Deploy documentation updates
 
 Contributing Guidelines
-=======================
+======================
 
 Code Style
-==========
+---------
 
 **Python:**
 
@@ -390,7 +390,7 @@ Code Style
 * Update documentation as needed
 
 Pull Request Process
-====================
+-------------------
 
 1. **Fork Repository**: Create personal fork on GitHub
 2. **Create Branch**: Use descriptive branch names
@@ -407,10 +407,10 @@ Pull Request Process
 * Changes reviewed by maintainers
 
 Debugging
-=========
+========
 
 Development Debugging
-=====================
+--------------------
 
 **Python Application:**
 
@@ -440,7 +440,7 @@ Development Debugging
 * **Token mismatches**: Restart both Django and Electron
 
 Production Debugging
-====================
+-------------------
 
 **Log Files:**
 
@@ -457,10 +457,10 @@ Production Debugging
 
 
 Future Development
-==================
+=================
 
 Planned Features
-================
+---------------
 
 * **Enhanced File Support**: Additional output file formats
 * **Improved UI**: Better accessibility and user experience
@@ -475,7 +475,7 @@ Planned Features
 * **Enhanced Security**: TLS for internal communication
 
 Contributing Areas
-==================
+-----------------
 
 Areas where contributions are especially welcome:
 
@@ -486,7 +486,7 @@ Areas where contributions are especially welcome:
 * **Platform Support**: Testing on additional OS versions
 
 Getting Help
-============
+-----------
 
 * **GitHub Issues**: Report bugs and request features
 * **Discussions**: Ask questions and share ideas

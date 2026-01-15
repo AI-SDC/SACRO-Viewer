@@ -127,6 +127,16 @@ check: devenv assets-install
     $BIN/ruff check .
 
 
+# format code with black
+black: devenv
+    $BIN/black .
+
+
+# lint and fix with ruff
+ruff: devenv
+    $BIN/ruff --fix .
+
+
 eslint:
     npm run lint
 

@@ -62,7 +62,7 @@ The SACRO Viewer interface consists of three main areas:
   * **Review Section**: Your approval decision and comments
 
 Making Review Decisions
-=======================
+======================
 
 For each output, you need to make an approval decision based on the ACRO analysis, researcher comments, and file contents.
 
@@ -88,7 +88,7 @@ For each output, you need to make an approval decision based on the ACRO analysi
 * **Consider carefully** outputs that failed ACRO checks but have researcher exception requests
 
 File Types and Display
-======================
+=====================
 
 SACRO Viewer handles various output file types commonly produced in research:
 
@@ -113,7 +113,7 @@ SACRO Viewer handles various output file types commonly produced in research:
   * Nested structures are clearly presented
 
 Completing the Review
-=====================
+====================
 
 Once you have reviewed all outputs and made approval decisions, you can generate the final release package.
 
@@ -144,7 +144,7 @@ SACRO Viewer maintains a complete audit trail including:
 * Release package metadata
 
 Working with Different Output Types
-====================================
+==================================
 
 **ACRO-Generated Outputs**
   These outputs include comprehensive metadata about statistical disclosure control checks, researcher comments, and automated risk assessments. Use this information to make informed decisions about release approval.

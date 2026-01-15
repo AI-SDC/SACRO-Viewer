@@ -21,11 +21,6 @@ Our tools are designed to help researchers assess the privacy disclosure risks o
    installation
    user_guide
    contribution_guide
-   faq
-   support
-   architecture
-   developer_guide
-   api_reference
 
 
 .. grid:: 2

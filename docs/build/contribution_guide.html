@@ -47,7 +47,6 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'contribution_guide';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="FAQ" href="faq.html" />
     <link rel="prev" title="User Guide" href="user_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -154,51 +153,6 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="faq.html">
-    FAQ
-  </a>
-</li>
-
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="support.html">
-    Support
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="architecture.html">
-    Architecture
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="developer_guide.html">
-    Developer Guide
-  </a>
-</li>
-
-
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="api_reference.html">
-    API Reference
-  </a>
-</li>
-
-                </ul>
-            </li>
-
   </ul>
 </nav></div>
 
@@ -299,41 +253,6 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="faq.html">
-    FAQ
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="support.html">
-    Support
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="architecture.html">
-    Architecture
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="developer_guide.html">
-    Developer Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="api_reference.html">
-    API Reference
-  </a>
-</li>
-
   </ul>
 </nav></div>
 
@@ -421,15 +340,6 @@
         <p class="prev-next-title">User Guide</p>
       </div>
     </a>
-    <a class="right-next"
-       href="faq.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">FAQ</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div></div>
 
     </div>
@@ -448,9 +358,8 @@
 <p>This guide provides information for developers who want to contribute to SACRO Viewer, set up a development environment, or understand the codebase structure.</p>
 <section id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h2>
-</section>
 <section id="system-requirements">
-<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading">#</a></h2>
+<h3>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading">#</a></h3>
 <p><strong>Required Software:</strong></p>
 <ul class="simple">
 <li><p>Python 3.10 or later</p></li>
@@ -478,11 +387,11 @@
 </dd>
 </dl>
 </section>
+</section>
 <section id="setting-up-development-environment">
 <h2>Setting Up Development Environment<a class="headerlink" href="#setting-up-development-environment" title="Link to this heading">#</a></h2>
-</section>
 <section id="clone-and-setup">
-<h2>Clone and Setup<a class="headerlink" href="#clone-and-setup" title="Link to this heading">#</a></h2>
+<h3>Clone and Setup<a class="headerlink" href="#clone-and-setup" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/AI-SDC/SACRO-Viewer.git
 <span class="nb">cd</span><span class="w"> </span>SACRO-Viewer
@@ -499,7 +408,7 @@ just<span class="w"> </span>test-outputs
 </div>
 </section>
 <section id="running-in-development-mode">
-<h2>Running in Development Mode<a class="headerlink" href="#running-in-development-mode" title="Link to this heading">#</a></h2>
+<h3>Running in Development Mode<a class="headerlink" href="#running-in-development-mode" title="Link to this heading">#</a></h3>
 <p><strong>Start the Django Development Server:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>run
 </pre></div>
@@ -521,6 +430,7 @@ just<span class="w"> </span>run<span class="w"> </span><span class="p">&amp;</sp
 just<span class="w"> </span>sacro-app/run
 </pre></div>
 </div>
+</section>
 </section>
 <section id="project-structure">
 <h2>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading">#</a></h2>
@@ -551,9 +461,8 @@ just<span class="w"> </span>sacro-app/run
 </section>
 <section id="core-components">
 <h2>Core Components<a class="headerlink" href="#core-components" title="Link to this heading">#</a></h2>
-</section>
 <section id="django-web-application">
-<h2>Django Web Application<a class="headerlink" href="#django-web-application" title="Link to this heading">#</a></h2>
+<h3>Django Web Application<a class="headerlink" href="#django-web-application" title="Link to this heading">#</a></h3>
 <p><strong>Models (sacro/models.py)</strong></p>
 <p>The core data model is <code class="docutils literal notranslate"><span class="pre">ACROOutputs</span></code>, which handles:</p>
 <ul class="simple">
@@ -591,7 +500,7 @@ just<span class="w"> </span>sacro-app/run
 </ul>
 </section>
 <section id="electron-application">
-<h2>Electron Application<a class="headerlink" href="#electron-application" title="Link to this heading">#</a></h2>
+<h3>Electron Application<a class="headerlink" href="#electron-application" title="Link to this heading">#</a></h3>
 <p><strong>Main Process (sacro-app/main.js)</strong></p>
 <p>Handles:</p>
 <ul class="simple">
@@ -615,7 +524,7 @@ just<span class="w"> </span>sacro-app/run
 </div>
 </section>
 <section id="frontend-assets">
-<h2>Frontend Assets<a class="headerlink" href="#frontend-assets" title="Link to this heading">#</a></h2>
+<h3>Frontend Assets<a class="headerlink" href="#frontend-assets" title="Link to this heading">#</a></h3>
 <p><strong>Build System (Vite)</strong></p>
 <p>Modern build tooling providing:</p>
 <ul class="simple">
@@ -633,11 +542,11 @@ just<span class="w"> </span>sacro-app/run
 <li><p>Native file opening integration</p></li>
 </ul>
 </section>
+</section>
 <section id="development-workflow">
 <h2>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading">#</a></h2>
-</section>
 <section id="making-changes">
-<h2>Making Changes<a class="headerlink" href="#making-changes" title="Link to this heading">#</a></h2>
+<h3>Making Changes<a class="headerlink" href="#making-changes" title="Link to this heading">#</a></h3>
 <p><strong>Backend Changes (Python):</strong></p>
 <ol class="arabic simple">
 <li><p>Modify code in <code class="docutils literal notranslate"><span class="pre">sacro/</span></code> directory</p></li>
@@ -659,11 +568,11 @@ just<span class="w"> </span>sacro-app/run
 <li><p>Test packaging: <code class="docutils literal notranslate"><span class="pre">just</span> <span class="pre">sacro-app/build</span></code></p></li>
 </ol>
 </section>
+</section>
 <section id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h2>
-</section>
 <section id="unit-tests">
-<h2>Unit Tests<a class="headerlink" href="#unit-tests" title="Link to this heading">#</a></h2>
+<h3>Unit Tests<a class="headerlink" href="#unit-tests" title="Link to this heading">#</a></h3>
 <p>Python unit tests using pytest:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tests</span>
 just<span class="w"> </span><span class="nb">test</span>
@@ -684,7 +593,7 @@ just<span class="w"> </span><span class="nb">test</span><span class="w"> </span>
 </ul>
 </section>
 <section id="end-to-end-tests">
-<h2>End-to-End Tests<a class="headerlink" href="#end-to-end-tests" title="Link to this heading">#</a></h2>
+<h3>End-to-End Tests<a class="headerlink" href="#end-to-end-tests" title="Link to this heading">#</a></h3>
 <p>Cypress tests for full application workflows:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Interactive test runner</span>
 npm<span class="w"> </span>run<span class="w"> </span>cypress:open
@@ -701,11 +610,11 @@ npm<span class="w"> </span>run<span class="w"> </span>cypress:run
 <li><p>Error handling and edge cases</p></li>
 </ul>
 </section>
+</section>
 <section id="code-quality">
 <h2>Code Quality<a class="headerlink" href="#code-quality" title="Link to this heading">#</a></h2>
-</section>
 <section id="linting-and-formatting">
-<h2>Linting and Formatting<a class="headerlink" href="#linting-and-formatting" title="Link to this heading">#</a></h2>
+<h3>Linting and Formatting<a class="headerlink" href="#linting-and-formatting" title="Link to this heading">#</a></h3>
 <p><strong>Python:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Format code</span>
 just<span class="w"> </span>format
@@ -735,11 +644,11 @@ pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
 </pre></div>
 </div>
 </section>
+</section>
 <section id="building-and-packaging">
 <h2>Building and Packaging<a class="headerlink" href="#building-and-packaging" title="Link to this heading">#</a></h2>
-</section>
 <section id="development-builds">
-<h2>Development Builds<a class="headerlink" href="#development-builds" title="Link to this heading">#</a></h2>
+<h3>Development Builds<a class="headerlink" href="#development-builds" title="Link to this heading">#</a></h3>
 <p><strong>Python Application:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build PyOxidizer binary</span>
 just<span class="w"> </span>build
@@ -754,7 +663,7 @@ just<span class="w"> </span>sacro-app/build
 <p>Creates platform-specific installers in <code class="docutils literal notranslate"><span class="pre">sacro-app/dist/</span></code>.</p>
 </section>
 <section id="release-process">
-<h2>Release Process<a class="headerlink" href="#release-process" title="Link to this heading">#</a></h2>
+<h3>Release Process<a class="headerlink" href="#release-process" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p><strong>Version Bump</strong>: Update version numbers in relevant files</p></li>
 <li><p><strong>Test Suite</strong>: Ensure all tests pass</p></li>
@@ -771,11 +680,11 @@ just<span class="w"> </span>sacro-app/build
 <li><p>Deploy documentation updates</p></li>
 </ul>
 </section>
+</section>
 <section id="contributing-guidelines">
 <h2>Contributing Guidelines<a class="headerlink" href="#contributing-guidelines" title="Link to this heading">#</a></h2>
-</section>
 <section id="code-style">
-<h2>Code Style<a class="headerlink" href="#code-style" title="Link to this heading">#</a></h2>
+<h3>Code Style<a class="headerlink" href="#code-style" title="Link to this heading">#</a></h3>
 <p><strong>Python:</strong></p>
 <ul class="simple">
 <li><p>Follow PEP 8 style guidelines</p></li>
@@ -799,7 +708,7 @@ just<span class="w"> </span>sacro-app/build
 </ul>
 </section>
 <section id="pull-request-process">
-<h2>Pull Request Process<a class="headerlink" href="#pull-request-process" title="Link to this heading">#</a></h2>
+<h3>Pull Request Process<a class="headerlink" href="#pull-request-process" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p><strong>Fork Repository</strong>: Create personal fork on GitHub</p></li>
 <li><p><strong>Create Branch</strong>: Use descriptive branch names</p></li>
@@ -816,11 +725,11 @@ just<span class="w"> </span>sacro-app/build
 <li><p>Changes reviewed by maintainers</p></li>
 </ul>
 </section>
+</section>
 <section id="debugging">
 <h2>Debugging<a class="headerlink" href="#debugging" title="Link to this heading">#</a></h2>
-</section>
 <section id="development-debugging">
-<h2>Development Debugging<a class="headerlink" href="#development-debugging" title="Link to this heading">#</a></h2>
+<h3>Development Debugging<a class="headerlink" href="#development-debugging" title="Link to this heading">#</a></h3>
 <p><strong>Python Application:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add breakpoints</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pdb</span><span class="p">;</span> <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
@@ -846,7 +755,7 @@ just<span class="w"> </span>sacro-app/build
 </ul>
 </section>
 <section id="production-debugging">
-<h2>Production Debugging<a class="headerlink" href="#production-debugging" title="Link to this heading">#</a></h2>
+<h3>Production Debugging<a class="headerlink" href="#production-debugging" title="Link to this heading">#</a></h3>
 <p><strong>Log Files:</strong></p>
 <ul class="simple">
 <li><p>Django logs to console in development</p></li>
@@ -861,11 +770,11 @@ just<span class="w"> </span>sacro-app/build
 <li><p>Test with sample data</p></li>
 </ul>
 </section>
+</section>
 <section id="future-development">
 <h2>Future Development<a class="headerlink" href="#future-development" title="Link to this heading">#</a></h2>
-</section>
 <section id="planned-features">
-<h2>Planned Features<a class="headerlink" href="#planned-features" title="Link to this heading">#</a></h2>
+<h3>Planned Features<a class="headerlink" href="#planned-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Enhanced File Support</strong>: Additional output file formats</p></li>
 <li><p><strong>Improved UI</strong>: Better accessibility and user experience</p></li>
@@ -881,7 +790,7 @@ just<span class="w"> </span>sacro-app/build
 </ul>
 </section>
 <section id="contributing-areas">
-<h2>Contributing Areas<a class="headerlink" href="#contributing-areas" title="Link to this heading">#</a></h2>
+<h3>Contributing Areas<a class="headerlink" href="#contributing-areas" title="Link to this heading">#</a></h3>
 <p>Areas where contributions are especially welcome:</p>
 <ul class="simple">
 <li><p><strong>Documentation</strong>: User guides and API documentation</p></li>
@@ -892,7 +801,7 @@ just<span class="w"> </span>sacro-app/build
 </ul>
 </section>
 <section id="getting-help">
-<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading">#</a></h2>
+<h3>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>GitHub Issues</strong>: Report bugs and request features</p></li>
 <li><p><strong>Discussions</strong>: Ask questions and share ideas</p></li>
@@ -900,6 +809,7 @@ just<span class="w"> </span>sacro-app/build
 <li><p><strong>Documentation</strong>: Improve guides and examples</p></li>
 </ul>
 <p>The development team is committed to maintaining a welcoming and inclusive environment for all contributors.</p>
+</section>
 </section>
 </section>
 
@@ -922,15 +832,6 @@ just<span class="w"> </span>sacro-app/build
         <p class="prev-next-title">User Guide</p>
       </div>
     </a>
-    <a class="right-next"
-       href="faq.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">FAQ</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
 
@@ -950,36 +851,56 @@ just<span class="w"> </span>sacro-app/build
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-requirements">System Requirements</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-development-environment">Setting Up Development Environment</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clone-and-setup">Clone and Setup</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-in-development-mode">Running in Development Mode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#system-requirements">System Requirements</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-development-environment">Setting Up Development Environment</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clone-and-setup">Clone and Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-in-development-mode">Running in Development Mode</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#project-structure">Project Structure</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-components">Core Components</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#django-web-application">Django Web Application</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#electron-application">Electron Application</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#frontend-assets">Frontend Assets</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-workflow">Development Workflow</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#making-changes">Making Changes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unit-tests">Unit Tests</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-tests">End-to-End Tests</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-quality">Code Quality</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linting-and-formatting">Linting and Formatting</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-and-packaging">Building and Packaging</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-builds">Development Builds</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#release-process">Release Process</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-guidelines">Contributing Guidelines</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-style">Code Style</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-request-process">Pull Request Process</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging">Debugging</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-debugging">Development Debugging</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-debugging">Production Debugging</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#future-development">Future Development</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#planned-features">Planned Features</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-areas">Contributing Areas</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">Getting Help</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-components">Core Components</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#django-web-application">Django Web Application</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#electron-application">Electron Application</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#frontend-assets">Frontend Assets</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-workflow">Development Workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#making-changes">Making Changes</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unit-tests">Unit Tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-tests">End-to-End Tests</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-quality">Code Quality</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linting-and-formatting">Linting and Formatting</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-and-packaging">Building and Packaging</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#development-builds">Development Builds</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#release-process">Release Process</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-guidelines">Contributing Guidelines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-style">Code Style</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-request-process">Pull Request Process</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging">Debugging</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#development-debugging">Development Debugging</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#production-debugging">Production Debugging</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#future-development">Future Development</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#planned-features">Planned Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-areas">Contributing Areas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">Getting Help</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
