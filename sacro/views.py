@@ -250,7 +250,8 @@ def role_selection(request):
     - Researcher: for researchers to build ACRO metadata via GUI
     - Output Checker: for output checkers to review and approve outputs
     """
-    return TemplateResponse(request, "role_selection.html")
+    path = request.GET.get("path", "")
+    return TemplateResponse(request, "role_selection.html", context={"path": path})
 
 
 @require_GET
