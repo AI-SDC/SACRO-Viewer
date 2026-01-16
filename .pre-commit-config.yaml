@@ -2,20 +2,16 @@ default_language_version:
   python: python3.10
 
 repos:
-  - repo: local
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
     hooks:
     - id: black
-      name: black
-      entry: just black
-      language: system
-      types: [python]
-      require_serial: true
+      additional_dependencies: []
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.272
+    hooks:
     - id: ruff
-      name: ruff
-      entry: just ruff
-      language: system
-      types: [python]
-      require_serial: true
+      args: ["--fix"]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0

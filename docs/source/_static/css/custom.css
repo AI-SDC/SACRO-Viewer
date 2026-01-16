@@ -69,7 +69,11 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 120px;
+        max-width: 200px;
+    }
+
+    .navbar-brand .navbar-brand-text {
+        font-size: 0.9rem;
     }
 
     .navbar-nav {
@@ -84,6 +88,10 @@
 
 @media (max-width: 992px) {
     .navbar-brand {
-        max-width: 100px;
+        max-width: 180px;
+    }
+
+    .navbar-brand .navbar-brand-text {
+        font-size: 0.8rem;
     }
 }
