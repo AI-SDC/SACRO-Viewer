@@ -33,6 +33,21 @@ urlpatterns = [
         name="researcher-load-session",
     ),
     path("researcher/finalize/", views.researcher_finalize, name="researcher-finalize"),
+    path(
+        "researcher/output/add/",
+        views.researcher_add_output,
+        name="researcher-add-output",
+    ),
+    path(
+        "researcher/output/edit/",
+        views.researcher_edit_output,
+        name="researcher-edit-output",
+    ),
+    path(
+        "researcher/output/delete/",
+        views.researcher_delete_output,
+        name="researcher-delete-output",
+    ),
 ]
 
 if settings.DEBUG and importlib.util.find_spec("django_browser_reload"):

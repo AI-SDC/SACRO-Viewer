@@ -1,4 +1,5 @@
 import getpass
+import hashlib
 import html
 import json
 import logging
@@ -14,6 +15,7 @@ from django.http import (
     JsonResponse,
 )
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
@@ -28,7 +30,37 @@ logger = logging.getLogger(__name__)
 REVIEWS = {}
 
 
-RESEARCHER_SESSIONS = {}
+def format_mime_type(mime_type):
+    """
+    Convert MIME types to user-friendly display names.
+
+    Args:
+        mime_type: The MIME type string
+
+    Returns:
+        A user-friendly string representation
+    """
+    if not mime_type:
+        return ""
+
+    mime_map = {
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "Word Document",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "Excel Spreadsheet",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation": "PowerPoint",
+        "application/msword": "Word Document",
+        "application/vnd.ms-excel": "Excel Spreadsheet",
+        "application/vnd.ms-powerpoint": "PowerPoint",
+        "application/pdf": "PDF",
+        "text/plain": "Text",
+        "text/csv": "CSV",
+        "image/png": "PNG Image",
+        "image/jpeg": "JPEG Image",
+        "image/jpg": "JPG Image",
+        "image/gif": "GIF Image",
+        "application/json": "JSON",
+    }
+
+    return mime_map.get(mime_type, mime_type)
 
 
 def get_filepath_from_request(data, name):
@@ -106,8 +138,13 @@ def contents(request):
         raise Http404
 
     try:
+        import mimetypes
+
+        content_type, _ = mimetypes.guess_type(file_path)
+        is_pdf = content_type == "application/pdf"
+
         response = FileResponse(
-            open(file_path, "rb"), as_attachment=True, filename=filename
+            open(file_path, "rb"), as_attachment=not is_pdf, filename=filename
         )
     except FileNotFoundError:  # pragma: no cover
         raise Http404
@@ -213,7 +250,8 @@ def role_selection(request):
     - Researcher: for researchers to build ACRO metadata via GUI
     - Output Checker: for output checkers to review and approve outputs
     """
-    return TemplateResponse(request, "role_selection.html")
+    path = request.GET.get("path", "")
+    return TemplateResponse(request, "role_selection.html", context={"path": path})
 
 
 @require_GET
@@ -244,6 +282,7 @@ def researcher_index(request):
             "config": outputs.config,
             "version": outputs.version,
             "path": str(outputs.path),
+            "username": getpass.getuser(),
         },
     )
 
@@ -389,3 +428,165 @@ def researcher_finalize(request):
             },
             status=500,
         )
+
+
+@require_POST
+def researcher_add_output(request):
+    try:
+        outputs = get_outputs_from_request(request.GET)
+        session_data = json.loads(request.POST.get("session_data", "{}"))
+        new_output_name = request.POST.get("name")
+        new_output_data = json.loads(request.POST.get("data", "{}"))
+
+        if not new_output_name:
+            return JsonResponse(
+                {"success": False, "message": "Output name is required"}, status=400
+            )
+
+        new_output_data["uid"] = new_output_name
+
+        # Handle file uploads
+        if "file" in request.FILES:
+            uploaded_file = request.FILES["file"]
+            safe_filename = Path(uploaded_file.name).name
+            output_path = outputs.path.parent / safe_filename
+            with open(output_path, "wb+") as f:
+                for chunk in uploaded_file.chunks():
+                    f.write(chunk)
+
+            # Update metadata with file info
+            file_info = new_output_data["files"][0]
+            file_info["url"] = (
+                f"/contents/?path={outputs.path}&output={new_output_name}&filename={safe_filename}"
+            )
+
+            # Calculate checksum
+            sha256_hash = hashlib.sha256()
+            with open(output_path, "rb") as f:
+                for byte_block in iter(lambda: f.read(4096), b""):
+                    sha256_hash.update(byte_block)
+            file_info["checksum"] = sha256_hash.hexdigest()
+            file_info["checksum_valid"] = True
+
+            # Write checksum to file
+            checksum_dir = outputs.path.parent / "checksums"
+            checksum_dir.mkdir(exist_ok=True)
+            checksum_path = checksum_dir / f"{safe_filename}.txt"
+            with open(checksum_path, "w") as f:
+                f.write(file_info["checksum"])
+
+            # Add dummy SDC and cell_index to match ACRO format
+            file_info["sdc"] = {}
+            file_info["cell_index"] = {}
+
+        # Format MIME type for better display
+        if (
+            "properties" in new_output_data
+            and "method" in new_output_data["properties"]
+        ):
+            new_output_data["properties"]["method"] = format_mime_type(
+                new_output_data["properties"]["method"]
+            )
+
+        session_data["results"][new_output_name] = new_output_data
+
+        draft_path = outputs.path.parent / "results.json"
+        with open(draft_path, "w") as f:
+            json.dump(session_data, f, indent=2)
+
+        item_html = render_to_string(
+            "_researcher_output_list_item.html",
+            {"name": new_output_name, "output": new_output_data},
+        )
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Output added successfully",
+                "html": item_html,
+                "output_data": new_output_data,
+            }
+        )
+    except Exception as e:
+        logger.error(f"Error adding output: {e}")
+        return JsonResponse({"success": False, "message": str(e)}, status=500)
+
+
+@require_POST
+def researcher_edit_output(request):
+    try:
+        outputs = get_outputs_from_request(request.GET)
+        session_data = json.loads(request.POST.get("session_data", "{}"))
+        original_name = request.POST.get("original_name")
+        new_name = request.POST.get("new_name")
+        new_data = json.loads(request.POST.get("data", "{}"))
+
+        if not original_name or not new_name:
+            return JsonResponse(
+                {"success": False, "message": "Output names are required"}, status=400
+            )
+
+        if original_name != new_name:
+            if new_name in session_data["results"]:
+                return JsonResponse(
+                    {"success": False, "message": "Output name already exists"},
+                    status=400,
+                )
+            del session_data["results"][original_name]
+
+            # Update URLs in files
+            if "files" in new_data:
+                for file_info in new_data["files"]:
+                    if "url" in file_info:
+                        # Replace output param in URL
+                        # Simple string replace safer given structure
+                        file_info["url"] = file_info["url"].replace(
+                            f"output={original_name}", f"output={new_name}"
+                        )
+
+        new_data["uid"] = new_name
+        session_data["results"][new_name] = new_data
+
+        draft_path = outputs.path.parent / "results.json"
+        with open(draft_path, "w") as f:
+            json.dump(session_data, f, indent=2)
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Output updated successfully",
+                "output_data": new_data,
+            }
+        )
+    except Exception as e:
+        logger.error(f"Error editing output: {e}")
+        return JsonResponse({"success": False, "message": str(e)}, status=500)
+
+
+@require_POST
+def researcher_delete_output(request):
+    try:
+        outputs = get_outputs_from_request(request.GET)
+        session_data = json.loads(request.POST.get("session_data", "{}"))
+        output_name = request.POST.get("name")
+
+        if not output_name:
+            return JsonResponse(
+                {"success": False, "message": "Output name is required"}, status=400
+            )
+
+        if output_name in session_data["results"]:
+            del session_data["results"][output_name]
+        else:
+            return JsonResponse(
+                {"success": False, "message": "Output not found"}, status=404
+            )
+
+        draft_path = outputs.path.parent / "results.json"
+        with open(draft_path, "w") as f:
+            json.dump(session_data, f, indent=2)
+
+        return JsonResponse({"success": True, "message": "Output deleted successfully"})
+    except Exception as e:
+        logger.error(f"Error deleting output: {e}")
+        return JsonResponse({"success": False, "message": str(e)}, status=500)

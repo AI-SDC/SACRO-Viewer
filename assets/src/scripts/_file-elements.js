@@ -90,3 +90,40 @@ export function invalidFileElement(el) {
   el.textContent =
     "This type of file cannot be displayed. It should be reviewed outside of this application";
 }
+
+/**
+ * Create an embedded viewer for PDF and document files
+ * @param {HTMLElement} el - Append the viewer to this element
+ * @param {string} url - Valid URL for the file location
+ * @param {string} ext - File extension
+ */
+export function createDocumentElement(el, url, ext) {
+  const container = document.createElement("div");
+  container.classList.add("document-preview-container");
+
+  if (ext.toLowerCase() === "pdf") {
+    // For PDFs, use an embed element
+    const embed = document.createElement("embed");
+    embed.src = url;
+    embed.type = "application/pdf";
+    embed.style.width = "100%";
+    embed.style.height = "600px";
+    embed.style.border = "1px solid #ddd";
+    container.appendChild(embed);
+  } else {
+    // For DOC/DOCX files, show a message with download link
+    const message = document.createElement("div");
+    message.classList.add("p-4", "bg-blue-50", "border", "border-blue-200", "rounded");
+    message.innerHTML = `
+      <p class="text-sm text-gray-700 mb-2">
+        <strong>Document files cannot be previewed in the browser.</strong>
+      </p>
+      <p class="text-sm text-gray-600">
+        Please use the "Open file" button above to download and view this ${ext.toUpperCase()} file in your preferred application.
+      </p>
+    `;
+    container.appendChild(message);
+  }
+
+  el.appendChild(container);
+}

@@ -11,8 +11,16 @@
 <body class="grid h-screen overflow-hidden bg-zinc-100">
 
   {% #header %}
-    <div class="flex items-center gap-2">
-      <span class="text-sm text-gray-600">You can viewing this as a Researcher</span>
+    <div class="flex items-center gap-x-12">
+      <div></div>
+      <div class="flex items-center gap-3 bg-zinc-200/50 px-4 py-2 rounded-lg border border-zinc-200">
+        <div class="flex items-center gap-2 text-sm text-gray-700">
+          <span class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+          <span>Viewing as Researcher</span>
+        </div>
+        <span class="text-gray-300"> • </span>
+        <span class="font-semibold text-sm text-blue-600">@{{ username }}</span>
+      </div>
     </div>
     <div class="flex gap-2">
       {% #button id="saveDraftBtn" type="button" variant="secondary-outline" %}
@@ -26,78 +34,21 @@
 
 
   <aside class="overflow-y-auto bg-white border-r border-zinc-200 py-2">
-    <div class="px-2 pb-2">
-      <button
-        id="addOutputBtn"
-        class="w-full bg-blue-600 text-white border-none py-3 px-4 rounded-lg text-sm font-semibold cursor-pointer flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
-      >
-        <span class="text-lg">+</span>
-        Add Output
-      </button>
-    </div>
-    <h2 id="outputListHeader" class="sr-only">Output list</h2>
-    <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of outputs" id="outputList" data-sacro-el="outputList">
+          <div class="px-2 pb-2">
+            <div id="uploadZone" class="border-2 border-dashed border-zinc-300 rounded-lg p-6 text-center bg-zinc-50 hover:border-blue-500 hover:bg-blue-50 transition-colors cursor-pointer">
+              <div class="text-4xl mb-2">📤</div>
+              <div class="font-semibold text-sm text-zinc-800">Drop files here</div>
+              <div class="text-xs text-zinc-500">or click to browse</div>
+            </div>
+          </div>
+          <div class="px-2 pb-2 outputs-header flex items-center justify-between mt-4 mb-4">
+              <div class="outputs-title text-sm font-semibold text-zinc-500 uppercase tracking-wide">Outputs</div>
+              <div class="outputs-count bg-zinc-100 px-2.5 py-1 rounded-full text-xs font-semibold text-zinc-600" id="outputCount">0</div>
+          </div>
+          <h2 id="outputListHeader" class="sr-only">Output list</h2>
+          <ul class="text-sm h-full flex flex-col gap-y-0.5" aria-label="List of outputs" id="outputList" data-sacro-el="outputList">
       {% for name, output in outputs.items %}
-      <li
-        aria-label="Output: {{ name }}"
-        class="
-          relative group py-0.5 px-1 hover:bg-slate-50
-          {% if output.status == "fail" %}
-          text-red-800
-          {% elif output.status == "pass" %}
-          text-blue-800
-          {% elif output.status == "review" %}
-          text-fuchsia-900
-          {% endif %}
-        "
-        data-output-name="{{ name }}"
-      >
-        <dl class="flex flex-row gap-x-2 items-center" aria-label="Output information">
-          <div class="order-2 cursor-pointer flex-1">
-            <dt class="sr-only">Output name:</dt>
-            <dd>
-              <a class="before:absolute before:inset-0 before:right-20 before:h-full">
-                <span class="relative">
-                  {{ name }}
-                </span>
-              </a>
-            </dd>
-          </div>
-          <div class="order-1">
-            <dt class="sr-only">ACRO status:</dt>
-            <dd>
-              <span class="sr-only">{{ output.status }}</span>
-              {% if output.status == "fail" %}
-              {% icon_file_x class="h-5 w-5 stroke-red-700" %}
-              {% elif output.status == "pass" %}
-              {% icon_file class="h-5 w-5 stroke-blue-700" %}
-              {% elif output.status == "review" %}
-              {% icon_file_unknown class="h-5 w-5 stroke-fuchsia-700" %}
-              {% endif %}
-            </dd>
-          </div>
-          <div class="order-3 ml-auto text-right">
-            <dt class="sr-only">Output type:</dt>
-            <dd>{{ output.properties.method|default_if_none:"" }} {{ output.type }}</dd>
-          </div>
-          <div class="order-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              class="edit-output-btn w-7 h-7 border-none bg-white rounded cursor-pointer flex items-center justify-center text-sm hover:bg-blue-50 hover:text-blue-600 transition-colors"
-              data-output-name="{{ name }}"
-              title="Edit"
-            >
-              ✏️
-            </button>
-            <button
-              class="delete-output-btn w-7 h-7 border-none bg-white rounded cursor-pointer flex items-center justify-center text-sm hover:bg-red-50 hover:text-red-600 transition-colors"
-              data-output-name="{{ name }}"
-              title="Delete"
-            >
-              🗑️
-            </button>
-          </div>
-        </dl>
-      </li>
+        {% include "_researcher_output_list_item.html" with name=name output=output %}
       {% endfor %}
     </ul>
   </aside>
@@ -279,8 +230,8 @@
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">Attachment</label>
-        <input type="file" id="addOutputFile" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" accept=".csv,.xlsx,.txt,.pdf,.png,.jpg">
-        <small class="text-gray-500 text-xs mt-1 block">Supported formats: CSV, XLSX, TXT, PDF, PNG, JPG</small>
+        <input type="file" id="addOutputFile" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" accept=".csv,.xlsx,.txt,.pdf,.png,.jpg,.docx,.py,.do,.rmd,.r">
+        <small class="text-gray-500 text-xs mt-1 block">Supported formats: CSV, XLSX, TXT, PDF, PNG, JPG, DOCX,PY,DO,Rmd,R</small>
       </div>
       <div class="flex gap-3 justify-end pt-4">
         <button id="cancelAddOutput" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">Cancel</button>
