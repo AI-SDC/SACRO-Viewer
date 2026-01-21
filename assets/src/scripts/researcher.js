@@ -34,8 +34,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateOutputCount() {
     const outputCountElement = document.getElementById("outputCount");
+    const finalizeBtn = document.getElementById("finalizeBtn");
+    const count = Object.keys(sessionData.results).length;
+
     if (outputCountElement) {
-      outputCountElement.textContent = Object.keys(sessionData.results).length;
+      outputCountElement.textContent = count;
+    }
+
+    if (finalizeBtn) {
+      finalizeBtn.disabled = count === 0;
+      if (count === 0) {
+        finalizeBtn.classList.add("opacity-50", "cursor-not-allowed");
+      } else {
+        finalizeBtn.classList.remove("opacity-50", "cursor-not-allowed");
+      }
     }
   }
 
@@ -400,7 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setupModalClose() {
-    const modals = document.querySelectorAll("#commentsModal, #addOutputModal, #editOutputModal, #deleteOutputModal");
+    const modals = document.querySelectorAll("#commentsModal, #addOutputModal, #editOutputModal, #deleteOutputModal, #finalizeSessionModal");
     modals.forEach(modal => {
       if (!modal) return;
 
@@ -511,10 +523,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setupFinalizeButton() {
     const finalizeBtn = document.getElementById("finalizeBtn");
-    if (!finalizeBtn) return;
+    const finalizeModal = document.getElementById("finalizeSessionModal");
+
+    if (!finalizeBtn || !finalizeModal) return;
 
     finalizeBtn.addEventListener("click", () => {
-      if (!confirm("Are you sure you want to finalize?")) return;
+      document.getElementById("finalizeSessionName").value = sessionData.title || "";
+      document.querySelectorAll("#finalizeSessionModal input[type='checkbox']").forEach(cb => cb.checked = false);
+      finalizeModal.classList.remove("hidden");
+    });
+
+    document.getElementById("cancelFinalize")?.addEventListener("click", () => {
+      finalizeModal.classList.add("hidden");
+    });
+
+    document.getElementById("confirmFinalize")?.addEventListener("click", () => {
+      const sessionName = document.getElementById("finalizeSessionName").value.trim();
+      const checkboxes = document.querySelectorAll("#finalizeSessionModal input[type='checkbox']");
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+      if (!sessionName) {
+        alert("Please enter a Session Name.");
+        return;
+      }
+
+      if (!allChecked) {
+        alert("Please confirm all checklist items before finalizing.");
+        return;
+      }
+
+      sessionData.title = sessionName;
+      sessionData.checklist = Array.from(checkboxes).map(cb => ({
+        id: cb.id,
+        label: cb.nextElementSibling.textContent,
+        checked: cb.checked
+      }));
 
       const formData = new FormData();
       formData.append("session_data", JSON.stringify(sessionData));
@@ -529,7 +572,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((response) => response.json())
         .then((result) => {
           if (result.success) {
-            alert("Session finalized successfully!");
+            finalizeModal.classList.add("hidden");
+            alert("Session finalized successfully! Ready for Output Checker review.");
           } else {
             alert(`Error finalizing: ${result.message}`);
           }
@@ -598,6 +642,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .getElementById("confirmAddOutput")
       ?.addEventListener("click", () => {
         const name = document.getElementById("addOutputName").value.trim();
+        const type = document.getElementById("addOutputType").value;
         const file = document.getElementById("addOutputFile").files[0];
 
         if (!name || !file) {
@@ -607,7 +652,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const newOutputData = {
           uid: name,
-          type: "custom",
+          type: type,
           status: "review",
           properties: { method: file.type },
           files: [{ name: file.name }],
@@ -653,6 +698,12 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         currentEditOutput = target.dataset.outputName;
         document.getElementById("editOutputName").value = currentEditOutput;
+
+        const currentData = sessionData.results[currentEditOutput];
+        if (currentData && document.getElementById("editOutputType")) {
+          document.getElementById("editOutputType").value = currentData.type || "custom";
+        }
+
         editModal?.classList.remove("hidden");
       }
     });
@@ -668,6 +719,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .getElementById("confirmEditOutput")
       ?.addEventListener("click", () => {
         const newName = document.getElementById("editOutputName").value.trim();
+        const newType = document.getElementById("editOutputType").value;
 
         if (!newName) {
           alert("Please enter a name");
@@ -679,7 +731,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        const updatedData = sessionData.results[currentEditOutput];
+        const updatedData = { ...sessionData.results[currentEditOutput] };
+        updatedData.type = newType;
 
         const formData = new FormData();
         formData.append("session_data", JSON.stringify(sessionData));
@@ -705,6 +758,13 @@ document.addEventListener("DOMContentLoaded", () => {
               if (item) {
                 item.setAttribute("data-output-name", newName);
                 item.querySelector(".relative").textContent = newName;
+
+                const typeDisplay = item.querySelector(".order-3 dd");
+                if (typeDisplay) {
+                  const method = sessionData.results[newName].properties?.method || "";
+                  typeDisplay.textContent = `${method} ${sessionData.results[newName].type}`;
+                }
+
                 item.querySelectorAll("button").forEach(btn => btn.dataset.outputName = newName);
               }
 
