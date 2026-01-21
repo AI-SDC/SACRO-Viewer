@@ -11,7 +11,7 @@ export const isCsv = (ext) => ext.toLowerCase() === "csv";
 export const isImg = (ext) =>
   ["gif", "jpg", "jpeg", "png", "svg"].includes(ext.toLowerCase());
 
-export const TEXT_TYPES = ["txt", "md", "py", "yaml", "r", "log","do"];
+export const TEXT_TYPES = ["txt", "md", "py", "yaml", "r", "log"];
 /**
  * Confirm if file is .txt
  * @param {string} ext - file extension

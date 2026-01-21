@@ -27,7 +27,8 @@ const findAppPath = () => {
 
   if (!getPath) {
     console.error("Could not find sacro build, checked:", fileLocations);
-    return app.quit();
+    app.quit();
+    process.exit(1);
   }
 
   return getPath;
