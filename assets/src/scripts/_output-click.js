@@ -3,6 +3,7 @@ import {
   createImageElement,
   createTableElement,
   createTextElement,
+  createDocumentElement,
   invalidFileElement,
 } from "./_file-elements";
 import setFormState from "./_form-state";
@@ -16,7 +17,7 @@ import {
   setResearcherComments,
 } from "./_set-metadata";
 import { openOutput } from "./_signals";
-import { getFileExt, isCsv, isImg, isJson, isTxt } from "./_utils";
+import { getFileExt, isCsv, isImg, isJson, isTxt, isDocumentFile, isPdf } from "./_utils";
 
 export default async function outputClick({ outputName, metadata }) {
   // Set the file values
@@ -73,6 +74,7 @@ export default async function outputClick({ outputName, metadata }) {
 
     filePreviewTitle.innerText = path;
     filePreviewLink.setAttribute("href", url);
+    filePreviewLink.setAttribute("target", "_blank");
 
     if (isCsv(ext)) {
       createTableElement({
@@ -88,6 +90,8 @@ export default async function outputClick({ outputName, metadata }) {
       createTextElement(filePreviewContent, ext, url);
     } else if (isJson(ext)) {
       createCodeElement(filePreviewContent, ext, url);
+    } else if (isDocumentFile(ext) || isPdf(ext)) {
+      createDocumentElement(filePreviewContent, url, ext);
     } else {
       invalidFileElement(filePreviewContent);
     }

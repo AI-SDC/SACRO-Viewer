@@ -1,16 +1,17 @@
-"""Configuration file for the Sphinx documentation builder."""
+"""Configuration file for the Sphinx documentation builder."""  # noqa: INP001
 
 # -- Path setup --------------------------------------------------------------
 
 import os
 import sys
 
+
 sys.path.insert(0, os.path.abspath("../../"))
 
 # -- Project information -----------------------------------------------------
 
 project = "SACRO Viewer"
-copyright = "2025, GRAIMATTER and SACRO Project Team"
+copyright = "2025, GRAIMATTER and SACRO Project Team"  # noqa: A001
 author = "GRAIMATTER and SACRO Project Team"
 release = "0.1.0"
 
@@ -35,11 +36,7 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "pydata_sphinx_theme"
-html_theme_options = {
-    "navigation_depth": 2,
-    "article_header_end": ["prev-next.html"],
-    "article_footer_items": [],
-}
+html_theme_options = {"navigation_depth": 2}
 
 html_static_path = ["_static"]
 html_css_files = [
