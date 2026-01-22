@@ -18,10 +18,7 @@ def test_load(test_outputs):
     )
     response = views.load(request)
     assert response.status_code == 302
-    assert (
-        response.headers["Location"]
-        == f"/checker/?{urlencode({'path': test_outputs.path})}"
-    )
+    assert response.headers["Location"] == f"/?{urlencode({'path': test_outputs.path})}"
 
 
 def test_load_multiple(test_outputs):

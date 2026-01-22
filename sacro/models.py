@@ -115,7 +115,7 @@ class ACROOutputs(dict):
         try:
             assert "version" in self.raw_metadata
             assert "results" in self.raw_metadata
-            # assert len(self.raw_metadata["results"]) > 0
+            assert len(self.raw_metadata["results"]) > 0
             for result in self.raw_metadata["results"].values():
                 assert "files" in result
                 assert len(result["files"]) > 0
