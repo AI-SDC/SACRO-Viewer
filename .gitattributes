@@ -12,6 +12,8 @@
 *.cjs text eol=lf
 *.bzl text eol=lf
 *.sh text eol=lf
+*.html text eol=lf
+*.rst text eol=lf
 Makefile text eol=lf
 justfile text eol=lf
 
