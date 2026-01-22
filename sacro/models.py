@@ -146,24 +146,27 @@ class ACROOutputs(dict):
 
         # add and check checksum data, and transform cell data to more useful format
         checksums_dir = self.path.parent / "checksums"
+        checksums_dir.mkdir(exist_ok=True)
         for output, metadata in self.items():
             for filedata in metadata["files"]:
                 # checksums
                 filedata["checksum_valid"] = False
                 filedata["checksum"] = None
 
-                path = checksums_dir / (filedata["name"] + ".txt")
-                if not path.exists():
-                    continue
-
-                filedata["checksum"] = path.read_text(encoding="utf8")
                 actual_file = self.get_file_path(output, filedata["name"])
-
-                if not actual_file.exists():  # pragma: nocover
+                if not actual_file.exists():
                     continue
 
-                checksum = hashlib.sha256(actual_file.read_bytes()).hexdigest()
-                filedata["checksum_valid"] = checksum == filedata["checksum"]
+                path = checksums_dir / (filedata["name"] + ".txt")
+                file_bytes = actual_file.read_bytes()
+                file_checksum = hashlib.sha256(file_bytes).hexdigest()
+
+                if not path.exists():
+                    path.write_text(file_checksum)
+
+                stored_checksum = path.read_text(encoding="utf8")
+                filedata["checksum"] = stored_checksum
+                filedata["checksum_valid"] = file_checksum == stored_checksum
 
                 # cells
                 cells = filedata.get("sdc", {}).get("cells", {})
