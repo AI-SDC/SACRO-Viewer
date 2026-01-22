@@ -1,0 +1,25 @@
+# Auto detect text files and normalize line endings to LF
+* text=auto
+
+# Source files
+*.js text eol=lf
+*.css text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.toml text eol=lf
+*.cjs text eol=lf
+*.bzl text eol=lf
+*.sh text eol=lf
+Makefile text eol=lf
+justfile text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.jfif binary
+*.gif binary
+*.zip binary
+*.jar binary

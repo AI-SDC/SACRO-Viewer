@@ -1,0 +1,328 @@
+{
+  "version": "0.4.0",
+  "results": {
+    "cypress.config.js": {
+      "uid": "cypress.config.js",
+      "files": [
+        {
+          "name": "cypress.config.js"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.492478",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "DEVELOPERS.md": {
+      "uid": "DEVELOPERS.md",
+      "files": [
+        {
+          "name": "DEVELOPERS.md"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.478600",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "justfile": {
+      "uid": "justfile",
+      "files": [
+        {
+          "name": "justfile"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.504542",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "LICENSE": {
+      "uid": "LICENSE",
+      "files": [
+        {
+          "name": "LICENSE"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.478600",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "manage.py": {
+      "uid": "manage.py",
+      "files": [
+        {
+          "name": "manage.py"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.505547",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "package-lock.json": {
+      "uid": "package-lock.json",
+      "files": [
+        {
+          "name": "package-lock.json"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.508387",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "package.json": {
+      "uid": "package.json",
+      "files": [
+        {
+          "name": "package.json"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.508387",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "postcss.config.cjs": {
+      "uid": "postcss.config.cjs",
+      "files": [
+        {
+          "name": "postcss.config.cjs"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.509392",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "pyoxidizer.bzl": {
+      "uid": "pyoxidizer.bzl",
+      "files": [
+        {
+          "name": "pyoxidizer.bzl"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.510406",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "pyproject.toml": {
+      "uid": "pyproject.toml",
+      "files": [
+        {
+          "name": "pyproject.toml"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.510406",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "README.md": {
+      "uid": "README.md",
+      "files": [
+        {
+          "name": "README.md"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.479605",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "requirements.dev.in": {
+      "uid": "requirements.dev.in",
+      "files": [
+        {
+          "name": "requirements.dev.in"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.511410",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "requirements.dev.txt": {
+      "uid": "requirements.dev.txt",
+      "files": [
+        {
+          "name": "requirements.dev.txt"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.512409",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "requirements.prod.in": {
+      "uid": "requirements.prod.in",
+      "files": [
+        {
+          "name": "requirements.prod.in"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.512409",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "requirements.prod.txt": {
+      "uid": "requirements.prod.txt",
+      "files": [
+        {
+          "name": "requirements.prod.txt"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.513615",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "tailwind.config.js": {
+      "uid": "tailwind.config.js",
+      "files": [
+        {
+          "name": "tailwind.config.js"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.566741",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    },
+    "vite.config.js": {
+      "uid": "vite.config.js",
+      "files": [
+        {
+          "name": "vite.config.js"
+        }
+      ],
+      "status": "review",
+      "type": "custom",
+      "properties": {},
+      "outcome": {},
+      "command": "custom",
+      "summary": "review",
+      "exception": null,
+      "timestamp": "2025-10-06T11:30:08.572867",
+      "comments": [
+        "This non-ACRO output metadata was auto generated the SACRO Viewer application"
+      ]
+    }
+  }
+}

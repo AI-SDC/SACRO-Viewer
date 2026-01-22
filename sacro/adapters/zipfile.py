@@ -1,4 +1,5 @@
 import io
+import json
 import logging
 import zipfile
 
@@ -15,6 +16,25 @@ def get_summary(review, outputs):
             "status", "Unknown"
         )
     return render_to_string("summary.txt", context={"review": review})
+
+
+def create_redacted_metadata(outputs, review):
+    """Create redacted version with only approved outputs"""
+    redacted = {"version": outputs.version, "results": {}}
+
+    for output_name, metadata in outputs.items():
+        decision = review["decisions"].get(output_name, {})
+
+        if decision.get("state", False):
+            redacted["results"][output_name] = dict(metadata)
+
+            if "comments" not in redacted["results"][output_name]:
+                redacted["results"][output_name]["comments"] = []
+            redacted["results"][output_name]["comments"].append(
+                "Manual review check passed - approved for release"
+            )
+
+    return json.dumps(redacted, indent=2)
 
 
 def create(outputs, review, approved_outputs):
@@ -40,6 +60,9 @@ def create(outputs, review, approved_outputs):
             zip_obj.writestr("missing-files.txt", data="\n".join(lines))
 
         zip_obj.writestr("summary.txt", data=get_summary(review, outputs))
+        zip_obj.writestr(
+            "metadata-redacted.json", data=create_redacted_metadata(outputs, review)
+        )
 
     # rewind the file stream to the start
     in_memory_zf.seek(0)

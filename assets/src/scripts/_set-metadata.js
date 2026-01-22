@@ -45,8 +45,7 @@ export function setCreatedAtDate(timestamp) {
  * @param {string} type
  */
 export function setOutputType(method, type) {
-  toggleParentVisibility("outputType", "div", "show"); // Show the outputType div
-
+  toggleParentVisibility("outputType", "div", "show");
   if (method) {
     setElementText("outputType", `${method ?? ""} ${type}`);
   } else {
@@ -134,8 +133,7 @@ export function setExceptionRequest(comment, status) {
  * @param {boolean} checksumValid - true/false if the checksum is valid
  */
 export function setChecksumInfo(el, checksumValid) {
-  if (!checksumValid) {
-    // eslint-disable-next-line no-param-reassign
+  if (checksumValid === false) {
     el.innerText =
       "This file had been modified since the ACRO runner generated it.";
   } else {
