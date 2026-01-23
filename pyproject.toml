@@ -54,6 +54,7 @@ extend-ignore = [
 
 [tool.ruff.per-file-ignores]
 "docs/source/conf.py" = ["A001", "INP001", "I001"]
+"data/**" = ["INP001"]
 
 [tool.ruff.isort]
 lines-after-imports = 2

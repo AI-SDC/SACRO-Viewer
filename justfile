@@ -121,6 +121,14 @@ test-e2e: devenv test-outputs collectstatic
 test-cypress: devenv test-outputs collectstatic
     npm run cypress:open
 
+# run black formatter check
+black: devenv
+    $BIN/black --check .
+
+# run ruff linter check
+ruff: devenv
+    $BIN/ruff check .
+
 # run the various linter does not change any files
 check: devenv assets-install
     $BIN/black --check .

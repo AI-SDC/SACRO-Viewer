@@ -6,16 +6,18 @@ repos:
     hooks:
     - id: black
       name: black
-      entry: just black
-      language: system
+      entry: black --check
+      language: python
       types: [python]
       require_serial: true
+      additional_dependencies: ['black==23.3.0']
     - id: ruff
       name: ruff
-      entry: just ruff
-      language: system
+      entry: ruff check
+      language: python
       types: [python]
       require_serial: true
+      additional_dependencies: ['ruff==0.0.272']
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
