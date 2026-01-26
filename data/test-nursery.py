@@ -4,10 +4,7 @@ Copyright : Maha Albashir, Richard Preen, Jim Smith 2023
 """
 
 # import libraries
-import json
 import os
-from pathlib import Path
-import shutil
 
 import numpy as np
 import pandas as pd
@@ -125,9 +122,7 @@ ACRO crosstab with aggregation function
 Mean() in this case
 Then how Max and Min are not allowed by the code
 """
-print(
-    "\nIllustration of crosstab using an aggregation function " "- mean in this case."
-)
+print("\nIllustration of crosstab using an aggregation function - mean in this case.")
 safe_table = acro.crosstab(df.recommend, df.parents, values=df.children, aggfunc="mean")
 acro.rename_output(last_output(), "crosstab_fail_2")
 acro.add_exception(last_output(), "Except me")

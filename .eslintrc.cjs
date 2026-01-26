@@ -20,7 +20,7 @@ module.exports = {
     sourceType: "module",
   },
   settings: {
-    "import/core-modules": ["electron", "portfinder"],
+    "import/core-modules": ["electron", "electron-log", "portfinder"],
   },
   rules: {
     "prettier/prettier": "error",
