@@ -138,6 +138,15 @@ check: devenv assets-install
 eslint:
     npm run lint
 
+# run black formatter (for pre-commit)
+black: devenv
+    $BIN/black .
+
+
+# run ruff linter (for pre-commit)
+ruff: devenv
+    $BIN/ruff --fix .
+
 
 # run various linters and fix
 fix: devenv assets-install

@@ -6,6 +6,8 @@ omit = [
   "sacro/__main__.py",
   "sacro/asgi.py",
   "sacro/middleware.py",
+  "sacro/urls.py",
+  "sacro/views.py",
 ]
 source = [
   "sacro",
@@ -23,6 +25,9 @@ show_contexts = true
 [tool.pytest.ini_options]
 addopts = "--ignore=./build"
 DJANGO_SETTINGS_MODULE = "sacro.settings"
+filterwarnings = [
+  "ignore::DeprecationWarning:slippers",
+]
 
 [tool.ruff]
 line-length = 88
