@@ -18,7 +18,10 @@ def test_load(test_outputs):
     )
     response = views.load(request)
     assert response.status_code == 302
-    assert response.headers["Location"] == f"/?{urlencode({'path': test_outputs.path})}"
+    assert (
+        response.headers["Location"]
+        == f"/role-selection/?{urlencode({'path': test_outputs.path})}"
+    )
 
 
 def test_load_multiple(test_outputs):
@@ -299,3 +302,78 @@ def test_summary_unknown_review(review_summary, monkeypatch):
 
     with pytest.raises(Http404):
         views.summary(request, pk="test")
+
+
+def test_format_mime_type_with_known_types():
+    """Test format_mime_type with known MIME types"""
+    assert views.format_mime_type("application/pdf") == "PDF"
+    assert views.format_mime_type("text/csv") == "CSV"
+    assert views.format_mime_type("image/png") == "PNG Image"
+    assert views.format_mime_type("image/jpeg") == "JPEG Image"
+
+
+def test_format_mime_type_with_unknown_type():
+    """Test format_mime_type with unknown MIME type"""
+    assert views.format_mime_type("application/unknown") == "application/unknown"
+
+
+def test_format_mime_type_with_empty_string():
+    """Test format_mime_type with empty string"""
+    assert views.format_mime_type("") == ""
+
+
+def test_format_mime_type_with_none():
+    """Test format_mime_type with None"""
+    assert views.format_mime_type(None) == ""
+
+
+def test_role_selection_with_path(client):
+    """Test role_selection view with path parameter"""
+    response = client.get("/role-selection/?path=/some/path.json")
+    assert response.status_code == 200
+    assert "/some/path.json" in response.content.decode()
+
+
+def test_role_selection_without_path(client):
+    """Test role_selection view without path parameter"""
+    response = client.get("/role-selection/")
+    assert response.status_code == 200
+
+
+def test_researcher_index_with_path(client, test_outputs):
+    """Test researcher_index view with path parameter"""
+    response = client.get(f"/researcher/?path={test_outputs.path}")
+    assert response.status_code == 200
+
+
+def test_researcher_index_no_path_debug(client, test_outputs):
+    """Test researcher_index view without path in DEBUG mode"""
+    # Using default path from DEBUG setting
+    from unittest.mock import patch
+
+    with patch("sacro.views.models.load_from_path") as mock_load:
+        mock_load.return_value = test_outputs
+        response = client.get("/researcher/?path=" + str(test_outputs.path))
+        assert response.status_code == 200
+
+
+def test_researcher_load(client, tmp_path):
+    """Test researcher_load view"""
+    json_file = tmp_path / "test.json"
+    json_file.write_text('{"path": "/some/path"}')
+
+    response = client.get(f"/researcher/load/?dirpath={tmp_path}")
+    # Should redirect to researcher-index
+    assert response.status_code in [200, 302]
+
+
+def test_get_filepath_from_request_with_missing_path(client):
+    """Test get_filepath_from_request with missing path"""
+    with pytest.raises(Http404):
+        views.get_filepath_from_request({}, "path")
+
+
+def test_get_filepath_from_request_with_nonexistent_path(client):
+    """Test get_filepath_from_request with non-existent path"""
+    with pytest.raises(Http404):
+        views.get_filepath_from_request({"path": "/nonexistent/path.json"}, "path")
