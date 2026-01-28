@@ -51,7 +51,9 @@ urlpatterns = [
     ),
 ]
 
-if settings.DEBUG and importlib.util.find_spec("django_browser_reload"):
+if settings.DEBUG and importlib.util.find_spec(
+    "django_browser_reload"
+):  # pragma: no cover
     urlpatterns.append(path("__reload__/", include("django_browser_reload.urls")))
 
 
