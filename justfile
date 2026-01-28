@@ -121,14 +121,6 @@ test-e2e: devenv test-outputs collectstatic
 test-cypress: devenv test-outputs collectstatic
     npm run cypress:open
 
-# run black formatter check
-black: devenv
-    $BIN/black --check .
-
-# run ruff linter check
-ruff: devenv
-    $BIN/ruff check .
-
 # run the various linter does not change any files
 check: devenv assets-install
     $BIN/black --check .
@@ -137,6 +129,15 @@ check: devenv assets-install
 
 eslint:
     npm run lint
+
+# run black formatter (for pre-commit)
+black: devenv
+    $BIN/black .
+
+
+# run ruff linter (for pre-commit)
+ruff: devenv
+    $BIN/ruff --fix .
 
 
 # run various linters and fix
