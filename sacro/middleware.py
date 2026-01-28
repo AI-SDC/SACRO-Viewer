@@ -23,7 +23,11 @@ class ErrorHandlerMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        return self.get_response(request)
+        try:
+            response = self.get_response(request)
+        except IncorrectVersionError as exception:
+            return self.process_exception(request, exception)
+        return response
 
     def process_exception(self, request, exception):
         if not isinstance(exception, IncorrectVersionError):
