@@ -1,0 +1,60 @@
+<li
+  aria-label="Output: {{ name }}"
+  class="
+    relative group px-4 py-3 my-1 hover:bg-slate-50
+    {% if output.status == "fail" %}
+    text-red-800
+    {% elif output.status == "pass" %}
+    text-blue-800
+    {% elif output.status == "review" %}
+    text-fuchsia-900
+    {% endif %}
+  "
+  data-output-name="{{ name }}"
+>
+  <dl class="flex flex-row gap-x-2 items-center" aria-label="Output information">
+    <div class="order-2 cursor-pointer flex-1">
+      <dt class="sr-only">Output name:</dt>
+      <dd>
+        <a class="before:absolute before:inset-0 before:right-20 before:h-full">
+          <span class="relative">
+            {{ name }}
+          </span>
+        </a>
+      </dd>
+    </div>
+    <div class="order-1">
+      <dt class="sr-only">ACRO status:</dt>
+      <dd>
+        <span class="sr-only">{{ output.status }}</span>
+        {% if output.status == "fail" %}
+        {% icon_file_x class="h-5 w-5 stroke-red-700" %}
+        {% elif output.status == "pass" %}
+        {% icon_file class="h-5 w-5 stroke-blue-700" %}
+        {% elif output.status == "review" %}
+        {% icon_file_unknown class="h-5 w-5 stroke-fuchsia-700" %}
+        {% endif %}
+      </dd>
+    </div>
+    <div class="order-3 ml-auto text-right">
+      <dt class="sr-only">Output type:</dt>
+      <dd>{{ output.properties.method|default_if_none:"" }} {{ output.type }}</dd>
+    </div>
+    <div class="order-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <button
+        class="edit-output-btn w-7 h-7 border-none bg-white rounded cursor-pointer flex items-center justify-center text-sm hover:bg-blue-50 hover:text-blue-600 transition-colors"
+        data-output-name="{{ name }}"
+        title="Edit"
+      >
+        ✏️
+      </button>
+      <button
+        class="delete-output-btn w-7 h-7 border-none bg-white rounded cursor-pointer flex items-center justify-center text-sm hover:bg-red-50 hover:text-red-600 transition-colors"
+        data-output-name="{{ name }}"
+        title="Delete"
+      >
+        🗑️
+      </button>
+    </div>
+  </dl>
+</li>
