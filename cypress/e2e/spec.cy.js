@@ -1,6 +1,7 @@
 describe("Start to finish user journey for approving and downloading outputs", () => {
   beforeEach(() => {
     cy.visit("http://localhost:8000");
+    cy.contains("Output Checker").click();
   });
 
   it("Approves all files, visits the summary page, and downloads approved outputs", () => {

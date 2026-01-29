@@ -7,8 +7,7 @@ from sacro import errors, views
 
 
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("role-selection/", views.role_selection, name="role-selection"),
+    path("", views.role_selection, name="role-selection"),
     path("checker/", views.index, name="checker"),
     path("load/", views.load, name="load"),
     path("contents/", views.contents, name="contents"),
