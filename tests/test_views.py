@@ -18,10 +18,7 @@ def test_load(test_outputs):
     )
     response = views.load(request)
     assert response.status_code == 302
-    assert (
-        response.headers["Location"]
-        == f"/role-selection/?{urlencode({'path': test_outputs.path})}"
-    )
+    assert response.headers["Location"] == f"/?{urlencode({'path': test_outputs.path})}"
 
 
 def test_load_multiple(test_outputs):
@@ -329,14 +326,14 @@ def test_format_mime_type_with_none():
 
 def test_role_selection_with_path(client):
     """Test role_selection view with path parameter"""
-    response = client.get("/role-selection/?path=/some/path.json")
+    response = client.get("/?path=/some/path.json")
     assert response.status_code == 200
     assert "/some/path.json" in response.content.decode()
 
 
 def test_role_selection_without_path(client):
     """Test role_selection view without path parameter"""
-    response = client.get("/role-selection/")
+    response = client.get("/")
     assert response.status_code == 200
 
 
@@ -541,7 +538,7 @@ def test_format_mime_type_text_types():
 
 def test_role_selection_context(client):
     """Test role_selection view context"""
-    response = client.get("/role-selection/?path=/some/path.json")
+    response = client.get("/?path=/some/path.json")
     assert response.status_code == 200
     # Check that the path is in the response context or content
     assert "/some/path.json" in response.content.decode()
