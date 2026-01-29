@@ -7,6 +7,7 @@ const outputText = {
 describe("Check all variations of state for reviewing an output", () => {
   beforeEach(() => {
     cy.visit("http://localhost:8000");
+    cy.contains("Output Checker").click();
   });
 
   it("approves an output", () => {
