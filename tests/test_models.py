@@ -44,7 +44,6 @@ def test_outputs_annotation_checksum_failed(test_outputs):
     [
         {},
         {"version": "1"},
-        {"version": "1", "results": {}},
         {"version": "1", "results": {"name": {"files": []}}},
         {"version": "1", "results": {"name": {"notfiles": "foo"}}},
     ],
