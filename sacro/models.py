@@ -115,7 +115,6 @@ class ACROOutputs(dict):
         try:
             assert "version" in self.raw_metadata
             assert "results" in self.raw_metadata
-            assert len(self.raw_metadata["results"]) > 0
             for result in self.raw_metadata["results"].values():
                 assert "files" in result
                 assert len(result["files"]) > 0
@@ -146,6 +145,7 @@ class ACROOutputs(dict):
 
         # add and check checksum data, and transform cell data to more useful format
         checksums_dir = self.path.parent / "checksums"
+        checksums_dir.mkdir(exist_ok=True)
         for output, metadata in self.items():
             for filedata in metadata["files"]:
                 # checksums
