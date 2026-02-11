@@ -14,7 +14,7 @@
 
     <div style="display: flex; flex-direction: column; gap: 1rem;">
 
-      <a href="{% url 'researcher-index' %}{% if path %}?path={{ path }}{% endif %}"
+      <a href="#" onclick="window.selectFolder('researcher'); return false;"
         style="background-color: #e5e7eb; color: #1f2937; font-weight: 600; padding: 1rem 1.5rem; border-radius: 0.5rem; text-align: center; text-decoration: none; transition: background-color 0.2s; display: block;"
         onmouseover="this.style.backgroundColor='#d1d5db'"
         onmouseout="this.style.backgroundColor='#e5e7eb'"
@@ -23,7 +23,7 @@
       </a>
 
 
-      <a href="{% url 'checker' %}{% if path %}?path={{ path }}{% endif %}"
+      <a href="#" onclick="window.selectFolder('checker'); return false;"
         style="background-color: #e5e7eb; color: #1f2937; font-weight: 600; padding: 1rem 1.5rem; border-radius: 0.5rem; text-align: center; text-decoration: none; transition: background-color 0.2s; display: block;"
         onmouseover="this.style.backgroundColor='#d1d5db'"
         onmouseout="this.style.backgroundColor='#e5e7eb'"
@@ -32,5 +32,24 @@
       </a>
     </div>
   </div>
+
+  <script>
+    window.selectFolder = function(role) {
+      if (window.electronAPI && window.electronAPI.selectFolder) {
+        window.electronAPI.selectFolder().then(dirpath => {
+          if (dirpath) {
+            window.location.href = '/load/?dirpath=' + encodeURIComponent(dirpath) + '&role=' + role;
+          }
+        });
+      } else {
+        if (role === 'researcher') {
+          window.location.href = '/researcher/';
+        } else {
+          window.location.href = '/checker/';
+        }
+      }
+    };
+    console.log('Script loaded - electronAPI available:', !!window.electronAPI);
+  </script>
 </body>
 {% endblock content %}

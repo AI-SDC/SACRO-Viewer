@@ -1,4 +1,4 @@
-const { session, BrowserWindow, Menu } = require("electron");
+const { session, BrowserWindow, Menu, ipcMain } = require("electron");
 const { dialog, shell } = require("electron");
 const fs = require("node:fs");
 const os = require("node:os");
@@ -75,6 +75,11 @@ const createWindow = async () => {
   const win = new BrowserWindow({
     width: 1024,
     height: 768,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.js"),
+    },
   });
   win.loadFile("splash.html");
 
@@ -82,29 +87,28 @@ const createWindow = async () => {
     if (serverProcess !== null) serverProcess.kill();
   });
 
-  const result = await dialog.showOpenDialog({
-    title: "Choose directory containing outputs you wish to review",
-    properties: ["openDirectory"],
-    defaultPath: os.homedir(),
+  ipcMain.handle("select-folder", async () => {
+    const result = await dialog.showOpenDialog({
+      title: "Choose directory containing outputs you wish to review",
+      properties: ["openDirectory"],
+      defaultPath: os.homedir(),
+    });
+    return result.canceled ? null: result.filePaths[0];
   });
 
-  if (result.canceled) {
-    win.loadFile("no-file.html");
-  } else {
-    const qs = querystring.stringify({ dirpath: result.filePaths[0] });
-    const url = `${serverUrl}/load?${qs}`;
 
-    const timeout = serverProcess === null ? 0 : 4000;
-    waitThenLoad(url, timeout)
-      .then(() => {
-        // load the server now we know it's serving
-        win.loadURL(url);
-      })
-      .catch(() => {
-        // show the error screen on failure
-        win.loadFile("error.html");
-      });
-  }
+  const url = `${serverUrl}/`;
+
+  const timeout = serverProcess === null ? 0 : 4000;
+  waitThenLoad(url, timeout)
+    .then(() => {
+      // load the server now we know it's serving
+      win.loadURL(url);
+    })
+    .catch(() => {
+      // show the error screen on failure
+      win.loadFile("error.html");
+    });
 
   if (process.env.DEBUG) {
     win.webContents.openDevTools();
