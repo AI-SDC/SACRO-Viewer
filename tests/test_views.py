@@ -14,11 +14,14 @@ from sacro import models, views
 
 def test_load(test_outputs):
     request = RequestFactory().get(
-        path="/load", data={"dirpath": str(test_outputs.path.parent)}
+        path="/load", data={"dirpath": str(test_outputs.path.parent), "role": "checker"}
     )
     response = views.load(request)
     assert response.status_code == 302
-    assert response.headers["Location"] == f"/?{urlencode({'path': test_outputs.path})}"
+    assert (
+        response.headers["Location"]
+        == f"/checker/?{urlencode({'path': test_outputs.path})}"
+    )
 
 
 def test_load_multiple(test_outputs):
@@ -324,13 +327,6 @@ def test_format_mime_type_with_none():
     assert views.format_mime_type(None) == ""
 
 
-def test_role_selection_with_path(client):
-    """Test role_selection view with path parameter"""
-    response = client.get("/?path=/some/path.json")
-    assert response.status_code == 200
-    assert "/some/path.json" in response.content.decode()
-
-
 def test_role_selection_without_path(client):
     """Test role_selection view without path parameter"""
     response = client.get("/")
@@ -537,11 +533,11 @@ def test_format_mime_type_text_types():
 
 
 def test_role_selection_context(client):
-    """Test role_selection view context"""
-    response = client.get("/?path=/some/path.json")
+    """Test role_selection view - no longer accepts path parameter"""
+    response = client.get("/")
     assert response.status_code == 200
-    # Check that the path is in the response context or content
-    assert "/some/path.json" in response.content.decode()
+    assert "Researcher" in response.content.decode()
+    assert "Output Checker" in response.content.decode()
 
 
 def test_researcher_save_session_error(client, test_outputs, mocker):

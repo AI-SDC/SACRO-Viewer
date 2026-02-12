@@ -85,12 +85,28 @@ def get_outputs_from_request(data):
 
 @require_GET
 def load(request):
-    dirpath = get_filepath_from_request(request.GET, "dirpath")
+    dirpath_param = request.GET.get("dirpath")
+    role = request.GET.get("role")
+
+    if not dirpath_param:
+        raise Http404("No directory path provided")
+
+    dirpath = Path(dirpath_param)
+
+    if not dirpath.exists():
+        raise Http404(f"Directory not found: {dirpath}")
+
     try:
         path = models.find_acro_metadata(dirpath)
     except models.MultipleACROFiles as exc:
         return errors.error(request, status=500, message=str(exc))
-    return redirect(utils.reverse_with_params({"path": str(path)}, "role-selection"))
+
+    if role == "researcher":
+        return redirect(
+            utils.reverse_with_params({"path": str(path)}, "researcher-index")
+        )
+    else:
+        return redirect(utils.reverse_with_params({"path": str(path)}, "checker"))
 
 
 @require_GET
