@@ -215,7 +215,7 @@ collectstatic: devenv assets
 test-data:
     #!/usr/bin/env bash
     if test -f data/dataset_26_nursery.arff; then exit 0; fi
-    curl https://www.openml.org/data/download/26/dataset_26_nursery.arff -\o data/dataset_26_nursery.arff
+    curl https://www.openml.org/data/download/26/dataset_26_nursery.arff -o data/dataset_26_nursery.arff
 
 # build test outputs
 test-outputs: test-data devenv
