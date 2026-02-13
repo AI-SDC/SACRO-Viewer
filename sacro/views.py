@@ -31,6 +31,26 @@ logger = logging.getLogger(__name__)
 REVIEWS = {}
 
 
+def _write_reviewer_text_to_results(outputs, review_data):
+    """Write reviewer text back to results.json file"""
+    try:
+        reviewer_text = zipfile.get_summary(review_data, outputs)
+
+        results_data = outputs.raw_metadata.copy()
+
+        results_data["reviewer_summary"] = reviewer_text
+        results_data["review_timestamp"] = datetime.now().isoformat()
+        results_data["reviewer"] = getpass.getuser()
+
+        with open(outputs.path, "w") as f:
+            json.dump(results_data, f, indent=2)
+
+        logger.info(f"Reviewer text written to {outputs.path}")
+
+    except Exception as e:
+        logger.error(f"Error writing reviewer text to results.json: {e}")
+
+
 def format_mime_type(mime_type):
     """
     Convert MIME types to user-friendly display names.
@@ -212,11 +232,13 @@ def review_create(request):
     if unrecognized_outputs:
         return HttpResponseBadRequest(f"invalid output names: {unrecognized_outputs}")
 
-    REVIEWS["current"] = {
+    review_data = {
         "comment": comment,
         "decisions": review,
         "path": outputs.path,
     }
+    REVIEWS["current"] = review_data
+    _write_reviewer_text_to_results(outputs, review_data)
 
     return redirect("review-detail", pk="current")
 

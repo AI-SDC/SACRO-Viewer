@@ -210,8 +210,11 @@ def test_review_create_no_review_data(test_outputs):
     assert b"no review data submitted" in response.content
 
 
-def test_review_create_success(test_outputs, review_data):
-    path = urlencode({"path": test_outputs.path})
+def test_review_create_success(test_outputs, review_data, tmp_path):
+    temp_results = tmp_path / "results.json"
+    temp_results.write_text(test_outputs.path.read_text())
+
+    path = urlencode({"path": temp_results})
     request = RequestFactory().post(
         f"/?{path}", data={"comment": "test", "review": json.dumps(review_data)}
     )
@@ -220,15 +223,16 @@ def test_review_create_success(test_outputs, review_data):
 
     assert response.status_code == 302, response.content
     assert response.url == reverse("review-detail", kwargs={"pk": "current"})
-    assert views.REVIEWS["current"] == {
-        "comment": "test",
-        "decisions": review_data,
-        "path": test_outputs.path,
-    }
-    # check comments
+
+    assert views.REVIEWS["current"]["comment"] == "test"
+    assert views.REVIEWS["current"]["path"] == temp_results
+
     review = views.REVIEWS["current"]["decisions"]
     first = list(review)[0]
     assert review[first]["comment"] == "comment with ' and 😀"
+
+    updated_data = json.loads(temp_results.read_text())
+    assert "reviewer_summary" in updated_data
 
 
 def test_review_create_html_entities(test_outputs, review_data):
@@ -1369,3 +1373,56 @@ def test_researcher_load_session_not_found_cleanup(client, tmp_path):
     # Test that the file exists for setup only - the actual coverage
     # of the if block in the view is handled elsewhere
     assert draft_path.exists()
+
+
+def test_reviewer_text_written_to_results(test_outputs, tmp_path):
+    """Test that reviewer text is written to results.json when review is created"""
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        results_path = temp_path / "results.json"
+
+        sample_data = {
+            "version": "0.4.0",
+            "results": {
+                "test_output": {
+                    "uid": "test_output",
+                    "status": "review",
+                    "type": "custom",
+                    "properties": {},
+                    "files": [{"name": "test.csv"}],
+                    "outcome": {},
+                    "command": "custom",
+                    "summary": "review",
+                    "timestamp": "2026-02-03T14:34:20.503907",
+                    "comments": ["Test output"],
+                    "exception": "",
+                }
+            },
+        }
+
+        with open(results_path, "w") as f:
+            json.dump(sample_data, f, indent=2)
+
+        review_data = {
+            "comment": "Overall review comment",
+            "decisions": {
+                "test_output": {"state": True, "comment": "Approved with comment"}
+            },
+            "path": results_path,
+        }
+
+        outputs = models.ACROOutputs(results_path)
+        views._write_reviewer_text_to_results(outputs, review_data)
+
+        with open(results_path) as f:
+            updated_data = json.load(f)
+
+        assert "reviewer_summary" in updated_data
+        assert "review_timestamp" in updated_data
+        assert "reviewer" in updated_data
+
+        reviewer_text = updated_data["reviewer_summary"]
+        assert "Overall review comment" in reviewer_text
+        assert "test_output" in reviewer_text
