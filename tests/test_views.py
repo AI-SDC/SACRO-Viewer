@@ -132,7 +132,11 @@ def test_approved_outputs_missing_metadata(tmp_path, monkeypatch):
     zf = io.BytesIO(response.getvalue())
     with zipfile.ZipFile(zf, "r") as zip_obj:
         assert zip_obj.testzip() is None
-        assert zip_obj.namelist() == ["missing-files.txt", "summary.txt"]
+        assert set(zip_obj.namelist()) == {
+            "missing-files.txt",
+            "summary.txt",
+            "results.json",
+        }
         contents = zip_obj.open("missing-files.txt").read().decode("utf8")
         assert "were not found" in contents
         assert "does-not-exist" in contents
@@ -163,7 +167,16 @@ def test_approved_outputs_success_all_files(test_outputs, review_summary):
                 actual_path = test_outputs.get_file_path(output, filename)
                 assert actual_path.read_bytes() == zip_obj.open(zip_path).read()
         expected_namelist.append("summary.txt")
-        assert zip_obj.namelist() == expected_namelist
+        expected_namelist.append("results.json")
+        assert sorted(zip_obj.namelist()) == sorted(expected_namelist)
+
+        results_json = json.loads(zip_obj.open("results.json").read())
+        assert results_json["version"] == test_outputs.version
+        assert len(results_json["results"]) == len(test_outputs)
+        for output_name, output_data in results_json["results"].items():
+            assert output_name in test_outputs
+            assert output_data["status"] == "approved"
+            assert "comments" in output_data
 
 
 def test_approved_outputs_success_logs_audit_trail(
@@ -179,6 +192,56 @@ def test_approved_outputs_success_logs_audit_trail(
 
     assert response.status_code == 200
     mocked_local_audit.log_release.assert_called_once()
+
+
+def test_approved_outputs_coverage_edge_cases(tmp_path, monkeypatch):
+    # Create valid metadata but remove "comments" from one item to test that branch
+    path = tmp_path / "results.json"
+    metadata = {
+        "version": "test",
+        "results": {
+            "test_no_comments": {
+                "uid": "test_no_comments",
+                "files": [{"name": "fake.csv"}],
+            },
+            "kinda_valid": {
+                "uid": "kinda_valid",
+                "files": [{"name": "valid.csv"}],
+                "comments": [],
+            },
+        },
+    }
+    path.write_text(json.dumps(metadata))
+
+    (tmp_path / "fake.csv").touch()
+    (tmp_path / "valid.csv").touch()
+
+    review_data = {
+        "decisions": {
+            "test_no_comments": {"state": True, "comment": "Review comment"},
+            "test_missing": {"state": True, "comment": "Ghost"},
+            "kinda_valid": {"state": True, "comment": ""},
+        },
+        "path": path,
+    }
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_data})
+
+    request = RequestFactory().post("/")
+    response = views.approved_outputs(request, pk="current")
+
+    zf = io.BytesIO(response.getvalue())
+    with zipfile.ZipFile(zf, "r") as zip_obj:
+        assert zip_obj.testzip() is None
+        results = json.loads(zip_obj.open("results.json").read())["results"]
+
+        assert "comments" in results["test_no_comments"]
+        assert results["test_no_comments"]["comments"] == [
+            "Output Checker: Review comment"
+        ]
+
+        assert "test_missing" not in results
+
+        assert "kinda_valid" in results
 
 
 def test_approved_outputs_unknown_review(review_summary, monkeypatch):
