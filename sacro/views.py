@@ -619,6 +619,20 @@ def researcher_delete_output(request):
             )
 
         if output_name in session_data["results"]:
+            output_data = session_data["results"][output_name]
+            if "files" in output_data:
+                for file_info in output_data["files"]:
+                    filename = file_info.get("name")
+                    if filename:
+                        file_path = outputs.path.parent / filename
+                        if file_path.exists():
+                            file_path.unlink()
+
+                        checksum_path = (
+                            outputs.path.parent / "checksums" / f"{filename}.txt"
+                        )
+                        if checksum_path.exists():
+                            checksum_path.unlink()
             del session_data["results"][output_name]
         else:
             return JsonResponse(
