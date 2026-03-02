@@ -176,3 +176,8 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 # PROJECT SETTINGS
 ACRO_SUPPORTED_VERSION = "0.4.x"
+
+# Optional server-side output directory for web deployments.
+# When set, the write-outputs endpoint will copy approved files here instead
+# of relying on browser-side downloads.  Not required for the Electron workflow.
+SACRO_OUTPUT_DIR = env.path("SACRO_OUTPUT_DIR", default=None)

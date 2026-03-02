@@ -2,54 +2,341 @@
 
 {% load static %}
 
+{% block extra_head %}
+<style>
+  .role-btn { transition: border-color 0.15s, background-color 0.15s; }
+  .role-btn:hover { background-color: #d1d5db; }
+  .role-btn.selected { border-color: #2563eb !important; background-color: #eff6ff !important; }
+  #drop-zone { transition: border-color 0.15s, background-color 0.15s; }
+  #drop-zone.drag-over { border-color: #2563eb; background-color: #eff6ff; }
+  .spinner { display: inline-block; width: 1rem; height: 1rem; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 0.4rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+{% endblock %}
+
 {% block content %}
-<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: #f4f4f5; margin: 0;">
+<body style="display:flex; align-items:center; justify-content:center; min-height:100vh; background-color:#f4f4f5; margin:0;">
 
-  <div style="background-color: white; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-radius: 0.5rem; padding: 2rem; width: 100%; max-width: 28rem; margin: 1rem;">
+  <div style="background:white; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); border-radius:0.5rem; padding:2rem; width:100%; max-width:32rem; margin:1rem;">
 
-    <h1 style="font-size: 1.5rem; font-weight: bold; text-align: center; color: #111827; margin-bottom: 2rem;">
+    <h1 style="font-size:1.5rem; font-weight:bold; text-align:center; color:#111827; margin-bottom:0.25rem;">
       SACRO Viewer
     </h1>
+    <p style="text-align:center; color:#6b7280; font-size:0.875rem; margin-bottom:2rem;">
+      Select your role, then choose your outputs folder
+    </p>
 
+    <!-- ── Step 1: Role ─────────────────────────────────────────────────── -->
+    <p style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#9ca3af; margin-bottom:0.6rem;">
+      Step 1 — Who are you?
+    </p>
+    <div style="display:flex; gap:0.75rem; margin-bottom:1.5rem;">
 
-    <div style="display: flex; flex-direction: column; gap: 1rem;">
-
-      <a href="#" onclick="window.selectFolder('researcher'); return false;"
-        style="background-color: #e5e7eb; color: #1f2937; font-weight: 600; padding: 1rem 1.5rem; border-radius: 0.5rem; text-align: center; text-decoration: none; transition: background-color 0.2s; display: block;"
-        onmouseover="this.style.backgroundColor='#d1d5db'"
-        onmouseout="this.style.backgroundColor='#e5e7eb'"
+      <button id="btn-researcher" class="role-btn"
+        style="flex:1; background:#e5e7eb; color:#1f2937; font-weight:600; padding:0.875rem 1rem; border-radius:0.5rem; text-align:left; border:2px solid transparent; cursor:pointer;"
+        onclick="selectRole('researcher')"
       >
-        Researcher
-      </a>
+        <span style="display:block; font-size:0.95rem;">Researcher</span>
+        <span style="display:block; font-size:0.75rem; font-weight:400; color:#6b7280; margin-top:0.15rem;">
+          Build &amp; annotate outputs
+        </span>
+      </button>
 
-
-      <a href="#" onclick="window.selectFolder('checker'); return false;"
-        style="background-color: #e5e7eb; color: #1f2937; font-weight: 600; padding: 1rem 1.5rem; border-radius: 0.5rem; text-align: center; text-decoration: none; transition: background-color 0.2s; display: block;"
-        onmouseover="this.style.backgroundColor='#d1d5db'"
-        onmouseout="this.style.backgroundColor='#e5e7eb'"
+      <button id="btn-checker" class="role-btn"
+        style="flex:1; background:#e5e7eb; color:#1f2937; font-weight:600; padding:0.875rem 1rem; border-radius:0.5rem; text-align:left; border:2px solid transparent; cursor:pointer;"
+        onclick="selectRole('checker')"
       >
-        Output Checker
-      </a>
+        <span style="display:block; font-size:0.95rem;">Output Checker</span>
+        <span style="display:block; font-size:0.75rem; font-weight:400; color:#6b7280; margin-top:0.15rem;">
+          Review &amp; approve outputs
+        </span>
+      </button>
+
     </div>
+
+    <!-- ── Step 2: Folder ────────────────────────────────────────────────── -->
+    <div id="step-folder" style="display:none;">
+      <p style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#9ca3af; margin-bottom:0.6rem;">
+        Step 2 — Select your outputs folder
+      </p>
+
+      <!-- Drop-zone / click-to-browse  -->
+      <div id="drop-zone"
+        style="border:2px dashed #d1d5db; border-radius:0.5rem; padding:2rem 1.5rem; text-align:center; cursor:pointer; margin-bottom:0.75rem;"
+        onclick="pickFolder()"
+        ondragover="onDragOver(event)"
+        ondragleave="onDragLeave(event)"
+        ondrop="onDrop(event)"
+      >
+        <svg style="width:2.5rem; height:2.5rem; margin:0 auto 0.75rem; display:block; color:#9ca3af;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+        </svg>
+        <p id="drop-label" style="font-weight:600; color:#374151; font-size:0.9rem; margin:0 0 0.25rem;">
+          Click to select folder
+        </p>
+        <p style="color:#9ca3af; font-size:0.8rem; margin:0;">
+          or drag &amp; drop your outputs folder here
+        </p>
+      </div>
+
+      <!-- Selected folder summary (hidden until files are chosen) -->
+      <div id="folder-summary" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:0.4rem; padding:0.75rem 1rem; margin-bottom:0.75rem; font-size:0.85rem; color:#166534;">
+        <strong id="folder-name"></strong>
+        <span id="folder-file-count"></span>
+      </div>
+
+      <!-- Error message -->
+      <p id="folder-error" style="display:none; color:#dc2626; font-size:0.8rem; margin-bottom:0.5rem;"></p>
+
+      <!-- Upload / Continue button -->
+      <button id="continue-btn" disabled
+        style="width:100%; background:#9ca3af; color:white; font-weight:600; padding:0.875rem; border-radius:0.5rem; border:none; cursor:not-allowed; font-size:1rem;"
+        onclick="submitFolder()"
+      >
+        Continue
+      </button>
+
+      <!-- Hidden form for web upload -->
+      <form id="upload-form" method="POST" action="/upload-folder/" enctype="multipart/form-data" style="display:none;">
+        {% csrf_token %}
+        <input type="hidden" name="role" id="form-role">
+        <div id="file-inputs"></div>
+      </form>
+    </div>
+
   </div>
 
   <script>
-    window.selectFolder = function(role) {
-      if (window.electronAPI && window.electronAPI.selectFolder) {
-        window.electronAPI.selectFolder().then(dirpath => {
-          if (dirpath) {
-            window.location.href = '/load/?dirpath=' + encodeURIComponent(dirpath) + '&role=' + role;
-          }
-        });
-      } else {
-        if (role === 'researcher') {
-          window.location.href = '/researcher/';
-        } else {
-          window.location.href = '/checker/';
+    var selectedRole = null;
+    var collectedFiles = [];   // FileSystemFileEntry / File objects for web upload
+    var isElectron = !!(window.electronAPI && window.electronAPI.selectFolder);
+
+    // ── Step 1: role selection ───────────────────────────────────────────────
+
+    function selectRole(role) {
+      selectedRole = role;
+      document.getElementById('btn-researcher').classList.toggle('selected', role === 'researcher');
+      document.getElementById('btn-checker').classList.toggle('selected', role === 'checker');
+      document.getElementById('step-folder').style.display = 'block';
+      document.getElementById('step-folder').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // In Electron, we skip the drop-zone and go straight to the OS dialog
+      if (isElectron) {
+        pickFolder();
+      }
+    }
+
+    // ── Step 2: folder picking ───────────────────────────────────────────────
+
+    async function pickFolder() {
+      if (!selectedRole) { return; }
+      hideError();
+
+      if (isElectron) {
+        // Electron: native OS folder dialog → server already has the path
+        var dirpath = await window.electronAPI.selectFolder();
+        if (dirpath) {
+          window.location.href = '/load/?dirpath=' + encodeURIComponent(dirpath) + '&role=' + selectedRole;
+        }
+        return;
+      }
+
+      // Web: File System Access API (Chrome / Edge)
+      if (window.showDirectoryPicker) {
+        try {
+          var dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+          await collectFromHandle(dirHandle, '');
+          showSummary(dirHandle.name);
+        } catch (err) {
+          if (err.name !== 'AbortError') showError('Could not read folder: ' + err.message);
+        }
+        return;
+      }
+
+      // Fallback: hidden <input type="file" webkitdirectory> for older browsers
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.webkitdirectory = true;
+      input.multiple = true;
+      input.onchange = function() {
+        if (input.files.length === 0) return;
+        collectedFiles = Array.from(input.files);
+        var folderName = collectedFiles[0].webkitRelativePath.split('/')[0];
+        showSummary(folderName);
+      };
+      input.click();
+    }
+
+    // Recursively walk a FileSystemDirectoryHandle, collecting all File objects
+    // with their relative paths stored in file.relativePath (custom property)
+    async function collectFromHandle(handle, prefix) {
+      collectedFiles = [];
+      await walkHandle(handle, prefix);
+    }
+
+    async function walkHandle(handle, prefix) {
+      for await (var entry of handle.values()) {
+        var relPath = prefix ? prefix + '/' + entry.name : entry.name;
+        if (entry.kind === 'file') {
+          var file = await entry.getFile();
+          // Attach the relative path so we can send it to the server
+          Object.defineProperty(file, 'relativePath', { value: relPath });
+          collectedFiles.push(file);
+        } else if (entry.kind === 'directory') {
+          await walkHandle(entry, relPath);
         }
       }
-    };
-    console.log('Script loaded - electronAPI available:', !!window.electronAPI);
+    }
+
+    // ── Drag & drop ──────────────────────────────────────────────────────────
+
+    function onDragOver(e) {
+      e.preventDefault();
+      document.getElementById('drop-zone').classList.add('drag-over');
+    }
+    function onDragLeave(e) {
+      document.getElementById('drop-zone').classList.remove('drag-over');
+    }
+    async function onDrop(e) {
+      e.preventDefault();
+      document.getElementById('drop-zone').classList.remove('drag-over');
+      if (!selectedRole) { showError('Please select your role first.'); return; }
+      hideError();
+
+      var items = Array.from(e.dataTransfer.items)
+        .filter(function(i) { return i.kind === 'file'; });
+
+      if (items.length === 0) return;
+
+      collectedFiles = [];
+      var folderName = '';
+
+      // Use FileSystem Entry API if available
+      for (var i = 0; i < items.length; i++) {
+        var entry = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : null;
+        if (entry && entry.isDirectory) {
+          folderName = entry.name;
+          await readEntryRecursive(entry, '');
+        } else {
+          var file = items[i].getAsFile();
+          if (file) collectedFiles.push(file);
+        }
+      }
+
+      if (collectedFiles.length > 0) {
+        showSummary(folderName || 'dropped files');
+      }
+    }
+
+    function readEntryRecursive(entry, prefix) {
+      return new Promise(function(resolve) {
+        if (entry.isFile) {
+          entry.file(function(file) {
+            var relPath = prefix ? prefix + '/' + file.name : file.name;
+            Object.defineProperty(file, 'relativePath', { value: relPath, configurable: true });
+            collectedFiles.push(file);
+            resolve();
+          });
+        } else if (entry.isDirectory) {
+          var reader = entry.createReader();
+          var allEntries = [];
+          function readBatch() {
+            reader.readEntries(function(entries) {
+              if (entries.length === 0) {
+                var subPath = prefix ? prefix + '/' + entry.name : entry.name;
+                Promise.all(allEntries.map(function(e) { return readEntryRecursive(e, subPath); }))
+                  .then(resolve);
+              } else {
+                allEntries = allEntries.concat(Array.from(entries));
+                readBatch();
+              }
+            });
+          }
+          readBatch();
+        } else {
+          resolve();
+        }
+      });
+    }
+
+    // ── UI helpers ───────────────────────────────────────────────────────────
+
+    function showSummary(folderName) {
+      var count = collectedFiles.length;
+      document.getElementById('folder-name').textContent = '📁 ' + folderName + '  ';
+      document.getElementById('folder-file-count').textContent = count + ' file' + (count === 1 ? '' : 's') + ' ready to upload';
+      document.getElementById('drop-label').textContent = 'Folder selected — click to change';
+      document.getElementById('folder-summary').style.display = 'block';
+
+      var btn = document.getElementById('continue-btn');
+      btn.disabled = false;
+      btn.style.background = '#2563eb';
+      btn.style.cursor = 'pointer';
+    }
+
+    function showError(msg) {
+      var el = document.getElementById('folder-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+    function hideError() {
+      document.getElementById('folder-error').style.display = 'none';
+    }
+
+    // ── Submit ───────────────────────────────────────────────────────────────
+
+    async function submitFolder() {
+      if (!selectedRole || collectedFiles.length === 0) return;
+
+      var btn = document.getElementById('continue-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Uploading…';
+
+      var formData = new FormData();
+      formData.append('role', selectedRole);
+
+      // Use CSRF token from cookie
+      var csrfMatch = document.cookie.split(';')
+        .map(function(c) { return c.trim(); })
+        .find(function(c) { return c.startsWith('csrftoken='); });
+      var csrfToken = csrfMatch ? decodeURIComponent(csrfMatch.split('=')[1]) : '';
+
+      for (var i = 0; i < collectedFiles.length; i++) {
+        var file = collectedFiles[i];
+        // Use the relative path as the field name so the server can reconstruct the tree
+        var relPath = file.relativePath || file.webkitRelativePath || file.name;
+        // Strip the top-level folder name (first segment) so server sees clean relative paths
+        var parts = relPath.split('/');
+        var serverPath = parts.length > 1 ? parts.slice(1).join('/') : parts[0];
+        formData.append('files[]', file, serverPath);
+      }
+
+      try {
+        var response = await fetch('/upload-folder/', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': csrfToken },
+          body: formData,
+        });
+
+        if (response.redirected) {
+          window.location.href = response.url;
+          return;
+        }
+        if (!response.ok) {
+          var text = await response.text();
+          showError('Upload failed: ' + response.status + ' — ' + text.slice(0, 120));
+          btn.disabled = false;
+          btn.innerHTML = 'Continue';
+          btn.style.background = '#2563eb';
+        }
+      } catch (err) {
+        showError('Upload error: ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = 'Continue';
+        btn.style.background = '#2563eb';
+      }
+    }
   </script>
 </body>
 {% endblock content %}

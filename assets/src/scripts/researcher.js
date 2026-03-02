@@ -3,9 +3,109 @@ import outputs from "./_data";
 import outputClick from "./_output-click";
 import { getFileExt } from "./_utils";
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("Researcher JS loaded");
+/* eslint-disable no-use-before-define */
+// Functions in this file are intentionally organised top-down (entry point
+// first, helpers last) for readability. Hoisting handles the ordering at
+// runtime; ESLint's no-use-before-define is disabled for the whole file.
 
+// ─── Shared utilities (module-level, no DOM dependency) ──────────────────────
+
+/**
+ * Read the Django CSRF token from the session cookie.
+ * Required by every mutating backend request.
+ * @returns {string}
+ */
+function getCsrfToken() {
+  const name = "csrftoken";
+  if (document.cookie) {
+    const match = document.cookie
+      .split(";")
+      .map((c) => c.trim())
+      .find((c) => c.startsWith(`${name}=`));
+    if (match) return decodeURIComponent(match.split("=")[1]);
+  }
+  return "";
+}
+
+/**
+ * POST to a Django API endpoint and return the parsed JSON response.
+ * All researcher backend writes go through here — no direct filesystem access.
+ *
+ * @param {string} url - Relative URL including query string
+ * @param {FormData} formData
+ * @returns {Promise<object>} Parsed JSON body
+ * @throws {Error} On network failure, non-ok status, or `success: false`
+ */
+async function apiPost(url, formData) {
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData,
+    headers: { "X-CSRFToken": getCsrfToken() },
+  });
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(`Server error ${response.status}`);
+  }
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || `Request failed (${response.status})`);
+  }
+
+  return data;
+}
+
+/**
+ * Disable a button and swap its label while a request is in flight.
+ * Returns a restore function — always call it in a `finally` block.
+ *
+ * @param {HTMLButtonElement} btn
+ * @param {string} [loadingText]
+ * @returns {() => void}
+ */
+function setButtonLoading(btn, loadingText = "Saving…") {
+  const original = btn.textContent;
+  btn.disabled = true; // eslint-disable-line no-param-reassign
+  btn.textContent = loadingText; // eslint-disable-line no-param-reassign
+  btn.classList.add("opacity-75", "cursor-not-allowed");
+  return () => {
+    btn.disabled = false; // eslint-disable-line no-param-reassign
+    btn.textContent = original; // eslint-disable-line no-param-reassign
+    btn.classList.remove("opacity-75", "cursor-not-allowed");
+  };
+}
+
+/**
+ * Show a small inline status message immediately after `anchor`.
+ * Success messages auto-dismiss after 4 s; errors stay until next action.
+ *
+ * @param {HTMLElement} anchor
+ * @param {string} message
+ * @param {'success'|'error'} [type]
+ */
+function showInlineStatus(anchor, message, type = "success") {
+  anchor.parentElement
+    .querySelectorAll(".sacro-inline-status")
+    .forEach((el) => el.remove());
+
+  const el = document.createElement("p");
+  el.className = `sacro-inline-status text-sm mt-1 ${
+    type === "error" ? "text-red-600" : "text-green-700"
+  }`;
+  el.setAttribute("role", "status");
+  el.textContent = message;
+  anchor.insertAdjacentElement("afterend", el);
+
+  if (type === "success") {
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+document.addEventListener("DOMContentLoaded", () => {
   const currentPath = JSON.parse(
     document.getElementById("currentPath").textContent
   );
@@ -29,8 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
       exception: outputs[key].exception || null,
     };
   });
-
-  setupResearcherInterface();
 
   function updateOutputCount() {
     const outputCountElement = document.getElementById("outputCount");
@@ -96,14 +194,16 @@ document.addEventListener("DOMContentLoaded", () => {
       updateCommentsDisplay(outputName);
       updateExceptionDisplay(outputName);
 
+      const hasDocumentFiles =
+        metadata.files &&
+        metadata.files.some((file) => {
+          const ext = getFileExt(file.name);
+          return ext === "pdf" || ext === "docx" || ext === "txt";
+        });
 
-      const hasDocumentFiles = metadata.files && metadata.files.some((file) => {
-        const ext = getFileExt(file.name);
-        return ext === "pdf" || ext === "docx" || ext === "txt";
-      });
-
-
-      const exceptionLabel = document.querySelector('label[for="exceptionRequest"]');
+      const exceptionLabel = document.querySelector(
+        'label[for="exceptionRequest"]'
+      );
       const exceptionTextarea = document.querySelector(
         '[data-sacro-el="researcher-exception-request"]'
       );
@@ -112,7 +212,6 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (hasDocumentFiles) {
-
         if (exceptionLabel) exceptionLabel.style.display = "none";
         if (exceptionTextarea) exceptionTextarea.style.display = "none";
         if (exceptionButton) exceptionButton.style.display = "none";
@@ -123,7 +222,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (exceptionTextarea) {
-        exceptionTextarea.value = sessionData.results[outputName].exception || "";
+        exceptionTextarea.value =
+          sessionData.results[outputName].exception || "";
       }
     });
   }
@@ -161,24 +261,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     commentsContainer.querySelectorAll(".edit-comment").forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        const index = parseInt(e.target.dataset.index);
+        const index = parseInt(e.target.dataset.index, 10);
         editComment(outputName, index);
       });
     });
 
     commentsContainer.querySelectorAll(".delete-comment").forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        const index = parseInt(e.target.dataset.index);
+        const index = parseInt(e.target.dataset.index, 10);
         deleteComment(outputName, index);
       });
     });
 
     if (viewAllBtn) {
-      if (comments.length > 3) {
-        viewAllBtn.textContent = `View All (${comments.length})`;
-        viewAllBtn.style.display = "inline-block";
-      } else if (comments.length > 0) {
-        viewAllBtn.textContent = "View All";
+      if (comments.length > 0) {
+        viewAllBtn.textContent =
+          comments.length > 3 ? `View All (${comments.length})` : "View All";
         viewAllBtn.style.display = "inline-block";
       } else {
         viewAllBtn.style.display = "none";
@@ -224,24 +322,22 @@ document.addEventListener("DOMContentLoaded", () => {
       '[data-sacro-el="researcher-new-comment"]'
     );
 
-    console.log("Setup add comment:", {
-      btn: !!addCommentBtn,
-      textarea: !!commentTextarea,
-    });
-
     if (!addCommentBtn || !commentTextarea) return;
 
     addCommentBtn.addEventListener("click", () => {
-      console.log("Add/Edit comment clicked");
       const commentText = commentTextarea.value.trim();
       if (!commentText) {
-        alert("Please enter a comment");
+        showInlineStatus(addCommentBtn, "Please enter a comment.", "error");
         return;
       }
 
       const selectedOutput = getCurrentlySelectedOutput();
       if (!selectedOutput) {
-        alert("Please select an output first");
+        showInlineStatus(
+          addCommentBtn,
+          "Please select an output first.",
+          "error"
+        );
         return;
       }
 
@@ -254,10 +350,8 @@ document.addEventListener("DOMContentLoaded", () => {
           commentText;
         editingCommentIndex = null;
         addCommentBtn.textContent = "Add Comment";
-        console.log("Comment edited in", selectedOutput);
       } else {
         sessionData.results[selectedOutput].comments.push(commentText);
-        console.log("Comment added to", selectedOutput);
       }
 
       commentTextarea.value = "";
@@ -273,35 +367,32 @@ document.addEventListener("DOMContentLoaded", () => {
       '[data-sacro-el="researcher-exception-request"]'
     );
 
-    console.log("Setup add exception:", {
-      btn: !!addExceptionBtn,
-      textarea: !!exceptionTextarea,
-    });
-
     if (!addExceptionBtn || !exceptionTextarea) return;
 
     addExceptionBtn.addEventListener("click", () => {
-      console.log("Add exception clicked");
       const exceptionText = exceptionTextarea.value.trim();
       if (!exceptionText) {
-        alert("Please enter an exception request");
+        showInlineStatus(
+          addExceptionBtn,
+          "Please enter an exception request.",
+          "error"
+        );
         return;
       }
 
       const selectedOutput = getCurrentlySelectedOutput();
       if (!selectedOutput) {
-        alert("Please select an output first");
+        showInlineStatus(
+          addExceptionBtn,
+          "Please select an output first.",
+          "error"
+        );
         return;
       }
 
       sessionData.results[selectedOutput].exception = exceptionText;
       exceptionTextarea.value = "";
       updateExceptionDisplay(selectedOutput);
-      console.log(
-        "Exception added to",
-        selectedOutput,
-        sessionData.results[selectedOutput].exception
-      );
     });
   }
 
@@ -309,13 +400,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const viewAllBtn = document.querySelector(
       '[data-sacro-el="viewAllCommentsBtn"]'
     );
-    console.log("Setup view all:", { btn: !!viewAllBtn });
-
     if (!viewAllBtn) return;
 
     viewAllBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      console.log("View all clicked");
 
       const selectedOutput = getCurrentlySelectedOutput();
       if (!selectedOutput) return;
@@ -324,116 +412,73 @@ document.addEventListener("DOMContentLoaded", () => {
       const modal = document.getElementById("commentsModal");
       const commentsList = document.getElementById("allCommentsList");
 
-      console.log("Modal elements:", {
-        modal: !!modal,
-        list: !!commentsList,
-        comments: comments.length,
-      });
-
       if (!modal || !commentsList) return;
 
-      commentsList.innerHTML = "";
-      comments.forEach((comment, index) => {
-        const div = document.createElement("div");
-        div.className =
-          "p-3 bg-gray-50 rounded flex justify-between items-start gap-2";
-        div.innerHTML = `
-          <div class="flex-1">
-            <p class="text-sm font-medium text-gray-900">Comment ${index + 1
-          }</p>
-            <p class="text-sm text-gray-700 mt-1">${comment}</p>
-          </div>
-          <div class="flex gap-2">
-            <button class="edit-comment-modal text-xs text-blue-600 hover:text-blue-800" data-index="${index}">Edit</button>
-            <button class="delete-comment-modal text-xs text-red-600 hover:text-red-800" data-index="${index}">Delete</button>
-          </div>
-        `;
-        commentsList.appendChild(div);
-      });
-
-      commentsList.querySelectorAll(".edit-comment-modal").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-          const index = parseInt(e.target.dataset.index);
-          modal.classList.add("hidden");
-          editComment(selectedOutput, index);
-        });
-      });
-
-      commentsList.querySelectorAll(".delete-comment-modal").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-          const index = parseInt(e.target.dataset.index);
-          deleteComment(selectedOutput, index);
-
-          const updatedComments =
-            sessionData.results[selectedOutput]?.comments || [];
-          commentsList.innerHTML = "";
-          updatedComments.forEach((comment, idx) => {
-            const div = document.createElement("div");
-            div.className =
-              "p-3 bg-gray-50 rounded flex justify-between items-start gap-2";
-            div.innerHTML = `
-              <div class="flex-1">
-                <p class="text-sm font-medium text-gray-900">Comment ${idx + 1
-              }</p>
-                <p class="text-sm text-gray-700 mt-1">${comment}</p>
-              </div>
-              <div class="flex gap-2">
-                <button class="edit-comment-modal text-xs text-blue-600 hover:text-blue-800" data-index="${idx}">Edit</button>
-                <button class="delete-comment-modal text-xs text-red-600 hover:text-red-800" data-index="${idx}">Delete</button>
-              </div>
-            `;
-            commentsList.appendChild(div);
-          });
-
-          commentsList
-            .querySelectorAll(".edit-comment-modal")
-            .forEach((btn) => {
-              btn.addEventListener("click", (e) => {
-                const index = parseInt(e.target.dataset.index);
-                modal.classList.add("hidden");
-                editComment(selectedOutput, index);
-              });
-            });
-
-          commentsList
-            .querySelectorAll(".delete-comment-modal")
-            .forEach((btn) => {
-              btn.addEventListener("click", (e) => {
-                const index = parseInt(e.target.dataset.index);
-                deleteComment(selectedOutput, index);
-              });
-            });
-        });
-      });
-
+      renderModalCommentsList(commentsList, comments, selectedOutput, modal);
       modal.classList.remove("hidden");
-      console.log("Modal shown");
+    });
+  }
+
+  function renderModalCommentsList(
+    commentsListEl,
+    comments,
+    outputName,
+    modal
+  ) {
+    const list = commentsListEl;
+    list.innerHTML = "";
+    comments.forEach((comment, index) => {
+      const div = document.createElement("div");
+      div.className =
+        "p-3 bg-gray-50 rounded flex justify-between items-start gap-2";
+      div.innerHTML = `
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-900">Comment ${index + 1}</p>
+          <p class="text-sm text-gray-700 mt-1">${comment}</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="edit-comment-modal text-xs text-blue-600 hover:text-blue-800" data-index="${index}">Edit</button>
+          <button class="delete-comment-modal text-xs text-red-600 hover:text-red-800" data-index="${index}">Delete</button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+
+    list.querySelectorAll(".edit-comment-modal").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const index = parseInt(e.target.dataset.index, 10);
+        modal.classList.add("hidden");
+        editComment(outputName, index);
+      });
+    });
+
+    list.querySelectorAll(".delete-comment-modal").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const index = parseInt(e.target.dataset.index, 10);
+        deleteComment(outputName, index);
+        const updated = sessionData.results[outputName]?.comments || [];
+        renderModalCommentsList(list, updated, outputName, modal);
+      });
     });
   }
 
   function setupModalClose() {
-    const modals = document.querySelectorAll("#commentsModal, #addOutputModal, #editOutputModal, #deleteOutputModal, #finalizeSessionModal");
-    modals.forEach(modal => {
+    const modals = document.querySelectorAll(
+      "#commentsModal, #addOutputModal, #editOutputModal, #deleteOutputModal, #finalizeSessionModal"
+    );
+    modals.forEach((modal) => {
       if (!modal) return;
 
-      const closeBtn = modal.querySelector(".cancel");
-      if (closeBtn) {
-        closeBtn.addEventListener("click", () => {
-          modal.classList.add("hidden");
-        });
-      }
+      modal.querySelector(".cancel")?.addEventListener("click", () => {
+        modal.classList.add("hidden");
+      });
 
-      const closeX = modal.querySelector(".close-x");
-      if (closeX) {
-        closeX.addEventListener("click", () => {
-          modal.classList.add("hidden");
-        });
-      }
+      modal.querySelector(".close-x")?.addEventListener("click", () => {
+        modal.classList.add("hidden");
+      });
 
       modal.addEventListener("click", (e) => {
-        if (e.target === modal) {
-          modal.classList.add("hidden");
-        }
+        if (e.target === modal) modal.classList.add("hidden");
       });
     });
   }
@@ -442,33 +487,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const saveDraftBtn = document.getElementById("saveDraftBtn");
     if (!saveDraftBtn) return;
 
-    saveDraftBtn.addEventListener("click", () => {
-      console.log("Save draft clicked", sessionData);
+    saveDraftBtn.addEventListener("click", async () => {
+      const restoreBtn = setButtonLoading(saveDraftBtn, "Saving…");
       const formData = new FormData();
       formData.append("session_data", JSON.stringify(sessionData));
 
-      fetch(
-        `/researcher/session/save/?path=${encodeURIComponent(currentPath)}`,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            "X-CSRFToken": getCsrfToken(),
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          if (result.success) {
-            alert("Draft saved successfully!");
-          } else {
-            alert(`Error saving draft: ${result.message}`);
-          }
-        })
-        .catch((error) => {
-          alert(`Error saving draft: ${error}`);
-          console.error(error);
-        });
+      try {
+        await apiPost(
+          `/researcher/session/save/?path=${encodeURIComponent(currentPath)}`,
+          formData
+        );
+        showInlineStatus(saveDraftBtn, "Draft saved.", "success");
+      } catch (err) {
+        showInlineStatus(saveDraftBtn, `Save failed: ${err.message}`, "error");
+      } finally {
+        restoreBtn();
+      }
     });
   }
 
@@ -488,48 +522,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
     commentTextarea.value = currentComment;
     commentTextarea.focus();
-
     addCommentBtn.textContent = "Update Comment";
     editingCommentIndex = index;
-
-    console.log("Editing comment:", outputName, index, currentComment);
   }
 
   function deleteComment(outputName, index) {
     const comments = sessionData.results[outputName]?.comments || [];
     if (index < 0 || index >= comments.length) return;
 
-    if (confirm("Are you sure you want to delete this comment?")) {
-      sessionData.results[outputName].comments.splice(index, 1);
+    // eslint-disable-next-line no-alert
+    if (!window.confirm("Are you sure you want to delete this comment?"))
+      return;
 
-      if (editingCommentIndex === index) {
-        editingCommentIndex = null;
-        const addCommentBtn = document.querySelector(
-          '[data-sacro-el="researcher-add-comment-btn"]'
-        );
-        const commentTextarea = document.querySelector(
-          '[data-sacro-el="researcher-new-comment"]'
-        );
-        if (addCommentBtn) addCommentBtn.textContent = "Add Comment";
-        if (commentTextarea) commentTextarea.value = "";
-      } else if (editingCommentIndex !== null && editingCommentIndex > index) {
-        editingCommentIndex--;
-      }
+    sessionData.results[outputName].comments.splice(index, 1);
 
-      updateCommentsDisplay(outputName);
-      console.log("Comment deleted:", outputName, index);
+    if (editingCommentIndex === index) {
+      editingCommentIndex = null;
+      const addCommentBtn = document.querySelector(
+        '[data-sacro-el="researcher-add-comment-btn"]'
+      );
+      const commentTextarea = document.querySelector(
+        '[data-sacro-el="researcher-new-comment"]'
+      );
+      if (addCommentBtn) addCommentBtn.textContent = "Add Comment";
+      if (commentTextarea) commentTextarea.value = "";
+    } else if (editingCommentIndex !== null && editingCommentIndex > index) {
+      editingCommentIndex -= 1;
     }
+
+    updateCommentsDisplay(outputName);
   }
 
   function setupFinalizeButton() {
     const finalizeBtn = document.getElementById("finalizeBtn");
     const finalizeModal = document.getElementById("finalizeSessionModal");
+    const confirmFinalizeBtn = document.getElementById("confirmFinalize");
 
     if (!finalizeBtn || !finalizeModal) return;
 
     finalizeBtn.addEventListener("click", () => {
-      document.getElementById("finalizeSessionName").value = sessionData.title || "";
-      document.querySelectorAll("#finalizeSessionModal input[type='checkbox']").forEach(cb => cb.checked = false);
+      document.getElementById("finalizeSessionName").value =
+        sessionData.title || "";
+      document
+        .querySelectorAll("#finalizeSessionModal input[type='checkbox']")
+        .forEach((cb) => {
+          cb.checked = false; // eslint-disable-line no-param-reassign
+        });
       finalizeModal.classList.remove("hidden");
     });
 
@@ -537,51 +575,66 @@ document.addEventListener("DOMContentLoaded", () => {
       finalizeModal.classList.add("hidden");
     });
 
-    document.getElementById("confirmFinalize")?.addEventListener("click", () => {
-      const sessionName = document.getElementById("finalizeSessionName").value.trim();
-      const checkboxes = document.querySelectorAll("#finalizeSessionModal input[type='checkbox']");
-      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    confirmFinalizeBtn?.addEventListener("click", async () => {
+      const sessionName = document
+        .getElementById("finalizeSessionName")
+        .value.trim();
+      const checkboxes = document.querySelectorAll(
+        "#finalizeSessionModal input[type='checkbox']"
+      );
+      const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
 
       if (!sessionName) {
-        alert("Please enter a Session Name.");
+        showInlineStatus(
+          confirmFinalizeBtn,
+          "Please enter a Session Name.",
+          "error"
+        );
         return;
       }
 
       if (!allChecked) {
-        alert("Please confirm all checklist items before finalizing.");
+        showInlineStatus(
+          confirmFinalizeBtn,
+          "Please confirm all checklist items before finalizing.",
+          "error"
+        );
         return;
       }
 
       sessionData.title = sessionName;
-      sessionData.checklist = Array.from(checkboxes).map(cb => ({
+      sessionData.checklist = Array.from(checkboxes).map((cb) => ({
         id: cb.id,
-        label: cb.nextElementSibling.textContent,
-        checked: cb.checked
+        label: cb.nextElementSibling.textContent.trim(),
+        checked: cb.checked,
       }));
 
+      const restoreBtn = setButtonLoading(confirmFinalizeBtn, "Finalizing…");
       const formData = new FormData();
       formData.append("session_data", JSON.stringify(sessionData));
 
-      fetch(`/researcher/finalize/?path=${encodeURIComponent(currentPath)}`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "X-CSRFToken": getCsrfToken(),
-        },
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          if (result.success) {
-            finalizeModal.classList.add("hidden");
-            alert("Session finalized successfully! Ready for Output Checker review.");
-          } else {
-            alert(`Error finalizing: ${result.message}`);
-          }
-        })
-        .catch((error) => {
-          alert(`Error finalizing: ${error}`);
-          console.error(error);
-        });
+      try {
+        await apiPost(
+          `/researcher/finalize/?path=${encodeURIComponent(currentPath)}`,
+          formData
+        );
+        // Show success message inside the modal, then redirect to role selection
+        showInlineStatus(
+          confirmFinalizeBtn,
+          "Session finalized successfully. Returning to the home screen…",
+          "success"
+        );
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
+      } catch (err) {
+        showInlineStatus(
+          confirmFinalizeBtn,
+          `Finalize failed: ${err.message}`,
+          "error"
+        );
+        restoreBtn();
+      }
     });
   }
 
@@ -608,15 +661,15 @@ document.addEventListener("DOMContentLoaded", () => {
     uploadZone.addEventListener("drop", (e) => {
       e.preventDefault();
       uploadZone.classList.remove("border-blue-500", "bg-blue-100");
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
+      const [file] = e.dataTransfer.files;
+      if (file) {
         const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(files[0]);
+        dataTransfer.items.add(file);
         fileInput.files = dataTransfer.files;
-
-        const nameInput = document.getElementById("addOutputName");
-        nameInput.value = files[0].name.split(".").slice(0, -1).join(".");
-
+        document.getElementById("addOutputName").value = file.name
+          .split(".")
+          .slice(0, -1)
+          .join(".");
         addModal.classList.remove("hidden");
       }
     });
@@ -630,6 +683,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentEditOutput = null;
     let currentDeleteOutput = null;
 
+    // ── Add output ────────────────────────────────────────────────────────────
+
     document
       .getElementById("cancelAddOutput")
       ?.addEventListener("click", () => {
@@ -640,19 +695,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document
       .getElementById("confirmAddOutput")
-      ?.addEventListener("click", () => {
+      ?.addEventListener("click", async () => {
         const name = document.getElementById("addOutputName").value.trim();
         const type = document.getElementById("addOutputType").value;
         const file = document.getElementById("addOutputFile").files[0];
+        const confirmBtn = document.getElementById("confirmAddOutput");
 
         if (!name || !file) {
-          alert("Please provide a name and a file.");
+          showInlineStatus(
+            confirmBtn,
+            "Please provide a name and a file.",
+            "error"
+          );
           return;
         }
 
         const newOutputData = {
           uid: name,
-          type: type,
+          type,
           status: "review",
           properties: { method: file.type },
           files: [{ name: file.name }],
@@ -666,46 +726,42 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("data", JSON.stringify(newOutputData));
         formData.append("file", file);
 
-        fetch(
-          `/researcher/output/add/?path=${encodeURIComponent(currentPath)}`,
-          {
-            method: "POST",
-            body: formData,
-            headers: { "X-CSRFToken": getCsrfToken() },
-          }
-        )
-          .then((response) => response.json())
-          .then((result) => {
-            if (result.success) {
-              sessionData.results[name] = result.output_data;
-              const outputList = document.getElementById("outputList");
-              outputList.insertAdjacentHTML("beforeend", result.html);
-              updateOutputCount();
-              addModal.classList.add("hidden");
-              document.getElementById("addOutputName").value = "";
-              document.getElementById("addOutputFile").value = "";
-            } else {
-              alert(`Error: ${result.message}`);
-            }
-          })
-          .catch((error) => alert(`Error: ${error}`));
+        const restoreBtn = setButtonLoading(confirmBtn, "Adding…");
+        try {
+          const result = await apiPost(
+            `/researcher/output/add/?path=${encodeURIComponent(currentPath)}`,
+            formData
+          );
+          sessionData.results[name] = result.output_data;
+          document
+            .getElementById("outputList")
+            .insertAdjacentHTML("beforeend", result.html);
+          updateOutputCount();
+          addModal.classList.add("hidden");
+          document.getElementById("addOutputName").value = "";
+          document.getElementById("addOutputFile").value = "";
+        } catch (err) {
+          showInlineStatus(confirmBtn, `Error: ${err.message}`, "error");
+        } finally {
+          restoreBtn();
+        }
       });
+
+    // ── Edit output ───────────────────────────────────────────────────────────
 
     document.addEventListener("click", (e) => {
       const target = e.target.closest(".edit-output-btn");
-      if (target) {
-        e.preventDefault();
-        e.stopPropagation();
-        currentEditOutput = target.dataset.outputName;
-        document.getElementById("editOutputName").value = currentEditOutput;
-
-        const currentData = sessionData.results[currentEditOutput];
-        if (currentData && document.getElementById("editOutputType")) {
-          document.getElementById("editOutputType").value = currentData.type || "custom";
-        }
-
-        editModal?.classList.remove("hidden");
+      if (!target) return;
+      e.preventDefault();
+      e.stopPropagation();
+      currentEditOutput = target.dataset.outputName;
+      document.getElementById("editOutputName").value = currentEditOutput;
+      const currentData = sessionData.results[currentEditOutput];
+      if (currentData && document.getElementById("editOutputType")) {
+        document.getElementById("editOutputType").value =
+          currentData.type || "custom";
       }
+      editModal?.classList.remove("hidden");
     });
 
     document
@@ -717,76 +773,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document
       .getElementById("confirmEditOutput")
-      ?.addEventListener("click", () => {
+      ?.addEventListener("click", async () => {
         const newName = document.getElementById("editOutputName").value.trim();
         const newType = document.getElementById("editOutputType").value;
+        const confirmBtn = document.getElementById("confirmEditOutput");
 
         if (!newName) {
-          alert("Please enter a name");
+          showInlineStatus(confirmBtn, "Please enter a name.", "error");
           return;
         }
-
         if (newName !== currentEditOutput && sessionData.results[newName]) {
-          alert("An output with this name already exists");
+          showInlineStatus(
+            confirmBtn,
+            "An output with this name already exists.",
+            "error"
+          );
           return;
         }
 
-        const updatedData = { ...sessionData.results[currentEditOutput] };
-        updatedData.type = newType;
-
+        const updatedData = {
+          ...sessionData.results[currentEditOutput],
+          type: newType,
+        };
         const formData = new FormData();
         formData.append("session_data", JSON.stringify(sessionData));
         formData.append("original_name", currentEditOutput);
         formData.append("new_name", newName);
         formData.append("data", JSON.stringify(updatedData));
 
-        fetch(
-          `/researcher/output/edit/?path=${encodeURIComponent(currentPath)}`,
-          {
-            method: "POST",
-            body: formData,
-            headers: { "X-CSRFToken": getCsrfToken() },
-          }
-        )
-          .then((response) => response.json())
-          .then((result) => {
-            if (result.success) {
-              sessionData.results[newName] = result.output_data || sessionData.results[currentEditOutput];
-              delete sessionData.results[currentEditOutput];
+        const restoreBtn = setButtonLoading(confirmBtn, "Saving…");
+        try {
+          const result = await apiPost(
+            `/researcher/output/edit/?path=${encodeURIComponent(currentPath)}`,
+            formData
+          );
+          sessionData.results[newName] =
+            result.output_data || sessionData.results[currentEditOutput];
+          delete sessionData.results[currentEditOutput];
 
-              const item = document.querySelector(`li[data-output-name="${currentEditOutput}"]`);
-              if (item) {
-                item.setAttribute("data-output-name", newName);
-                item.querySelector(".relative").textContent = newName;
-
-                const typeDisplay = item.querySelector(".order-3 dd");
-                if (typeDisplay) {
-                  const method = sessionData.results[newName].properties?.method || "";
-                  typeDisplay.textContent = `${method} ${sessionData.results[newName].type}`;
-                }
-
-                item.querySelectorAll("button").forEach(btn => btn.dataset.outputName = newName);
-              }
-
-              updateOutputCount();
-              editModal?.classList.add("hidden");
-              currentEditOutput = null;
-            } else {
-              alert(`Error: ${result.message}`);
+          const item = document.querySelector(
+            `li[data-output-name="${currentEditOutput}"]`
+          );
+          if (item) {
+            item.setAttribute("data-output-name", newName);
+            item.querySelector(".relative").textContent = newName;
+            const typeDisplay = item.querySelector(".order-3 dd");
+            if (typeDisplay) {
+              const method =
+                sessionData.results[newName].properties?.method || "";
+              typeDisplay.textContent = `${method} ${sessionData.results[newName].type}`;
             }
-          })
-          .catch((error) => alert(`Error: ${error}`));
+            item.querySelectorAll("button").forEach((btn) => {
+              btn.dataset.outputName = newName; // eslint-disable-line no-param-reassign
+            });
+          }
+
+          updateOutputCount();
+          editModal?.classList.add("hidden");
+          currentEditOutput = null;
+        } catch (err) {
+          showInlineStatus(confirmBtn, `Error: ${err.message}`, "error");
+        } finally {
+          restoreBtn();
+        }
       });
+
+    // ── Delete output ─────────────────────────────────────────────────────────
 
     document.addEventListener("click", (e) => {
       const target = e.target.closest(".delete-output-btn");
-      if (target) {
-        e.preventDefault();
-        e.stopPropagation();
-        currentDeleteOutput = target.dataset.outputName;
-        document.getElementById("deleteOutputName").textContent = currentDeleteOutput;
-        deleteModal?.classList.remove("hidden");
-      }
+      if (!target) return;
+      e.preventDefault();
+      e.stopPropagation();
+      currentDeleteOutput = target.dataset.outputName;
+      document.getElementById("deleteOutputName").textContent =
+        currentDeleteOutput;
+      deleteModal?.classList.remove("hidden");
     });
 
     document
@@ -798,50 +860,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document
       .getElementById("confirmDeleteOutput")
-      ?.addEventListener("click", () => {
+      ?.addEventListener("click", async () => {
         const outputName = currentDeleteOutput;
+        const confirmBtn = document.getElementById("confirmDeleteOutput");
         const formData = new FormData();
         formData.append("session_data", JSON.stringify(sessionData));
         formData.append("name", outputName);
 
-        fetch(
-          `/researcher/output/delete/?path=${encodeURIComponent(currentPath)}`,
-          {
-            method: "POST",
-            body: formData,
-            headers: { "X-CSRFToken": getCsrfToken() },
-          }
-        )
-          .then((response) => response.json())
-          .then((result) => {
-            if (result.success) {
-              delete sessionData.results[outputName];
-              const item = document.querySelector(`li[data-output-name="${outputName}"]`);
-              if (item) item.remove();
-              updateOutputCount();
-              deleteModal?.classList.add("hidden");
-              currentDeleteOutput = null;
-            } else {
-              alert(`Error: ${result.message}`);
-            }
-          })
-          .catch((error) => alert(`Error: ${error}`));
+        const restoreBtn = setButtonLoading(confirmBtn, "Deleting…");
+        try {
+          await apiPost(
+            `/researcher/output/delete/?path=${encodeURIComponent(
+              currentPath
+            )}`,
+            formData
+          );
+          delete sessionData.results[outputName];
+          document
+            .querySelector(`li[data-output-name="${outputName}"]`)
+            ?.remove();
+          updateOutputCount();
+          deleteModal?.classList.add("hidden");
+          currentDeleteOutput = null;
+        } catch (err) {
+          showInlineStatus(confirmBtn, `Error: ${err.message}`, "error");
+        } finally {
+          restoreBtn();
+        }
       });
   }
 
-  function getCsrfToken() {
-    const name = "csrftoken";
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      const cookies = document.cookie.split(";");
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === `${name}=`) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
+  setupResearcherInterface();
 });

@@ -253,6 +253,130 @@ def test_approved_outputs_unknown_review(review_summary, monkeypatch):
         views.approved_outputs(request, pk="test")
 
 
+# ── _get_output_dir ────────────────────────────────────────────────────────────
+
+
+def test_get_output_dir_falls_back_to_source_dir(test_outputs):
+    """With no SACRO_OUTPUT_DIR setting the source directory is returned."""
+    with override_settings(SACRO_OUTPUT_DIR=None):
+        result = views._get_output_dir(test_outputs)
+    assert result == test_outputs.path.parent
+
+
+def test_get_output_dir_uses_configured_dir(test_outputs, tmp_path):
+    """SACRO_OUTPUT_DIR is respected and the directory is created if absent."""
+    target = tmp_path / "release" / "outputs"
+    assert not target.exists()
+    with override_settings(SACRO_OUTPUT_DIR=str(target)):
+        result = views._get_output_dir(test_outputs)
+    assert result == target
+    assert target.is_dir()
+
+
+# ── write_approved_outputs ─────────────────────────────────────────────────────
+
+
+def test_write_approved_outputs_unknown_review(review_summary, monkeypatch):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+    request = RequestFactory().post("/")
+    with pytest.raises(Http404):
+        views.write_approved_outputs(request, pk="missing")
+
+
+def test_write_approved_outputs_writes_files(test_outputs, review_summary, tmp_path):
+    """Approved files, results.json and summary.txt are written to the output dir."""
+    # Approve every output
+    for v in review_summary["decisions"].values():
+        v["state"] = True
+
+    views.REVIEWS["current"] = review_summary
+
+    with override_settings(SACRO_OUTPUT_DIR=str(tmp_path)):
+        request = RequestFactory().post("/")
+        response = views.write_approved_outputs(request, pk="current")
+
+    assert response.status_code == 200
+    data = json.loads(response.content)
+    assert data["success"] is True
+    assert data["output_dir"] == str(tmp_path)
+    assert "results.json" in data["files"]
+    assert "summary.txt" in data["files"]
+    assert data["missing"] == []
+
+    # Every approved file must exist on disk
+    for output_name, metadata in test_outputs.items():
+        for filedata in metadata["files"]:
+            assert (tmp_path / Path(filedata["name"]).name).exists()
+
+    # results.json must contain only approved outputs and mark them approved
+    written_results = json.loads((tmp_path / "results.json").read_text())
+    assert len(written_results["results"]) == len(test_outputs)
+    for output_data in written_results["results"].values():
+        assert output_data["status"] == "approved"
+
+
+def test_write_approved_outputs_missing_file(tmp_path, monkeypatch):
+    """Missing source files are reported in missing-files.txt, not a hard error."""
+    path = tmp_path / "results.json"
+    path.write_text(
+        json.dumps(
+            {
+                "version": "test",
+                "results": {"ghost": {"files": [{"name": "ghost.csv"}]}},
+            }
+        )
+    )
+
+    review_data = {
+        "decisions": {"ghost": {"state": True, "comment": ""}},
+        "path": path,
+    }
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_data})
+
+    out_dir = tmp_path / "out"
+    with override_settings(SACRO_OUTPUT_DIR=str(out_dir)):
+        request = RequestFactory().post("/")
+        response = views.write_approved_outputs(request, pk="current")
+
+    assert response.status_code == 200
+    data = json.loads(response.content)
+    assert data["success"] is True
+    assert len(data["missing"]) == 1
+    assert "missing-files.txt" in data["files"]
+    assert "ghost.csv" in (out_dir / "missing-files.txt").read_text()
+
+
+def test_write_approved_outputs_logs_audit_trail(
+    test_outputs, review_summary, tmp_path, mocker, monkeypatch
+):
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+    mocked_audit = mocker.patch("sacro.views.local_audit")
+
+    with override_settings(SACRO_OUTPUT_DIR=str(tmp_path)):
+        request = RequestFactory().post("/")
+        views.write_approved_outputs(request, pk="current")
+
+    mocked_audit.log_release.assert_called_once()
+
+
+def test_write_approved_outputs_falls_back_to_source_dir(
+    test_outputs, review_summary, monkeypatch
+):
+    """Without SACRO_OUTPUT_DIR the files are written next to results.json."""
+    for v in review_summary["decisions"].values():
+        v["state"] = True
+    views.REVIEWS["current"] = review_summary
+
+    with override_settings(SACRO_OUTPUT_DIR=None):
+        request = RequestFactory().post("/")
+        response = views.write_approved_outputs(request, pk="current")
+
+    assert response.status_code == 200
+    data = json.loads(response.content)
+    assert data["success"] is True
+    assert data["output_dir"] == str(test_outputs.path.parent)
+
+
 def test_review_create_no_comment(test_outputs, review_data):
     path = urlencode({"path": test_outputs.path})
     request = RequestFactory().post(f"/?{path}", data={"review": review_data})
@@ -335,6 +459,26 @@ def test_review_detail_success(review_summary, monkeypatch):
 
     assert response.status_code == 200
     assert response.context_data["review"] == review_summary
+    assert "write_outputs_url" in response.context_data
+    assert "server_side_output" in response.context_data
+
+
+@override_settings(SACRO_OUTPUT_DIR=None)
+def test_review_detail_server_side_output_false(review_summary, monkeypatch):
+    """Without SACRO_OUTPUT_DIR the ZIP-download path is used (Electron/desktop)."""
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+    request = RequestFactory().get("/")
+    response = views.review_detail(request, pk="current")
+    assert response.context_data["server_side_output"] is False
+
+
+def test_review_detail_server_side_output_true(review_summary, tmp_path, monkeypatch):
+    """With SACRO_OUTPUT_DIR set, the server-side write path is enabled."""
+    monkeypatch.setattr(views, "REVIEWS", {"current": review_summary})
+    request = RequestFactory().get("/")
+    with override_settings(SACRO_OUTPUT_DIR=str(tmp_path)):
+        response = views.review_detail(request, pk="current")
+    assert response.context_data["server_side_output"] is True
 
 
 def test_review_detail_unknown_review(review_summary, monkeypatch):

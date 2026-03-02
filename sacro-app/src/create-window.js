@@ -4,12 +4,20 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const process = require("node:process");
-const querystring = require("node:querystring");
 const { mainMenu } = require("./main-menu");
 const startServer = require("./start-server");
 const { waitThenLoad } = require("./utils");
 
 let TEMPDIR = null;
+
+ipcMain.handle("select-folder", async () => {
+  const result = await dialog.showOpenDialog({
+    title: "Choose directory containing outputs you wish to review",
+    properties: ["openDirectory"],
+    defaultPath: os.homedir(),
+  });
+  return result.canceled ? null : result.filePaths[0];
+});
 
 function rtrim(x, characters) {
   let end = x.length - 1;
@@ -86,16 +94,6 @@ const createWindow = async () => {
   win.on("close", () => {
     if (serverProcess !== null) serverProcess.kill();
   });
-
-  ipcMain.handle("select-folder", async () => {
-    const result = await dialog.showOpenDialog({
-      title: "Choose directory containing outputs you wish to review",
-      properties: ["openDirectory"],
-      defaultPath: os.homedir(),
-    });
-    return result.canceled ? null: result.filePaths[0];
-  });
-
 
   const url = `${serverUrl}/`;
 

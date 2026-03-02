@@ -31,6 +31,24 @@
       </div>
 
       <div class="flex flex-col items-start gap-3">
+        {% if server_side_output %}
+        {# Web deployment: write files server-side; no ZIP is sent to the browser. #}
+        <form action="{{ write_outputs_url }}"
+              method="POST"
+              data-sacro-el="writeOutputsForm"
+              data-sacro-write-success-msg="Outputs saved on the server."
+              data-sacro-write-error-msg="Something went wrong. Please try again.">
+          {% csrf_token %}
+
+          {% #button type="submit" variant="success" id="writeOutputsBtn" %}
+            Save approved outputs
+          {% /button %}
+        </form>
+
+        <p id="writeOutputsStatus" class="text-sm hidden" aria-live="polite"></p>
+
+        {% else %}
+        {# Electron / local workflow: stream a ZIP back to the browser. #}
         <form action="{{ approved_outputs_url }}" method="POST" data-sacro-el="downloadOutputsForm">
           {% csrf_token %}
 
@@ -38,6 +56,7 @@
             Download approved outputs
           {% /button %}
         </form>
+        {% endif %}
 
         <form action="{{ summary_url }}" method="POST" data-sacro-el="downloadSummaryForm">
           {% csrf_token %}

@@ -3,7 +3,10 @@ import hashlib
 import html
 import json
 import logging
+import mimetypes
 import re
+import shutil
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
@@ -53,15 +56,7 @@ def _write_reviewer_text_to_results(outputs, review_data):
 
 
 def format_mime_type(mime_type):
-    """
-    Convert MIME types to user-friendly display names.
-
-    Args:
-        mime_type: The MIME type string
-
-    Returns:
-        A user-friendly string representation
-    """
+    """Convert a MIME type string to a user-friendly display name."""
     if not mime_type:
         return ""
 
@@ -180,8 +175,6 @@ def contents(request):
         raise Http404
 
     try:
-        import mimetypes
-
         content_type, _ = mimetypes.guess_type(file_path)
         is_pdf = content_type == "application/pdf"
 
@@ -213,6 +206,123 @@ def approved_outputs(request, pk):
     local_audit.log_release(review["decisions"], username)
 
     return FileResponse(in_memory_zf, as_attachment=True, filename=filename)
+
+
+def _get_output_dir(outputs):
+    """Return the output directory for writing approved files.
+
+    Uses SACRO_OUTPUT_DIR if configured; otherwise falls back to the directory
+    that contains the results.json file.
+    """
+    configured = getattr(settings, "SACRO_OUTPUT_DIR", None)
+    if configured:
+        out_dir = Path(configured)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        return out_dir
+    return outputs.path.parent
+
+
+@require_POST
+def upload_folder(request):
+    """Accept a multipart file upload, save to a temp dir, and redirect to the
+    appropriate viewer (researcher or checker) based on the ``role`` POST param.
+    """
+    role = request.POST.get("role", "checker")
+    uploaded_files = request.FILES.getlist("files[]")
+
+    if not uploaded_files:
+        return HttpResponseBadRequest("No files uploaded.")
+
+    configured = getattr(settings, "SACRO_OUTPUT_DIR", None)
+    if configured:
+        tmpdir = Path(configured) / f"upload-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+        tmpdir.mkdir(parents=True, exist_ok=True)
+    else:
+        tmpdir = Path(tempfile.mkdtemp(prefix="sacro-upload-"))
+
+    for f in uploaded_files:
+        dest = tmpdir / Path(f.name).name
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        with open(dest, "wb") as out:
+            for chunk in f.chunks():
+                out.write(chunk)
+
+    try:
+        path = models.find_acro_metadata(tmpdir)
+    except models.MultipleACROFiles as exc:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+        return errors.error(request, status=500, message=str(exc))
+
+    if role == "researcher":
+        return redirect(
+            utils.reverse_with_params({"path": str(path)}, "researcher-index")
+        )
+    return redirect(utils.reverse_with_params({"path": str(path)}, "checker"))
+
+
+@require_POST
+def write_approved_outputs(request, pk):
+    """Write approved output files to disk and return a JSON summary.
+
+    Copies approved files from the source directory to the configured output
+    directory (or the source directory itself when SACRO_OUTPUT_DIR is unset).
+    Also writes ``results.json``, ``summary.txt``, and (when files are missing)
+    ``missing-files.txt``.
+    """
+    if not (review := REVIEWS.get(pk)):
+        raise Http404
+
+    outputs = models.ACROOutputs(review["path"])
+    approved_keys = {k for k, v in review["decisions"].items() if v["state"] is True}
+
+    out_dir = _get_output_dir(outputs)
+
+    written_files = []
+    missing_files = []
+
+    for output_name in approved_keys:
+        output_meta = outputs.raw_metadata.get("results", {}).get(output_name, {})
+        for file_info in output_meta.get("files", []):
+            src = outputs.path.parent / file_info["name"]
+            dest = out_dir / src.name
+            if src.exists():
+                if src.resolve() != dest.resolve():
+                    shutil.copy2(src, dest)
+                written_files.append(src.name)
+            else:
+                missing_files.append(file_info["name"])
+
+    if missing_files:
+        missing_txt = out_dir / "missing-files.txt"
+        missing_txt.write_text("\n".join(missing_files))
+        written_files.append("missing-files.txt")
+
+    # Write results.json with approved outputs marked
+    results_data = outputs.raw_metadata.copy()
+    results_data["results"] = {
+        k: {**v, "status": "approved"}
+        for k, v in results_data.get("results", {}).items()
+        if k in approved_keys
+    }
+    (out_dir / "results.json").write_text(json.dumps(results_data, indent=2))
+    written_files.append("results.json")
+
+    # Write summary
+    summary_content = zipfile.get_summary(review, outputs)
+    (out_dir / "summary.txt").write_text(summary_content)
+    written_files.append("summary.txt")
+
+    username = getpass.getuser()
+    local_audit.log_release(review["decisions"], username)
+
+    return JsonResponse(
+        {
+            "success": True,
+            "output_dir": str(out_dir),
+            "files": written_files,
+            "missing": missing_files,
+        }
+    )
 
 
 @require_POST
@@ -250,6 +360,7 @@ def review_detail(request, pk):
         raise Http404
 
     approved_outputs_url = reverse("approved-outputs", kwargs={"pk": "current"})
+    write_outputs_url = reverse("write-approved-outputs", kwargs={"pk": "current"})
     summary_url = reverse("summary", kwargs={"pk": "current"})
 
     approved = sum(1 for o in review["decisions"].values() if o["state"])
@@ -260,11 +371,15 @@ def review_detail(request, pk):
         "rejected": total - approved,
     }
 
+    server_side_output = bool(getattr(settings, "SACRO_OUTPUT_DIR", None))
+
     context = {
         "approved_outputs_url": approved_outputs_url,
+        "write_outputs_url": write_outputs_url,
         "counts": counts,
         "review": review,
         "summary_url": summary_url,
+        "server_side_output": server_side_output,
     }
 
     return TemplateResponse(request, "review.html", context=context)
@@ -580,7 +695,6 @@ def researcher_edit_output(request):
 
             if "files" in new_data:
                 is_custom = new_data.get("command") == "custom"
-                file_count = len(new_data["files"])
 
                 for file_info in new_data["files"]:
                     filename = file_info.get("name")
@@ -596,7 +710,7 @@ def researcher_edit_output(request):
                         suffix = filename[len(original_name) :]
                         new_filename = f"{new_name}{suffix}"
 
-                    elif is_custom and file_count == 1:
+                    elif is_custom and len(new_data["files"]) == 1:
                         new_filename = f"{new_name}{ext}"
 
                     elif not is_custom:
@@ -614,6 +728,12 @@ def researcher_edit_output(request):
 
                         if old_file.exists() and not new_file.exists():
                             old_file.rename(new_file)
+                        elif not old_file.exists():
+                            new_filename = (
+                                None  # file not found — don't update metadata
+                            )
+
+                        if new_filename:
                             file_info["name"] = new_filename
 
                             old_checksum = (
@@ -627,14 +747,18 @@ def researcher_edit_output(request):
                             if old_checksum.exists() and not new_checksum.exists():
                                 old_checksum.rename(new_checksum)
 
-                    if "url" in file_info:  # pragma: no branch
+                            if "url" in file_info:
+                                file_info["url"] = file_info["url"].replace(
+                                    f"output={original_name}", f"output={new_name}"
+                                )
+                                file_info["url"] = file_info["url"].replace(
+                                    f"filename={filename}", f"filename={new_filename}"
+                                )
+                    elif "url" in file_info:
+                        # Name unchanged on disk — only update the output= part of the URL
                         file_info["url"] = file_info["url"].replace(
                             f"output={original_name}", f"output={new_name}"
                         )
-                        if new_filename and new_filename != filename:
-                            file_info["url"] = file_info["url"].replace(
-                                f"filename={filename}", f"filename={new_filename}"
-                            )
 
         new_data["uid"] = new_name
         session_data["results"][new_name] = new_data
@@ -667,23 +791,25 @@ def researcher_delete_output(request):
                 {"success": False, "message": "Output name is required"}, status=400
             )
 
-        if output_name in session_data["results"]:
-            output_data = session_data["results"][output_name]
-            for file_info in output_data.get("files", []):
-                filename = file_info.get("name")
-                if not filename:
-                    continue
-                file_path = outputs.path.parent / filename
-                if file_path.exists():
-                    file_path.unlink()
-                checksum_path = outputs.path.parent / "checksums" / f"{filename}.txt"
-                if checksum_path.exists():
-                    checksum_path.unlink()
-            del session_data["results"][output_name]
-        else:
+        if output_name not in session_data["results"]:
             return JsonResponse(
                 {"success": False, "message": "Output not found"}, status=404
             )
+
+        # Delete physical files and their checksums before removing from JSON
+        output_data = session_data["results"][output_name]
+        for file_info in output_data.get("files", []):
+            filename = file_info.get("name")
+            if not filename:
+                continue
+            file_path = outputs.path.parent / filename
+            if file_path.exists():
+                file_path.unlink()
+            checksum_path = outputs.path.parent / "checksums" / f"{filename}.txt"
+            if checksum_path.exists():
+                checksum_path.unlink()
+
+        del session_data["results"][output_name]
 
         draft_path = outputs.path.parent / "results.json"
         with open(draft_path, "w") as f:

@@ -19,28 +19,41 @@ def get_summary(review, outputs):
     return render_to_string("summary.txt", context={"review": review})
 
 
+def build_approved_metadata(outputs, review, approved_outputs):
+    """Return a deep copy of outputs metadata containing only approved outputs.
+
+    Approved outputs are marked with ``status = "approved"`` and any
+    output-checker comment is appended to their ``comments`` list.  Shared
+    between the ZIP-download path and the server-side write path so that
+    both always produce identical metadata.
+    """
+    redacted_metadata = copy.deepcopy(outputs.raw_metadata)
+    results = redacted_metadata.get("results", {})
+
+    to_remove = [k for k in results if k not in approved_outputs]
+    for k in to_remove:
+        del results[k]
+
+    for name in approved_outputs:
+        if name in results:
+            decision = review["decisions"].get(name, {})
+            comment = decision.get("comment")
+            if comment:
+                if "comments" not in results[name]:
+                    results[name]["comments"] = []
+                results[name]["comments"].append(f"Output Checker: {comment}")
+
+            results[name]["status"] = "approved"
+
+    return redacted_metadata
+
+
 def create(outputs, review, approved_outputs):
     in_memory_zf = io.BytesIO()
     with zipfile.ZipFile(in_memory_zf, "w") as zip_obj:
         missing = []
 
-        redacted_metadata = copy.deepcopy(outputs.raw_metadata)
-        results = redacted_metadata.get("results", {})
-
-        to_remove = [k for k in results if k not in approved_outputs]
-        for k in to_remove:
-            del results[k]
-
-        for name in approved_outputs:
-            if name in results:
-                decision = review["decisions"].get(name, {})
-                comment = decision.get("comment")
-                if comment:
-                    if "comments" not in results[name]:
-                        results[name]["comments"] = []
-                    results[name]["comments"].append(f"Output Checker: {comment}")
-
-                results[name]["status"] = "approved"
+        redacted_metadata = build_approved_metadata(outputs, review, approved_outputs)
 
         zip_obj.writestr("results.json", json.dumps(redacted_metadata, indent=2))
 
