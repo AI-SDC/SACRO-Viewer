@@ -118,13 +118,15 @@
       selectedRole = role;
       document.getElementById('btn-researcher').classList.toggle('selected', role === 'researcher');
       document.getElementById('btn-checker').classList.toggle('selected', role === 'checker');
-      document.getElementById('step-folder').style.display = 'block';
-      document.getElementById('step-folder').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-      // In Electron, we skip the drop-zone and go straight to the OS dialog
+      // Electron: skip the drop-zone and open the native OS folder dialog.
       if (isElectron) {
         pickFolder();
+        return;
       }
+
+      // Plain browser (Cypress / DEBUG): go straight to the viewer.
+      window.location.href = role === 'researcher' ? '/researcher/' : '/checker/';
     }
 
     // ── Step 2: folder picking ───────────────────────────────────────────────
