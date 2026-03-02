@@ -294,7 +294,7 @@ def write_approved_outputs(request, pk):
 
     if missing_files:
         missing_txt = out_dir / "missing-files.txt"
-        missing_txt.write_text("\n".join(missing_files))
+        missing_txt.write_text("\n".join(missing_files), encoding="utf-8")
         written_files.append("missing-files.txt")
 
     # Write results.json with approved outputs marked
@@ -304,12 +304,14 @@ def write_approved_outputs(request, pk):
         for k, v in results_data.get("results", {}).items()
         if k in approved_keys
     }
-    (out_dir / "results.json").write_text(json.dumps(results_data, indent=2))
+    (out_dir / "results.json").write_text(
+        json.dumps(results_data, indent=2), encoding="utf-8"
+    )
     written_files.append("results.json")
 
     # Write summary
     summary_content = zipfile.get_summary(review, outputs)
-    (out_dir / "summary.txt").write_text(summary_content)
+    (out_dir / "summary.txt").write_text(summary_content, encoding="utf-8")
     written_files.append("summary.txt")
 
     username = getpass.getuser()
