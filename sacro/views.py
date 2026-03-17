@@ -3,6 +3,7 @@ import hashlib
 import html
 import json
 import logging
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -450,7 +451,7 @@ def researcher_finalize(request):
             json.dump(session_data, f, indent=2)
 
         draft_path = outputs.path.parent / "results.json"
-        if draft_path.exists():  # pragma: no branch
+        if draft_path.exists() and draft_path != outputs.path:  # pragma: no branch
             draft_path.unlink()
 
         logger.info(f"Finalized session for {outputs.path}")
@@ -577,15 +578,63 @@ def researcher_edit_output(request):
                 )
             del session_data["results"][original_name]
 
-            # Update URLs in files
-            if "files" in new_data:  # pragma: no branch
+            if "files" in new_data:
+                is_custom = new_data.get("command") == "custom"
+                file_count = len(new_data["files"])
+
                 for file_info in new_data["files"]:
+                    filename = file_info.get("name")
+                    if not filename:
+                        continue
+
+                    new_filename = None
+                    ext = Path(filename).suffix
+
+                    # Matches name.csv, name_0.csv, name_1_0.csv
+                    prefix_pattern = f"^{re.escape(original_name)}(?=[_.]|$)"
+                    if re.match(prefix_pattern, filename):
+                        suffix = filename[len(original_name) :]
+                        new_filename = f"{new_name}{suffix}"
+
+                    elif is_custom and file_count == 1:
+                        new_filename = f"{new_name}{ext}"
+
+                    elif not is_custom:
+                        stem = Path(filename).stem
+                        match = re.search(r"_(\d+(_\d+)*)$", stem)
+                        if match:
+                            index_suffix = match.group(0)
+                            new_filename = f"{new_name}{index_suffix}{ext}"
+                        else:
+                            new_filename = f"{new_name}{ext}"
+
+                    if new_filename and new_filename != filename:
+                        old_file = outputs.path.parent / filename
+                        new_file = outputs.path.parent / new_filename
+
+                        if old_file.exists() and not new_file.exists():
+                            old_file.rename(new_file)
+                            file_info["name"] = new_filename
+
+                            old_checksum = (
+                                outputs.path.parent / "checksums" / f"{filename}.txt"
+                            )
+                            new_checksum = (
+                                outputs.path.parent
+                                / "checksums"
+                                / f"{new_filename}.txt"
+                            )
+                            if old_checksum.exists() and not new_checksum.exists():
+                                old_checksum.rename(new_checksum)
+
                     if "url" in file_info:  # pragma: no branch
-                        # Replace output param in URL
-                        # Simple string replace safer given structure
                         file_info["url"] = file_info["url"].replace(
                             f"output={original_name}", f"output={new_name}"
                         )
+                        if new_filename and new_filename != filename:
+                            file_info["url"] = file_info["url"].replace(
+                                f"filename={filename}", f"filename={new_filename}"
+                            )
 
         new_data["uid"] = new_name
         session_data["results"][new_name] = new_data
