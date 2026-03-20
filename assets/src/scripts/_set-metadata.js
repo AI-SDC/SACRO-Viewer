@@ -63,13 +63,7 @@ export function setAcroStatus(summary) {
      */
     const splitSummary = summary.split("; ").filter((i) => i !== "");
     let status = capitalise(splitSummary[0]);
-    let statusInfo;
-    if (status === "Review") {
-      status = "Unknown";
-      statusInfo = ["This type of output cannot be checked automatically"];
-    } else {
-      statusInfo = splitSummary.filter((item, i) => item !== "" && i !== 0);
-    }
+    let statusInfo = splitSummary.filter((item, i) => item !== "" && i !== 0);
 
     setElementHTML(
       "outputDetailsStatus",
