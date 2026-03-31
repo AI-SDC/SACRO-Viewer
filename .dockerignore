@@ -12,3 +12,14 @@
 **/venv
 **/.coverage
 **/*.egg-info/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+assets/dist
+
+# Build artifacts
+build/
+dist/
+sacro/static/sacro
