@@ -125,8 +125,9 @@
         return;
       }
 
-      // Plain browser (Cypress / DEBUG): go straight to the viewer.
-      window.location.href = role === 'researcher' ? '/researcher/' : '/checker/';
+      // Normal web browser: show the folder upload step.
+      document.getElementById('step-folder').style.display = 'block';
+      document.getElementById('step-folder').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     // ── Step 2: folder picking ───────────────────────────────────────────────
@@ -144,16 +145,19 @@
         return;
       }
 
-      // Web: File System Access API (Chrome / Edge)
+      // Web: File System Access API (Chrome / Edge / Safari 16+)
       if (window.showDirectoryPicker) {
         try {
           var dirHandle = await window.showDirectoryPicker({ mode: 'read' });
           await collectFromHandle(dirHandle, '');
           showSummary(dirHandle.name);
+          return;
         } catch (err) {
-          if (err.name !== 'AbortError') showError('Could not read folder: ' + err.message);
+          // If user cancels or permission denied, fall through to webkitdirectory
+          if (err.name === 'AbortError') return;
+          // For other errors, still try the fallback
+          console.log('showDirectoryPicker failed:', err.message);
         }
-        return;
       }
 
       // Fallback: hidden <input type="file" webkitdirectory> for older browsers
@@ -163,8 +167,34 @@
       input.multiple = true;
       input.onchange = function() {
         if (input.files.length === 0) return;
+        // Use webkitRelativePath which the browser provides for directory uploads
         collectedFiles = Array.from(input.files);
+
+        // Debug: check what webkitRelativePath contains
+        var hasSubdirs = false;
+        for (var k = 0; k < collectedFiles.length; k++) {
+          if (collectedFiles[k].webkitRelativePath && collectedFiles[k].webkitRelativePath.includes('/')) {
+            hasSubdirs = true;
+            break;
+          }
+        }
+
+        // If no subdirs found, manually set relativePath from webkitRelativePath
+        if (!hasSubdirs && collectedFiles.length > 0 && collectedFiles[0].webkitRelativePath) {
+          // Files have webkitRelativePath, use it
+          for (var k = 0; k < collectedFiles.length; k++) {
+            if (!collectedFiles[k].relativePath && collectedFiles[k].webkitRelativePath) {
+              Object.defineProperty(collectedFiles[k], 'relativePath', {
+                value: collectedFiles[k].webkitRelativePath,
+                configurable: true
+              });
+            }
+          }
+        }
+
         var folderName = collectedFiles[0].webkitRelativePath.split('/')[0];
+        var msg = 'Collected ' + collectedFiles.length + ' files (has subdirs: ' + hasSubdirs + ')';
+        document.getElementById('folder-file-count').textContent = msg;
         showSummary(folderName);
       };
       input.click();
@@ -175,6 +205,9 @@
     async function collectFromHandle(handle, prefix) {
       collectedFiles = [];
       await walkHandle(handle, prefix);
+      var msg = 'Collected ' + collectedFiles.length + ' files';
+      document.getElementById('folder-file-count').textContent = msg;
+      console.log('[collectFromHandle]', msg);
     }
 
     async function walkHandle(handle, prefix) {
@@ -306,12 +339,7 @@
 
       for (var i = 0; i < collectedFiles.length; i++) {
         var file = collectedFiles[i];
-        // Use the relative path as the field name so the server can reconstruct the tree
-        var relPath = file.relativePath || file.webkitRelativePath || file.name;
-        // Strip the top-level folder name (first segment) so server sees clean relative paths
-        var parts = relPath.split('/');
-        var serverPath = parts.length > 1 ? parts.slice(1).join('/') : parts[0];
-        formData.append('files[]', file, serverPath);
+        formData.append('files[]', file);
       }
 
       try {

@@ -240,12 +240,33 @@ def upload_folder(request):
     else:
         tmpdir = Path(tempfile.mkdtemp(prefix="sacro-upload-"))
 
-    for f in uploaded_files:
-        dest = tmpdir / Path(f.name).name
+    # Get the file list
+    files_list = request.FILES.getlist("files[]")
+
+    logger.info(f"[upload_folder] Files received: {len(files_list)}")
+
+    for i, f in enumerate(files_list):
+        # Just save with the original filename (browser stripped the directory path)
+        dest = tmpdir / f.name
         dest.parent.mkdir(parents=True, exist_ok=True)
         with open(dest, "wb") as out:
             for chunk in f.chunks():
                 out.write(chunk)
+        logger.info(f"[upload_folder] Saved: {f.name}")
+
+    # Generate SHA256 checksums for all uploaded files
+    logger.info(f"[upload_folder] Generating checksums for all files in {tmpdir}")
+    checksums_dir = tmpdir / "checksums"
+    checksums_dir.mkdir(exist_ok=True)
+
+    for file_path in tmpdir.rglob("*"):
+        if file_path.is_file() and file_path.parent != checksums_dir:
+            # Calculate SHA256 hash
+            file_hash = hashlib.sha256(file_path.read_bytes()).hexdigest()
+            # Write checksum to checksums/{filename}.txt
+            checksum_file = checksums_dir / (file_path.name + ".txt")
+            checksum_file.write_text(file_hash, encoding="utf-8")
+            logger.info(f"[upload_folder] Generated checksum for {file_path.name}")
 
     try:
         path = models.find_acro_metadata(tmpdir)
