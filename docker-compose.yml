@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/app/data:ro
+      - ./data:/app/data
       - ./outputs:/app/outputs
     restart: unless-stopped
     healthcheck:
