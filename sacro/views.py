@@ -19,6 +19,7 @@ from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
 
 from sacro import errors, models, utils
@@ -298,6 +299,7 @@ def role_selection(request):
     return TemplateResponse(request, "role_selection.html", context={"path": path})
 
 
+@ensure_csrf_cookie
 @require_GET
 def researcher_index(request):
     """
