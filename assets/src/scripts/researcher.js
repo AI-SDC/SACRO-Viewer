@@ -752,7 +752,9 @@ document.addEventListener("DOMContentLoaded", () => {
           .then((result) => {
             if (result.success) {
               sessionData.results[newName] = result.output_data || sessionData.results[currentEditOutput];
-              delete sessionData.results[currentEditOutput];
+              if (newName !== currentEditOutput) {
+                delete sessionData.results[currentEditOutput];
+              }
 
               const item = document.querySelector(`li[data-output-name="${currentEditOutput}"]`);
               if (item) {
