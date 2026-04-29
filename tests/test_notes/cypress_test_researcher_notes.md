@@ -1,7 +1,5 @@
 # Researcher View E2E Test Coverage
 
-## Researcher View Test Coverage
-
 | action | condition type | condition | assessed by test name |
 |--|--|--|--|
 | Visit researcher workflow | precondition | application is reachable | `beforeEach` |
