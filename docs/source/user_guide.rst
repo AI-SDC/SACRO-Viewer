@@ -219,7 +219,7 @@ Working with Different Output Types
 ====================================
 
 **ACRO-Generated Outputs**
-  These outputs include comprehensive metadata about statistical disclosure control checks, researcher comments, and automated risk assessments. Use this information to make informed decisions about release approval.
+  These outputs include metadata about statistical disclosure control checks, researcher comments, and automated risk assessments. Use this information to make informed decisions about release approval.
 
 **Custom Outputs**
   Files without ACRO metadata are treated as custom outputs requiring manual review. These appear with generic metadata and require careful examination of file contents to assess disclosure risks.
