@@ -21,10 +21,15 @@ If the directory contains ACRO-generated metadata (typically ``outputs.json``), 
 Main Interface
 ==============
 
-The SACRO Viewer interface consists of three main areas:
+SACRO Viewer provides two main workflows: one for researchers submitting outputs and one for output checkers reviewing submissions.
+
+Output Checker Interface
+------------------------
+
+The output checker interface consists of three main areas:
 
 .. image:: images/Output_List.png
-   :alt: Main Interface
+   :alt: Output Checker Interface
    :align: center
    :width: 80%
 
@@ -36,7 +41,7 @@ The SACRO Viewer interface consists of three main areas:
   * **Gray icons**: Custom outputs (non-ACRO files)
 
 .. image:: images/File_Viewer.png
-   :alt: Main Interface
+   :alt: File Viewer
    :align: center
    :width: 80%
 
@@ -49,7 +54,7 @@ The SACRO Viewer interface consists of three main areas:
   * **JSON files**: Formatted JSON with proper indentation
 
 .. image:: images/Review_Panel.png
-   :alt: Main Interface
+   :alt: Output Checker Review Panel
    :align: center
    :width: 80%
 
@@ -61,8 +66,49 @@ The SACRO Viewer interface consists of three main areas:
   * **Exception Request**: Any special requests from the researcher
   * **Review Section**: Your approval decision and comments
 
+Researcher Interface
+--------------------
+
+The researcher interface allows researchers to submit outputs and manage the submission lifecycle:
+
+.. image:: images/researcherinterface.png
+   :alt: Researcher Interface
+   :align: center
+   :width: 80%
+
+**Output List (Left Panel)**
+  Shows all outputs submitted by the researcher with their names and types. Each output displays:
+
+  * **Output name**: User-defined name for the submission
+  * **Output type**: Classification of the output (e.g., regression, classification, crosstab)
+  * **Status indicator**: Visual indication of the current review state
+  * **Action buttons**: Options to edit, rename, or delete outputs
+
+
+.. image:: images/researchlayer.png
+   :alt: File Viewer
+   :align: center
+   :width: 80%
+
+**File Viewer (Bottom Right)**
+  Displays the contents of the selected output file. Supports the same formats as the output checker view:
+
+  * **CSV files**: Displayed as formatted tables
+  * **Images**: PNG, JFIF, and other image formats shown inline
+  * **Text files**: Plain text display
+  * **JSON files**: Formatted JSON
+
+**Output Details Panel (Top Right)**
+  Contains all submission details and communication with output checkers:
+
+  * **Output metadata**: Type, description, and other details
+  * **Comments section**: Researcher notes and justifications for the output
+  * **Exception request**: Special requests or justifications for release
+  * **Review feedback**: Comments and decisions from output checkers
+  * **Action buttons**: Save, finalize, and submit options
+
 Making Review Decisions
-======================
+========================
 
 For each output, you need to make an approval decision based on the ACRO analysis, researcher comments, and file contents.
 
@@ -87,8 +133,43 @@ For each output, you need to make an approval decision based on the ACRO analysi
 * **Reject** outputs with clear disclosure risks or insufficient justification
 * **Consider carefully** outputs that failed ACRO checks but have researcher exception requests
 
+Researcher Workflow
+===================
+
+Researchers use SACRO Viewer to submit outputs and manage the submission lifecycle.
+
+**Submitting Outputs**
+
+1. **Launch SACRO Viewer** and select the Researcher interface
+2. **Upload output files** using the upload zone or drag-and-drop functionality
+3. **Name each output** with a descriptive identifier
+4. **Specify output type** (regression, classification, crosstab, table, plot, etc.)
+5. **Add comments** explaining the output and its statistical significance
+6. **Submit exception requests** if you believe a failed ACRO check should be overridden with justification
+
+
+**Finalizing Submissions**
+
+.. image:: images/finalise.png
+   :alt: Researcher Finalize Workflow
+   :align: center
+   :width: 80%
+
+Once all outputs are prepared:
+
+1. **Review all outputs** to ensure accuracy and completeness
+2. **Add a session name** to identify this submission batch
+3. **Verify all required fields** are completed
+4. **Click "Finalize"** to lock the submission
+5. **Submit to output checkers** for review
+
+**Session Management**
+
+* **Save drafts**: Save your work in progress without finalizing
+* **Resume sessions**: Return to previous draft submissions to make edits
+
 File Types and Display
-=====================
+======================
 
 SACRO Viewer handles various output file types commonly produced in research:
 
@@ -113,7 +194,7 @@ SACRO Viewer handles various output file types commonly produced in research:
   * Nested structures are clearly presented
 
 Completing the Review
-====================
+=====================
 
 Once you have reviewed all outputs and made approval decisions, you can generate the final release package.
 
@@ -133,18 +214,9 @@ The generated ZIP file contains:
 * **Audit information** - reviewer details and timestamps
 * **Checksums** - file integrity verification data
 
-**Audit Trail**
-
-SACRO Viewer maintains a complete audit trail including:
-
-* Individual approval/rejection decisions for each output
-* Reviewer comments and justifications
-* Timestamps of all review actions
-* File checksums for integrity verification
-* Release package metadata
 
 Working with Different Output Types
-==================================
+====================================
 
 **ACRO-Generated Outputs**
   These outputs include comprehensive metadata about statistical disclosure control checks, researcher comments, and automated risk assessments. Use this information to make informed decisions about release approval.
@@ -154,24 +226,3 @@ Working with Different Output Types
 
 **Mixed Directories**
   Directories containing both ACRO and non-ACRO outputs are handled seamlessly. The viewer will use ACRO metadata where available and generate custom metadata for other files.
-
-Best Practices
-==============
-
-**Review Workflow**
-  * Start with outputs that passed ACRO checks - these are typically safe to approve
-  * Pay special attention to failed outputs and exception requests
-  * Document your reasoning in review comments for audit purposes
-  * Verify file contents match the researcher's description
-
-**Security Considerations**
-  * Always verify file checksums match the expected values
-  * Be cautious with outputs containing small cell counts or potentially identifying information
-  * Consider the cumulative disclosure risk across multiple related outputs
-  * When in doubt, err on the side of caution and reject questionable outputs
-
-**Efficiency Tips**
-  * Use keyboard shortcuts where available for faster navigation
-  * Group similar outputs for batch review when appropriate
-  * Keep researcher contact information handy for clarification requests
-  * Maintain consistent approval criteria across similar output types
