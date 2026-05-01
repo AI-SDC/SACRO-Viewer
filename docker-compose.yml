@@ -1,0 +1,20 @@
+services:
+  sacro-viewer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sacro-viewer
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
