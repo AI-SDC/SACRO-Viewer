@@ -319,14 +319,6 @@ If you encounter issues running docker on windows, make sure to have WSL Install
 
 The application reads files from the `outputs` folder by default. There is **no folder picker** - all files must be located in the `outputs` directory.
 
-**To use your data:**
-1. Place your files in the `outputs` folder (in the same directory as `docker-compose.yml`)
-2. The Docker container automatically mounts this folder as a volume
-3. Restart the container if needed:
-   ```bash
-   docker-compose restart
-   ```
-
 **Example directory structure:**
 ```text
 SACRO-Viewer-docker/
