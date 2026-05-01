@@ -32,13 +32,13 @@ based browser.
   - [Troubleshooting](#troubleshooting)
 
 
-## System requirements for building
+## System-requirements
 
  - Python 3.10
  - [just](https://github.com/casey/just)
  - Node.js v20
 
-### Windows specific build requirements
+### Windows
 
 Windows is a bit trickier to get up and running.
 
@@ -232,6 +232,27 @@ sudo apt-get install docker.io docker-compose
 sudo usermod -aG docker $USER
 # Log out and back in for group changes to take effect
 ```
+## Note: Outputs Folder Behavior
+
+### Default file source
+
+The application does **not currently use a folder picker**.
+
+Instead:
+
+> The `outputs` folder is the **default and source directory** used by `sacro-viewer`.
+
+All files that the application reads, processes, or displays are expected to be located in this directory.
+
+---
+
+### Docker Volume Mapping
+
+To support this, Docker mounts the local `outputs` directory into the container:
+
+```text
+./outputs:/app/outputs
+```
 
 ### Getting started
 
@@ -293,3 +314,26 @@ docker-compose logs sacro-viewer
 ```
 
 If you encounter issues running docker on windows, make sure to have WSL Installed/updated
+
+#### Not seeing your data or outputs?
+
+The application reads files from the `outputs` folder by default. There is **no folder picker** - all files must be located in the `outputs` directory.
+
+**To use your data:**
+1. Place your files in the `outputs` folder (in the same directory as `docker-compose.yml`)
+2. The Docker container automatically mounts this folder as a volume
+3. Restart the container if needed:
+   ```bash
+   docker-compose restart
+   ```
+
+**Example directory structure:**
+```text
+SACRO-Viewer-docker/
+├── docker-compose.yml
+├── Dockerfile
+└── outputs/
+    ├── results.json
+    ├── data.csv
+    └── other-files...
+```
