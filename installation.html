@@ -1,0 +1,825 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Install &#8212; SACRO Viewer 0.1.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=a70e592c" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="_static/documentation_options.js?v=01f34227"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'installation';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Guide" href="user_guide.html" />
+    <link rel="prev" title="Welcome to SACRO Viewer" href="introduction.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">SACRO Viewer 0.1.0 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="introduction.html">
+    Welcome to SACRO Viewer
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="contribution_guide.html">
+    Contribution Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="introduction.html">
+    Welcome to SACRO Viewer
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="contribution_guide.html">
+    Contribution Guide
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Install</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="introduction.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Welcome to SACRO Viewer</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="user_guide.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">User Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="install">
+<h1>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h1>
+<p>SACRO Viewer is distributed as pre-built installers for Windows, Linux, and macOS. No additional dependencies or setup are required - the installers include everything needed to run the application.</p>
+<section id="system-requirements">
+<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading">#</a></h2>
+<dl class="simple">
+<dt><strong>Windows</strong></dt><dd><ul class="simple">
+<li><p>Windows 10 or later</p></li>
+<li><p>Administrator privileges may be required for installation</p></li>
+</ul>
+</dd>
+<dt><strong>Linux</strong></dt><dd><ul class="simple">
+<li><p>Ubuntu 18.04 or later (or equivalent distribution)</p></li>
+<li><p>64-bit architecture (amd64)</p></li>
+</ul>
+</dd>
+<dt><strong>macOS</strong></dt><dd><ul class="simple">
+<li><p>macOS 10.14 (Mojave) or later</p></li>
+<li><p>Intel or Apple Silicon processors supported</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="windows-installation">
+<h2>Windows Installation<a class="headerlink" href="#windows-installation" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Download the <a class="reference external" href="https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-windows-build.zip">latest Windows release</a></p></li>
+<li><p>Unzip the downloaded file</p></li>
+<li><p>Run the included <code class="docutils literal notranslate"><span class="pre">sacro</span> <span class="pre">0.1.0.msi</span></code> installer</p></li>
+<li><p>Follow the installation wizard prompts</p></li>
+<li><p>The application will launch automatically when installation completes</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Administrator privileges may be required to install the application. If you encounter permission issues, right-click the MSI file and select “Run as administrator”.</p>
+</div>
+</section>
+<section id="linux-installation">
+<h2>Linux Installation<a class="headerlink" href="#linux-installation" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Download the <a class="reference external" href="https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-linux-build.zip">latest Linux release</a></p></li>
+<li><p>Unzip the downloaded file</p></li>
+<li><p>Install the included <code class="docutils literal notranslate"><span class="pre">.deb</span></code> package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>sacro_0.1.0_amd64.deb
+</pre></div>
+</div>
+</li>
+<li><p>Launch the application from your applications menu or run <code class="docutils literal notranslate"><span class="pre">sacro</span></code> from the command line</p></li>
+</ol>
+</section>
+<section id="macos-installation">
+<h2>macOS Installation<a class="headerlink" href="#macos-installation" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Download the <a class="reference external" href="https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-macos-build.zip">latest macOS release</a></p></li>
+<li><p>Unzip the downloaded file</p></li>
+<li><p>Move <code class="docutils literal notranslate"><span class="pre">Sacro.app</span></code> to your Applications folder</p></li>
+<li><p>Right-click on the Sacro app icon and select “Open”</p></li>
+<li><p>macOS will display a security warning - click “Open” to proceed</p></li>
+<li><p>If the app is blocked, go to <strong>System Preferences → Security &amp; Privacy</strong> and click “Open Anyway”</p></li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>macOS may block the application because it’s not from an identified developer. This is normal for open-source applications. Follow the security steps above to allow the application to run.</p>
+</div>
+</section>
+<section id="development-builds">
+<h2>Development Builds<a class="headerlink" href="#development-builds" title="Link to this heading">#</a></h2>
+<p>For testing the latest features, development builds are available:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-windows-build.zip">Windows Development Build</a></p></li>
+<li><p><a class="reference external" href="https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip">Linux Development Build</a></p></li>
+<li><p><a class="reference external" href="https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-macos-build.zip">macOS Development Build</a></p></li>
+</ul>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Development builds are automatically generated from the latest code and may contain bugs or incomplete features. Use stable releases for production environments.</p>
+</div>
+</section>
+<section id="running-the-web-application">
+<span id="id1"></span><h2>Running the Web Application<a class="headerlink" href="#running-the-web-application" title="Link to this heading">#</a></h2>
+<p>SACRO Viewer consists of two parts:</p>
+<ol class="arabic simple">
+<li><p>A Django web app with vanilla JavaScript UI that renders a set of ACRO outputs for review</p></li>
+<li><p>An Electron app and installer that bundles the web app</p></li>
+</ol>
+<p>The web app is designed to be used as a normally deployed website. The Electron app packages a pre-built version of this web app with a Chrome-based browser for desktop distribution.</p>
+</section>
+<section id="system-requirements-for-development">
+<h2>System Requirements for Development<a class="headerlink" href="#system-requirements-for-development" title="Link to this heading">#</a></h2>
+<p><strong>General Requirements</strong></p>
+<ul class="simple">
+<li><p>Python 3.10</p></li>
+<li><p><a class="reference external" href="https://github.com/casey/just">just</a> command runner</p></li>
+<li><p>Node.js v20</p></li>
+<li><p>Git</p></li>
+</ul>
+<p><strong>Windows Specific Requirements</strong></p>
+<p>Windows requires additional setup:</p>
+<ul class="simple">
+<li><p><strong>Python 3.10</strong>: Download from <a class="reference external" href="https://www.python.org/downloads/windows/">https://www.python.org/downloads/windows/</a> (do not use the Microsoft Store version)</p></li>
+<li><p><strong>Node.js v20</strong>: Install via <a class="reference external" href="https://github.com/Schniz/fnm">fnm</a></p></li>
+<li><p><strong>Git Bash</strong>: Download from <a class="reference external" href="https://gitforwindows.org/">https://gitforwindows.org/</a></p></li>
+<li><p><strong>Just</strong>: Install via Chocolatey: <code class="docutils literal notranslate"><span class="pre">choco</span> <span class="pre">install</span> <span class="pre">just</span></code> (install Chocolatey from <a class="reference external" href="https://chocolatey.org/">https://chocolatey.org/</a>)</p></li>
+<li><p><strong>Visual Studio Community</strong>: Download from <a class="reference external" href="https://visualstudio.microsoft.com/downloads/">https://visualstudio.microsoft.com/downloads/</a> and install with the “Desktop Development with C++” workload</p></li>
+<li><p><strong>Windows Terminal</strong>: Recommended tool available at <a class="reference external" href="https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701">https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701</a></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After installing all Windows requirements, please reboot your system.</p>
+<p>Just commands will only work inside git-bash shell by default, as they assume bash.</p>
+</div>
+</section>
+<section id="local-development-environment">
+<h2>Local Development Environment<a class="headerlink" href="#local-development-environment" title="Link to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Clone the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/AI-SDC/SACRO-Viewer.git
+<span class="nb">cd</span><span class="w"> </span>SACRO-Viewer
+</pre></div>
+</div>
+</li>
+<li><p>Run the Django development server:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>run
+</pre></div>
+</div>
+<p>This command will set up the Python virtual environment, install dependencies, and start the Django development server on <code class="docutils literal notranslate"><span class="pre">http://localhost:8000</span></code></p>
+</li>
+</ol>
+<section id="development-with-vite-live-reload">
+<h3>Development with Vite Live Reload<a class="headerlink" href="#development-with-vite-live-reload" title="Link to this heading">#</a></h3>
+<p>If you are making changes to JavaScript, enable live reload:</p>
+<ol class="arabic">
+<li><p>Set the environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DJANGO_VITE_DEV_MODE</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+</li>
+<li><p>In a separate terminal, run the Vite development server:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>assets-run
+</pre></div>
+</div>
+<p>The server will automatically refresh when you make changes to frontend assets.</p>
+</li>
+</ol>
+</section>
+</section>
+<section id="running-the-electron-app-in-development">
+<h2>Running the Electron App in Development<a class="headerlink" href="#running-the-electron-app-in-development" title="Link to this heading">#</a></h2>
+<p>To run the Electron app in development mode:</p>
+<ol class="arabic">
+<li><p>First, start the Django development server:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>run<span class="w"> </span><span class="p">&amp;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Set the SACRO_URL environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SACRO_URL</span><span class="o">=</span>http://127.0.0.1:8000
+</pre></div>
+</div>
+</li>
+<li><p>Run the Electron app:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>sacro-app/run
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h2>
+<section id="running-unit-tests">
+<h3>Running Unit Tests<a class="headerlink" href="#running-unit-tests" title="Link to this heading">#</a></h3>
+<p>Run the automated test suite:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span><span class="nb">test</span><span class="w"> </span>&lt;args&gt;
+</pre></div>
+</div>
+</section>
+<section id="test-data">
+<h3>Test Data<a class="headerlink" href="#test-data" title="Link to this heading">#</a></h3>
+<p>The script <code class="docutils literal notranslate"><span class="pre">data/test-nursery.py</span></code> uses ACRO to generate outputs from a public test dataset. Test outputs are automatically regenerated as needed by the justfile for commands like <code class="docutils literal notranslate"><span class="pre">just</span> <span class="pre">test</span></code> or <code class="docutils literal notranslate"><span class="pre">just</span> <span class="pre">run</span></code>. Outputs are generated in the <code class="docutils literal notranslate"><span class="pre">outputs/</span></code> directory.</p>
+<p>To manually regenerate test data:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>test-outputs
+</pre></div>
+</div>
+<p>To force removal of all test data and regenerate it:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>clean
+just<span class="w"> </span>test-outputs
+</pre></div>
+</div>
+</section>
+<section id="testing-the-electron-app">
+<h3>Testing the Electron App<a class="headerlink" href="#testing-the-electron-app" title="Link to this heading">#</a></h3>
+<p>Semi-automated testing of the Electron app can be done locally using Cypress.</p>
+<p>First, ensure a development server is running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>run
+</pre></div>
+</div>
+<p>Then open Cypress:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>run<span class="w"> </span>cypress:open
+</pre></div>
+</div>
+<p>To run Cypress in headless mode (useful for CI):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>run<span class="w"> </span>cypress:run
+</pre></div>
+</div>
+<p>Headless mode automatically produces a video on each run and provides screenshots of any errors.</p>
+</section>
+</section>
+<section id="building-the-application">
+<h2>Building the Application<a class="headerlink" href="#building-the-application" title="Link to this heading">#</a></h2>
+<p>There are two stages to building the application for release: building the executable, then building the Windows installer (MSI).</p>
+<section id="building-the-python-web-app">
+<h3>Building the Python Web App<a class="headerlink" href="#building-the-python-web-app" title="Link to this heading">#</a></h3>
+<p>To build the PyOxidizer binary:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>build
+</pre></div>
+</div>
+<p>This creates a PyOxidizer binary of the Python application for your platform. The build process takes some time. The build executable and supporting files can be found in:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>build/$ARCH/release/install/sacro
+</pre></div>
+</div>
+</section>
+<section id="building-the-electron-gui-app">
+<h3>Building the Electron GUI App<a class="headerlink" href="#building-the-electron-gui-app" title="Link to this heading">#</a></h3>
+<p>The <cite>sacro-app</cite> directory contains the Electron and packaging configuration and tooling.</p>
+<p>To build the installer:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>just<span class="w"> </span>sacro-app/build
+</pre></div>
+</div>
+<p>This builds the Windows MSI installer, which can be found in <code class="docutils literal notranslate"><span class="pre">sacro-app/dist</span></code>.</p>
+</section>
+<section id="testing-the-built-application">
+<h3>Testing the Built Application<a class="headerlink" href="#testing-the-built-application" title="Link to this heading">#</a></h3>
+<p>To test the built application:</p>
+<ol class="arabic simple">
+<li><p>Double-click the MSI file found in <code class="docutils literal notranslate"><span class="pre">sacro-app/dist</span></code> to install it</p></li>
+<li><p>The application will launch automatically</p></li>
+<li><p>You may need to click through various Windows dialogs to approve the installation</p></li>
+<li><p>Navigate to the <code class="docutils literal notranslate"><span class="pre">outputs</span></code> directory and choose <code class="docutils literal notranslate"><span class="pre">results.json</span></code></p></li>
+<li><p>You should now see the outputs rendered in the app</p></li>
+<li><p>Click the <code class="docutils literal notranslate"><span class="pre">Approve</span> <span class="pre">and</span> <span class="pre">Download</span></code> button to test the download functionality</p></li>
+</ol>
+</section>
+</section>
+<section id="technology-stack">
+<h2>Technology Stack<a class="headerlink" href="#technology-stack" title="Link to this heading">#</a></h2>
+<p><strong>Backend</strong>
+* Django web framework with Python 3.10+
+* PyOxidizer for bundling Python applications</p>
+<p><strong>Frontend</strong>
+* Vanilla JavaScript
+* <a class="reference external" href="https://vitejs.dev/">Vite</a> - modern build tool and development server
+* <a class="reference external" href="https://github.com/MrBin99/django-vite">django-vite</a> - Django integration for Vite</p>
+<p><strong>Frontend Asset Build Process</strong></p>
+<p>Vite compiles JavaScript files and outputs:
+* A manifest file
+* Compiled JavaScript files
+* Included assets (stylesheets, images, etc.)</p>
+<p>Vite uses <a class="reference external" href="https://caniuse.com/es6-module">ES6 Module syntax</a> for all JavaScript on the page. For legacy browser support, the <a class="reference external" href="https://github.com/vitejs/vite/tree/main/packages/plugin-legacy">Vite Legacy Plugin</a> provides fallback support using the <a class="reference external" href="https://philipwalton.com/articles/deploying-es2015-code-in-production-today/">module/nomodule pattern</a>.</p>
+<p>Vite is configured to:
+* Build assets from <code class="docutils literal notranslate"><span class="pre">assets/src</span></code>
+* Output compiled assets to <code class="docutils literal notranslate"><span class="pre">assets/dist</span></code>
+* Django collects static files from <code class="docutils literal notranslate"><span class="pre">assets/dist</span></code></p>
+</section>
+<section id="latest-development-builds">
+<h2>Latest Development Builds<a class="headerlink" href="#latest-development-builds" title="Link to this heading">#</a></h2>
+<p>Latest development builds are available via <a class="reference external" href="https://nightly.link/">nightly.link</a>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-windows-build.zip">Windows Development Build</a></p></li>
+<li><p><a class="reference external" href="https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-macos-build.zip">macOS Development Build</a></p></li>
+<li><p><a class="reference external" href="https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip">Linux Development Build</a></p></li>
+</ul>
+</section>
+<section id="sample-data">
+<h2>Sample Data<a class="headerlink" href="#sample-data" title="Link to this heading">#</a></h2>
+<p>All download packages include sample data for testing the application:</p>
+<ul class="simple">
+<li><p>Sample ACRO outputs in the <code class="docutils literal notranslate"><span class="pre">outputs</span></code> directory</p></li>
+<li><p>Test files including CSV tables, images, and statistical results</p></li>
+<li><p>Example metadata showing different ACRO status types (pass/fail/review)</p></li>
+</ul>
+<p>To test the installation, launch SACRO Viewer and select the <code class="docutils literal notranslate"><span class="pre">outputs</span></code> directory from the downloaded package.</p>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
+<dl>
+<dt><strong>Windows: “Windows protected your PC” message</strong></dt><dd><p>This is normal for new applications. Click “More info” then “Run anyway” to proceed with installation.</p>
+</dd>
+<dt><strong>macOS: “Cannot open because it is from an unidentified developer”</strong></dt><dd><p>Go to System Preferences → Security &amp; Privacy → General tab and click “Open Anyway” next to the blocked application message.</p>
+</dd>
+<dt><strong>Linux: Permission denied errors</strong></dt><dd><p>Ensure you have sudo privileges and the downloaded <code class="docutils literal notranslate"><span class="pre">.deb</span></code> file has execute permissions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span>+x<span class="w"> </span>sacro_0.1.0_amd64.deb
+</pre></div>
+</div>
+</dd>
+<dt><strong>Application won’t start</strong></dt><dd><p>Check that your system meets the minimum requirements listed above. On older systems, try running the application from the command line to see detailed error messages.</p>
+</dd>
+</dl>
+<p>For additional support, please visit the <a class="reference external" href="https://github.com/AI-SDC/SACRO-Viewer/issues">GitHub Issues page</a>.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="introduction.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Welcome to SACRO Viewer</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="user_guide.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">User Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-requirements">System Requirements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#windows-installation">Windows Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linux-installation">Linux Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#macos-installation">macOS Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-builds">Development Builds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-web-application">Running the Web Application</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-requirements-for-development">System Requirements for Development</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-development-environment">Local Development Environment</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#development-with-vite-live-reload">Development with Vite Live Reload</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-electron-app-in-development">Running the Electron App in Development</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-unit-tests">Running Unit Tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-data">Test Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-the-electron-app">Testing the Electron App</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-application">Building the Application</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-python-web-app">Building the Python Web App</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-electron-gui-app">Building the Electron GUI App</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-the-built-application">Testing the Built Application</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#technology-stack">Technology Stack</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#latest-development-builds">Latest Development Builds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-data">Sample Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/installation.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, GRAIMATTER and SACRO Project Team.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
