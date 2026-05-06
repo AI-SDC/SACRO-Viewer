@@ -144,19 +144,19 @@ Getting Started
 
         Learn how to review outputs and manage approvals
 
-    .. grid-item-card:: FAQ
-        :link: faq
+    .. grid-item-card:: Web Application
+        :link: running-the-web-application
+        :link-type: ref
+        :class-header: bg-light
+
+        Deploy SACRO Viewer as a web service
+
+    .. grid-item-card:: Contribution Guide
+        :link: contribution_guide
         :link-type: doc
         :class-header: bg-light
 
-        Find answers to common questions
-
-    .. grid-item-card:: Support
-        :link: support
-        :link-type: doc
-        :class-header: bg-light
-
-        Get help and troubleshooting information
+        Learn how to contribute to the project
 
 Key Components
 --------------
@@ -169,28 +169,21 @@ Key Components
 Developer Resources
 ===================
 
-.. grid:: 3
+.. grid:: 2
 
-    .. grid-item-card:: Architecture
-        :link: architecture
+    .. grid-item-card:: Contribution Guide
+        :link: contribution_guide
         :link-type: doc
         :class-header: bg-info
 
-        Understand the technical design and system components
+        Set up development environment and learn how to contribute
 
-    .. grid-item-card:: Developer Guide
-        :link: developer_guide
+    .. grid-item-card:: Installation Guide
+        :link: installation
         :link-type: doc
         :class-header: bg-info
 
-        Set up development environment and contribute code
-
-    .. grid-item-card:: API Reference
-        :link: api_reference
-        :link-type: doc
-        :class-header: bg-info
-
-        Detailed documentation of classes and functions
+        Detailed build and deployment instructions for developers
 
 Community and Support
 =====================
