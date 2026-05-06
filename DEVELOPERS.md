@@ -26,15 +26,19 @@ based browser.
 - [Stack](#stack)
   - [Vite](#vite)
 - [Links to built artefacts](#links-to-built-artefacts)
+- [Running with Docker](#running-with-docker)
+  - [Prerequisites](#prerequisites)
+  - [Getting started](#getting-started)
+  - [Troubleshooting](#troubleshooting)
 
 
-## System requirements for building
+## System-requirements
 
  - Python 3.10
  - [just](https://github.com/casey/just)
  - Node.js v20
 
-### Windows specific build requirements
+### Windows
 
 Windows is a bit trickier to get up and running.
 
@@ -191,3 +195,137 @@ We use [nightly.link for GitHub](https://nightly.link/) as a redirect service to
 Windows: https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-windows-build.zip
 MacOS: https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-macos-build.zip
 Linux: https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip
+
+
+## Running with Docker
+
+### Prerequisites
+
+Before you can use Docker Compose, you need to install Docker
+
+#### Installation
+
+**macOS:**
+1. Download and install [Docker Desktop for Mac](https://www.docker.com/products/docker-desktop)
+2. Open the downloaded `.dmg` file and drag Docker to Applications
+3. Launch Docker from Applications
+4. Verify installation by running:
+   ```bash
+   docker --version
+   docker-compose --version
+   ```
+
+**Windows:**
+1. Download and install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
+2. Run the installer and follow the setup wizard
+3. Restart your computer when prompted
+4. Verify installation by opening PowerShell or Command Prompt and running:
+   ```bash
+   docker --version
+   docker-compose --version
+   ```
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt-get update
+sudo apt-get install docker.io docker-compose
+sudo usermod -aG docker $USER
+# Log out and back in for group changes to take effect
+```
+## Note: Outputs Folder Behavior
+
+### Default file source
+
+The application does **not currently use a folder picker**.
+
+Instead:
+
+> The `outputs` folder is the **default and source directory** used by `sacro-viewer`.
+
+All files that the application reads, processes, or displays are expected to be located in this directory.
+
+---
+
+### Docker Volume Mapping
+
+To support this, Docker mounts the local `outputs` directory into the container:
+
+```text
+./outputs:/app/outputs
+```
+
+### Getting started
+
+Once Docker is installed, you can run SACRO-Viewer with a single command.
+
+#### Start the application
+```bash
+docker-compose up -d
+```
+The app will be available at `http://localhost:8000`
+
+#### Check if container is running
+```bash
+docker-compose ps
+```
+
+#### View logs
+```bash
+docker-compose logs -f
+```
+
+#### View logs for a specific service
+```bash
+docker-compose logs -f sacro-viewer
+```
+
+#### Stop the container (keeps volumes)
+```bash
+docker-compose stop
+```
+
+#### Stop and remove the container
+```bash
+docker-compose down
+```
+
+### Rebuilding
+
+#### Rebuild with latest code
+```bash
+docker-compose up -d --build
+```
+
+#### Rebuild from scratch (no cache)
+```bash
+docker-compose build --no-cache
+```
+
+#### Remove everything (containers, images, volumes)
+```bash
+docker-compose down -v
+```
+
+### Troubleshooting
+
+If the container fails to start, check the logs:
+```bash
+docker-compose logs sacro-viewer
+```
+
+If you encounter issues running docker on windows, make sure to have WSL Installed/updated
+
+#### Not seeing your data or outputs?
+
+The application reads files from the `outputs` folder by default. There is **no folder picker** - all files must be located in the `outputs` directory.
+
+**Example directory structure:**
+```text
+SACRO-Viewer-docker/
+├── docker-compose.yml
+├── Dockerfile
+└── outputs/
+    ├── results.json
+    ├── data.csv
+    └── other-files...
+```
