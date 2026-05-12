@@ -16,12 +16,18 @@ class CustomBuildHook(BuildHookInterface):
 
         # Skip npm build if assets already exist (e.g. during editable/dev install)
         if os.path.exists(source_dir) and os.listdir(source_dir):
-            print("Frontend assets already built, skipping npm build...", file=sys.stderr)
+            print(
+                "Frontend assets already built, skipping npm build...",
+                file=sys.stderr,
+            )
         else:
             print("Building frontend assets...", file=sys.stderr)
 
             if not shutil.which("npm"):
-                print("Error: 'npm' is not installed or not in PATH.", file=sys.stderr)
+                print(
+                    "Error: 'npm' is not installed or not in PATH.",
+                    file=sys.stderr,
+                )
                 sys.exit(1)
 
             print("Installing npm dependencies...", file=sys.stderr)
@@ -33,5 +39,8 @@ class CustomBuildHook(BuildHookInterface):
         if os.path.exists(dest_dir):
             shutil.rmtree(dest_dir)
 
-        print(f"Copying assets from {source_dir} to {dest_dir}...", file=sys.stderr)
+        print(
+            f"Copying assets from {source_dir} to {dest_dir}...",
+            file=sys.stderr,
+        )
         shutil.copytree(source_dir, dest_dir, dirs_exist_ok=True)
