@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.management.utils import get_random_secret_key
 from environs import Env
 
 from .logging import logging_config_dict
@@ -28,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY")
+SECRET_KEY = env.str("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
@@ -165,10 +166,23 @@ STATICFILES_DIRS = [
 STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "sacro/staticfiles")
 STATIC_URL = "/static/"
 
-DJANGO_VITE_ASSETS_PATH = BASE_DIR / "assets" / "dist"
+# Assets location within the package (used when installed via pip)
+PKG_DIR = Path(__file__).resolve().parent
+DIST_DIR = PKG_DIR / "static" / "sacro"
+
+# Local development assets
+LOCAL_DIST_DIR = BASE_DIR / "assets" / "dist"
+
+if LOCAL_DIST_DIR.exists():
+    DJANGO_VITE_ASSETS_PATH = LOCAL_DIST_DIR
+    DJANGO_VITE_STATIC_URL_PREFIX = ""
+else:
+    DJANGO_VITE_ASSETS_PATH = DIST_DIR
+    DJANGO_VITE_STATIC_URL_PREFIX = "sacro"
+
 DJANGO_VITE_DEV_MODE = env.bool("DJANGO_VITE_DEV_MODE", default=False)
 DJANGO_VITE_DEV_SERVER_PORT = 5173
-DJANGO_VITE_MANIFEST_PATH = STATIC_ROOT / "manifest.json"
+DJANGO_VITE_MANIFEST_PATH = DJANGO_VITE_ASSETS_PATH / "manifest.json"
 
 # Insert Whitenoise Middleware.
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
