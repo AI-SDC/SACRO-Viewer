@@ -176,7 +176,7 @@ LOCAL_DIST_DIR = BASE_DIR / "assets" / "dist"
 if LOCAL_DIST_DIR.exists():
     DJANGO_VITE_ASSETS_PATH = LOCAL_DIST_DIR
     DJANGO_VITE_STATIC_URL_PREFIX = ""
-else:
+else: # pragma: no cover
     DJANGO_VITE_ASSETS_PATH = DIST_DIR
     DJANGO_VITE_STATIC_URL_PREFIX = "sacro"
 
