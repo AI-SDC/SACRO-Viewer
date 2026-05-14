@@ -42,11 +42,7 @@
           }
         });
       } else {
-        if (role === 'researcher') {
-          window.location.href = '/researcher/';
-        } else {
-          window.location.href = '/checker/';
-        }
+        window.location.href = '/load/?role=' + role;
       }
     };
     console.log('Script loaded - electronAPI available:', !!window.electronAPI);

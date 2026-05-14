@@ -111,9 +111,9 @@ def load(request):
     role = request.GET.get("role")
 
     if not dirpath_param:
-        raise Http404("No directory path provided")
-
-    dirpath = Path(dirpath_param)
+        dirpath = Path(settings.BASE_DIR) / "outputs"
+    else:
+        dirpath = Path(dirpath_param)
 
     if not dirpath.exists():
         raise Http404(f"Directory not found: {dirpath}")
