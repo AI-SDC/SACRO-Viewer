@@ -3,7 +3,7 @@ requires = ["hatchling", "hatch-requirements-txt"]
 build-backend = "hatchling.build"
 
 [project]
-name = "sacro"
+name = "Sacro"
 version = "0.1.0"
 description = "A viewer for research outputs produced using the ACRO tools"
 readme = "README.md"
