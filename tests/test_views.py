@@ -1360,11 +1360,9 @@ def test_researcher_finalize_with_draft_file(client, test_outputs, tmp_path):
 
 def test_researcher_index_without_draft_file(client, test_outputs):
     """Test researcher_index when no draft file exists"""
-    # This tests the normal path where draft doesn't exist
     response = client.get(f"/researcher/?path={test_outputs.path}")
     assert response.status_code == 200
-    # Verify the original path's config is used
-    assert "config" in response.context
+    assert "config" in response.context_data
 
 
 def test_researcher_add_output_empty_name(client, test_outputs):
