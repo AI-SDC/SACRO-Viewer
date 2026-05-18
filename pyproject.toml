@@ -1,3 +1,45 @@
+[build-system]
+requires = ["hatchling", "hatch-requirements-txt"]
+build-backend = "hatchling.build"
+
+[project]
+name = "Sacroviewer"
+version = "0.1.0"
+description = "A viewer for research outputs produced using the ACRO tools"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dynamic = ["dependencies"]
+maintainers = [
+    {name = "Jim Smith", email = "james.smith@uwe.ac.uk"}
+]
+keywords = [
+    "output-viewer",
+    "data-privacy",
+    "data-protection",
+    "privacy",
+    "privacy-tools",
+    "statistical-disclosure-control",
+    "statistical-software",
+]
+
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["requirements.prod.in"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["sacro"]
+artifacts = ["sacro/static"]
+
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+
+[project.scripts]
+sacroviewer = "sacro.__main__:main"
+
+[project.urls]
+"Homepage" = "https://github.com/AI-SDC/SACRO-Viewer"
+"Bug Tracker" = "https://github.com/AI-SDC/SACRO-Viewer/issues"
+
 [tool.coverage.run]
 branch = true
 dynamic_context = "test_function"

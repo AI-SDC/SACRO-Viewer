@@ -1,0 +1,79 @@
+---
+name: PyPI Publish
+
+on:
+  workflow_dispatch:
+  release:
+    types:
+    - published
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: "opensafely-core/setup-action@v1"
+        with:
+          python-version: "3.10"
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: ".node-version"
+          cache: "npm"
+
+      - name: Build JS assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Collect static files
+        env:
+          SECRET_KEY: placeholder-for-collectstatic
+          DJANGO_SETTINGS_MODULE: sacro.settings
+        run: |
+          pip install -r requirements.prod.txt
+          python manage.py collectstatic --noinput
+
+      - name: Build
+        run: pipx run build
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: build-artifacts
+          path: dist/*
+
+  upload:
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'release' && github.event.action == 'published'
+
+    needs: [build]
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/sacro
+
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: build-*
+          path: dist
+          merge-multiple: true
+
+      - name: Attest
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: "dist/*"
+
+      - name: Publish on PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          # repository-url: https://test.pypi.org/legacy/
+...
