@@ -160,7 +160,7 @@ APP_TOKEN = os.environ.get("SACRO_APP_TOKEN")
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 STATICFILES_DIRS = [
     str(BASE_DIR / "static"),
-    str(env.path("BUILT_ASSETS", default=BASE_DIR / "assets" / "dist")),
+    ("sacro", str(env.path("BUILT_ASSETS", default=BASE_DIR / "assets" / "dist"))),
 ]
 # we put staticfiles inside the python module, so that its easy to bundle with pyoxidizer
 STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "sacro/staticfiles")
@@ -175,11 +175,15 @@ LOCAL_DIST_DIR = BASE_DIR / "assets" / "dist"
 
 if LOCAL_DIST_DIR.exists():
     DJANGO_VITE_ASSETS_PATH = LOCAL_DIST_DIR
-    DJANGO_VITE_STATIC_URL_PREFIX = ""
 else:  # pragma: no cover
-    DJANGO_VITE_ASSETS_PATH = DIST_DIR
-    DJANGO_VITE_STATIC_URL_PREFIX = "sacro"
+    # When bundled, check for collected static files first
+    STATIC_ROOT_ASSETS = STATIC_ROOT / "sacro"
+    if STATIC_ROOT_ASSETS.exists():
+        DJANGO_VITE_ASSETS_PATH = STATIC_ROOT_ASSETS
+    else:
+        DJANGO_VITE_ASSETS_PATH = DIST_DIR
 
+DJANGO_VITE_STATIC_URL_PREFIX = "sacro"
 DJANGO_VITE_DEV_MODE = env.bool("DJANGO_VITE_DEV_MODE", default=False)
 DJANGO_VITE_DEV_SERVER_PORT = 5173
 DJANGO_VITE_MANIFEST_PATH = DJANGO_VITE_ASSETS_PATH / "manifest.json"
