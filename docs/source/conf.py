@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath("../../"))
 project = "SACRO Viewer"
 copyright = "2025, GRAIMATTER and SACRO Project Team"
 author = "GRAIMATTER and SACRO Project Team"
-release = "0.1.0"
+release = "0.2.0"
 
 # -- General configuration ---------------------------------------------------
 
