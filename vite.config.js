@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "/static/",
+  base: "/static/sacro/",
   build: {
     manifest: true,
     rollupOptions: {

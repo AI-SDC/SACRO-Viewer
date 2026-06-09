@@ -22,9 +22,9 @@ System Requirements
 Windows Installation
 ====================
 
-1. Download the `latest Windows release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-windows-build.zip>`_
+1. Download the `latest Windows release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.0/SACRO-0.2.0-windows-build.zip>`_
 2. Unzip the downloaded file
-3. Run the included ``sacro 0.1.0.msi`` installer
+3. Run the included ``sacro 0.2.0.msi`` installer
 4. Follow the installation wizard prompts
 5. The application will launch automatically when installation completes
 
@@ -34,20 +34,20 @@ Windows Installation
 Linux Installation
 ==================
 
-1. Download the `latest Linux release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-linux-build.zip>`_
+1. Download the `latest Linux release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.0/SACRO-0.2.0-linux-build.zip>`_
 2. Unzip the downloaded file
 3. Install the included ``.deb`` package:
 
    .. code-block:: bash
 
-      sudo dpkg -i sacro_0.1.0_amd64.deb
+      sudo dpkg -i sacro_0.2.0_amd64.deb
 
 4. Launch the application from your applications menu or run ``sacro`` from the command line
 
 macOS Installation
 ==================
 
-1. Download the `latest macOS release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.1.0/SACRO-0.1.0-macos-build.zip>`_
+1. Download the `latest macOS release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.0/SACRO-0.2.0-macos-build.zip>`_
 2. Unzip the downloaded file
 3. Move ``Sacro.app`` to your Applications folder
 4. Right-click on the Sacro app icon and select "Open"
@@ -65,6 +65,31 @@ For testing the latest features, development builds are available:
 * `Windows Development Build <https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-windows-build.zip>`_
 * `Linux Development Build <https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-linux-build.zip>`_
 * `macOS Development Build <https://nightly.link/AI-SDC/SACRO-Viewer/workflows/main/main/SACRO-latest-macos-build.zip>`_
+
+.. _installing-via-pip:
+
+Installing via pip
+==================
+
+You can also install SACRO Viewer as a Python package using pip:
+
+.. code-block:: bash
+
+   pip install sacroviewer
+
+To install a specific version:
+
+.. code-block:: bash
+
+   pip install sacroviewer==0.2.0
+
+To upgrade to the latest version:
+
+.. code-block:: bash
+
+   pip install --upgrade sacroviewer
+
+After installation, you can run the web application by starting the Django development server or deploying it as a standard Django application. For deployment options, refer to the `Running the Web Application`_ section below.
 
 .. caution::
    Development builds are automatically generated from the latest code and may contain bugs or incomplete features. Use stable releases for production environments.
@@ -327,7 +352,7 @@ Troubleshooting
 
   .. code-block:: bash
 
-     chmod +x sacro_0.1.0_amd64.deb
+     chmod +x sacro_0.2.0_amd64.deb
 
 **Application won't start**
   Check that your system meets the minimum requirements listed above. On older systems, try running the application from the command line to see detailed error messages.
