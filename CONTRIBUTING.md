@@ -57,13 +57,7 @@ This sets up a virtual environment and installs both Python and Node.js dependen
 
 ### Running tests
 
-Run all tests (Python and end-to-end):
-
-```bash
-just test
-```
-
-Run only Python tests:
+Run all tests:
 
 ```bash
 just test
