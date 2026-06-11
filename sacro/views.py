@@ -111,7 +111,8 @@ def load(request):
     role = request.GET.get("role")
 
     if not dirpath_param:
-        dirpath = Path(settings.BASE_DIR) / "outputs"
+        potential_path = Path.cwd() / "outputs"
+        dirpath = potential_path if potential_path.exists() else Path.cwd()
     else:
         dirpath = Path(dirpath_param)
 
