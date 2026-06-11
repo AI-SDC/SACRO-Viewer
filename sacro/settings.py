@@ -156,16 +156,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # be present in requests, to avoid localhost interception
 APP_TOKEN = os.environ.get("SACRO_APP_TOKEN")
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-STATICFILES_DIRS = [
-    str(BASE_DIR / "static"),
-    ("sacro", str(env.path("BUILT_ASSETS", default=BASE_DIR / "assets" / "dist"))),
-]
-# we put staticfiles inside the python module, so that its easy to bundle with pyoxidizer
-STATIC_ROOT = env.path("STATIC_ROOT", default=BASE_DIR / "sacro/staticfiles")
-STATIC_URL = "/static/"
-
 # Assets location within the package (used when installed via pip)
 PKG_DIR = Path(__file__).resolve().parent
 DIST_DIR = PKG_DIR / "static" / "sacro"
@@ -173,11 +163,40 @@ DIST_DIR = PKG_DIR / "static" / "sacro"
 # Local development assets
 LOCAL_DIST_DIR = BASE_DIR / "assets" / "dist"
 
-if LOCAL_DIST_DIR.exists():
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
+STATICFILES_DIRS = []
+
+
+INTERNAL_STATIC = PKG_DIR / "static"
+if INTERNAL_STATIC.exists():  # pragma: no cover
+    STATICFILES_DIRS.append(str(INTERNAL_STATIC))
+
+
+if (BASE_DIR / "static").exists():  # pragma: no cover
+    STATICFILES_DIRS.append(str(BASE_DIR / "static"))
+
+
+if LOCAL_DIST_DIR.exists():  # pragma: no cover
+    STATICFILES_DIRS.append(("sacro", str(LOCAL_DIST_DIR)))
+elif DIST_DIR.exists():  # pragma: no cover
+    STATICFILES_DIRS.append(("sacro", str(DIST_DIR)))
+
+STATIC_ROOT_DEFAULT = BASE_DIR / "sacro/staticfiles"
+if not STATIC_ROOT_DEFAULT.exists():  # pragma: no cover
+    import tempfile
+
+    STATIC_ROOT_DEFAULT = Path(tempfile.gettempdir()) / "sacro_staticfiles"
+    STATIC_ROOT_DEFAULT.mkdir(parents=True, exist_ok=True)
+
+STATIC_ROOT = env.path("STATIC_ROOT", default=STATIC_ROOT_DEFAULT)
+STATIC_URL = "/static/"
+
+if LOCAL_DIST_DIR.exists():  # pragma: no cover
     DJANGO_VITE_ASSETS_PATH = LOCAL_DIST_DIR
 else:  # pragma: no cover
     # When bundled, check for collected static files first
-    STATIC_ROOT_ASSETS = STATIC_ROOT / "sacro"
+    STATIC_ROOT_ASSETS = Path(str(STATIC_ROOT)) / "sacro"
     if STATIC_ROOT_ASSETS.exists():
         DJANGO_VITE_ASSETS_PATH = STATIC_ROOT_ASSETS
     else:
@@ -190,6 +209,7 @@ DJANGO_VITE_MANIFEST_PATH = DJANGO_VITE_ASSETS_PATH / "manifest.json"
 
 # Insert Whitenoise Middleware.
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+WHITENOISE_USE_FINDERS = True
 
 
 # PROJECT SETTINGS
