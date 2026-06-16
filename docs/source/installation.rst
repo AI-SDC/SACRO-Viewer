@@ -24,7 +24,7 @@ Windows Installation
 
 1. Download the `latest Windows release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.0/SACRO-0.2.0-windows-build.zip>`_
 2. Unzip the downloaded file
-3. Run the included ``sacro 0.2.0.msi`` installer
+3. Run the included ``sacro 0.2.1.msi`` installer
 4. Follow the installation wizard prompts
 5. The application will launch automatically when installation completes
 
@@ -352,7 +352,7 @@ Troubleshooting
 
   .. code-block:: bash
 
-     chmod +x sacro_0.2.0_amd64.deb
+     chmod +x sacro_0.2.1_amd64.deb
 
 **Application won't start**
   Check that your system meets the minimum requirements listed above. On older systems, try running the application from the command line to see detailed error messages.
