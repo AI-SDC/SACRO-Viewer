@@ -22,7 +22,7 @@ System Requirements
 Windows Installation
 ====================
 
-1. Download the `latest Windows release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.0/SACRO-0.2.0-windows-build.zip>`_
+1. Download the `latest Windows release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.1/SACRO-0.2.1-windows-build.zip>`_
 2. Unzip the downloaded file
 3. Run the included ``sacro 0.2.1.msi`` installer
 4. Follow the installation wizard prompts
@@ -34,20 +34,20 @@ Windows Installation
 Linux Installation
 ==================
 
-1. Download the `latest Linux release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.0/SACRO-0.2.0-linux-build.zip>`_
+1. Download the `latest Linux release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.1/SACRO-0.2.1-linux-build.zip>`_
 2. Unzip the downloaded file
 3. Install the included ``.deb`` package:
 
    .. code-block:: bash
 
-      sudo dpkg -i sacro_0.2.0_amd64.deb
+      sudo dpkg -i sacro_0.2.1_amd64.deb
 
 4. Launch the application from your applications menu or run ``sacro`` from the command line
 
 macOS Installation
 ==================
 
-1. Download the `latest macOS release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.0/SACRO-0.2.0-macos-build.zip>`_
+1. Download the `latest macOS release <https://github.com/AI-SDC/SACRO-Viewer/releases/download/v0.2.1/SACRO-0.2.1-macos-build.zip>`_
 2. Unzip the downloaded file
 3. Move ``Sacro.app`` to your Applications folder
 4. Right-click on the Sacro app icon and select "Open"
@@ -81,7 +81,7 @@ To install a specific version:
 
 .. code-block:: bash
 
-   pip install sacroviewer==0.2.0
+   pip install sacroviewer==0.2.1
 
 To upgrade to the latest version:
 
