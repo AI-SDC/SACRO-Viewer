@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "Sacroviewer"
-version = "0.2.0"
+version = "0.2.1"
 description = "A viewer for research outputs produced using the ACRO tools"
 readme = "README.md"
 license = { text = "MIT" }
