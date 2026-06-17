@@ -89,7 +89,7 @@ SACRO Viewer: Graphical Output Review Tool
 SACRO Viewer is a desktop application for reviewing research outputs produced using the ACRO tools. It provides a graphical interface for output checkers to review files, researcher comments, and statistical analysis outcomes in a secure environment.
 
 .. note::
-   **Current Version:** v0.2.0 - Cross-platform desktop application with Windows, Linux, and macOS support.
+   **Current Version:** v0.2.1 - Cross-platform desktop application with Windows, Linux, and macOS support.
 
 What is SACRO Viewer?
 =====================
