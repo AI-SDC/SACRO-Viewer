@@ -98,21 +98,30 @@ const mainMenu = (serverUrl) => {
   }
 
   let buildDate = "Not defined";
-  const buildDateFile = nodePath.join(
-    nodePath.dirname(findAppPath()),
-    "build_date.txt"
-  );
-  log.info(buildDateFile);
-  if (fs.existsSync(buildDateFile)) {
-    buildDate = fs.readFileSync(buildDateFile);
-    buildDate = `${buildDate}`.trim();
+  const appPath = findAppPath();
+  if (appPath) {
+    const buildDateFile = nodePath.join(
+      nodePath.dirname(appPath),
+      "build_date.txt"
+    );
+    log.info(buildDateFile);
+    if (fs.existsSync(buildDateFile)) {
+      buildDate = fs.readFileSync(buildDateFile);
+      buildDate = `${buildDate}`.trim();
+    }
   }
+
+  // Get the app directory to locate icon resources
+  const appDir = process.env.PORTABLE_EXECUTABLE_DIR ||
+                 nodePath.dirname(process.execPath) ||
+                 nodePath.join(__dirname, "..");
+  const iconPath = nodePath.join(appDir, "build", "icon.png");
 
   app.setAboutPanelOptions({
     applicationName: "SACRO",
     applicationVersion: `Version ${app.getVersion()} (Build ${buildDate})`,
     credits: "By OpenSAFELY",
-    iconPath: "build/icon.png",
+    iconPath: iconPath,
   });
 
   return Menu.buildFromTemplate(menuItems);

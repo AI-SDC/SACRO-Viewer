@@ -153,7 +153,11 @@ run: devenv collectstatic test-outputs
     $BIN/python manage.py runserver
 
 # Build python application
-build: collectstatic
+build: assets-build
+    #!/usr/bin/env bash
+    set -eu
+    mkdir -p sacro/static/sacro
+    cp -r assets/dist/* sacro/static/sacro/
     $BIN/pyoxidizer build --release
 
 # Install the Node.js dependencies

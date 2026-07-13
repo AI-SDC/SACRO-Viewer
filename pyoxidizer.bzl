@@ -276,6 +276,14 @@ def make_exe():
         packages=["sacro",],
     ))
 
+    # Add static files from sacro/static directory
+    for resource in exe.read_package_root(
+        path="sacro",
+        packages=["static"],
+    ):
+        resource.add_location = "filesystem-relative:lib"
+        exe.add_python_resource(resource)
+
     # Discover Python files from a virtualenv and add them to our embedded
     # context.
     #exe.add_python_resources(exe.read_virtualenv(path="/path/to/venv"))
