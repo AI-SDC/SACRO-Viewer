@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".node-version"
           cache: "npm"
