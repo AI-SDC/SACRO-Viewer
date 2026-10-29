@@ -173,6 +173,55 @@ now be able to see the outputs rendered in the app.
 
 You can click on the `Approve and Download` button to download the files.
 
+## Troubleshooting Build Issues
+
+### `just build` fails with corrupted virtual environment
+
+**Symptoms:**
+- Error: `No module named 'pip._internal'`
+- Error: `.wenv/Scripts/pyoxidizer: No such file or directory`
+- Build fails even though it previously worked
+
+**Solution:**
+Clean the generated files and rebuild from scratch:
+
+```bash
+# Clean all generated files
+rm -rf .wenv node_modules assets/dist sacro/static/sacro
+
+# Run the build (it will regenerate everything)
+just build
+```
+
+**Note for Windows users:**
+- Make sure you're running `just build` from **Git Bash**, not PowerShell or CMD
+- The justfile uses bash scripts which require a Unix-like shell environment
+- If you don't have Git Bash, install [Git for Windows](https://gitforwindows.org/)
+
+### `cygpath` executable not found
+
+**Symptoms:**
+- Error: `Could not find 'cygpath' executable`
+
+**Cause:**
+You're trying to run `just` commands from PowerShell or CMD instead of Git Bash.
+
+**Solution:**
+Run all `just` commands from Git Bash terminal, which comes with Git for Windows.
+
+### PyOxidizer not found after running `just devenv`
+
+**Symptoms:**
+- Virtual environment is created but pyoxidizer is missing
+
+**Solution:**
+Install pyoxidizer manually and then rebuild:
+
+```bash
+.wenv/Scripts/pip install pyoxidizer
+just build
+```
+
 ## Stack
 
 ### Vite

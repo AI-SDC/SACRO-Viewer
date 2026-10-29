@@ -28,6 +28,9 @@ export async function createTableElement({
     outcome,
     fileIndex,
   });
+  
+  // Apply styles to content container to prevent overflow with !important
+  element.style.cssText = "overflow-x: auto !important; max-width: 100% !important; overflow-y: visible !important;";
 }
 
 /**
@@ -37,7 +40,12 @@ export async function createTableElement({
 export function createImageElement(el, url) {
   const img = document.createElement("img");
   img.src = url;
+  img.style.cssText = "max-width: 100% !important; height: auto !important;";
+  
   el.appendChild(img);
+  
+  // Apply styles to content container
+  el.style.cssText = "overflow-x: auto !important; max-width: 100% !important; overflow-y: visible !important;";
 }
 
 /**
@@ -58,7 +66,14 @@ export async function createTextElement(el, ext, url) {
 
   const preEl = document.createElement("pre");
   preEl.appendChild(textEl);
+  
+  // Apply styles to prevent overflow issues with !important to override CSS
+  preEl.style.cssText = "white-space: pre-wrap !important; word-break: break-all !important; overflow-wrap: anywhere !important; max-width: 100% !important;";
+  
   el.appendChild(preEl);
+  
+  // Apply styles to content container
+  el.style.cssText = "overflow-x: auto !important; max-width: 100% !important; overflow-y: visible !important;";
 
   hljs.highlightAll();
 }
@@ -77,7 +92,14 @@ export async function createCodeElement(el, ext, url) {
 
   const preEl = document.createElement("pre");
   preEl.appendChild(codeEl);
+  
+  // Apply styles to prevent overflow issues with !important to override CSS
+  preEl.style.cssText = "white-space: pre-wrap !important; word-break: break-all !important; overflow-wrap: anywhere !important; max-width: 100% !important;";
+  
   el.appendChild(preEl);
+  
+  // Apply styles to content container
+  el.style.cssText = "overflow-x: auto !important; max-width: 100% !important; overflow-y: visible !important;";
 
   hljs.highlightAll();
 }
@@ -89,4 +111,7 @@ export async function createCodeElement(el, ext, url) {
 export function invalidFileElement(el) {
   el.textContent =
     "This type of file cannot be displayed. It should be reviewed outside of this application";
+  
+  // Apply styles to content container with !important
+  el.style.cssText = "overflow-x: auto !important; max-width: 100% !important; word-break: break-word !important; overflow-y: visible !important;";
 }
