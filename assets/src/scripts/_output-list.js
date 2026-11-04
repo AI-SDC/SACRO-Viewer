@@ -1,5 +1,5 @@
 import { effect } from "@preact/signals";
-import outputs from "./_data";
+import outputs, { reviewableOutputs } from "./_data";
 import outputClick from "./_output-click";
 import { approvedOutputs } from "./_signals";
 
@@ -22,6 +22,14 @@ export default function outputList() {
       // set selected class on this list item
       el.classList.add("bg-blue-50");
     });
+
+    if (!Object.prototype.hasOwnProperty.call(reviewableOutputs, outputName)) {
+      el.querySelector(
+        '[data-sacro-el="file-list-review-status"]'
+      ).classList.add("hidden");
+      el.removeAttribute("data-review-status");
+      return;
+    }
 
     // toggle icon changes on state change
     effect(() => {
