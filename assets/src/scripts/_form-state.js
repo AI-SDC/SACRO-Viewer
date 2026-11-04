@@ -50,24 +50,31 @@ function setReviewHint({ el, isVisible, text }) {
  * @param {string} outputName - name of ACRO output
  * @returns {void}
  */
-// eslint-disable-next-line consistent-return
 export default function setFormState(outputName) {
+  const reviewForm = /** @type {HTMLElement} */ (
+    document.getElementById("reviewForm")
+  );
+  if (!reviewForm) {
+    return;
+  }
+  reviewForm.innerHTML = "";
+  if (
+    !Object.prototype.hasOwnProperty.call(approvedOutputs.value, outputName)
+  ) {
+    return;
+  }
+
   const reviewFormTemplate = /** @type {HTMLTemplateElement} */ (
     document.querySelector(`[data-sacro-el="output-details-review-form"]`)
   );
   if (!reviewFormTemplate?.content?.firstElementChild) {
     // eslint-disable-next-line no-console
-    return console.error(
-      `[data-sacro-el="output-details-review-form"] not found`
-    );
+    console.error(`[data-sacro-el="output-details-review-form"] not found`);
+    return;
   }
   const newReviewForm =
     reviewFormTemplate.content.firstElementChild.cloneNode(true);
 
-  const reviewForm = /** @type {HTMLElement} */ (
-    document.getElementById("reviewForm")
-  );
-  reviewForm.innerHTML = "";
   reviewForm?.appendChild(newReviewForm);
 
   const approveRadio = /** @type {HTMLInputElement} */ (

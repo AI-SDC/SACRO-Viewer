@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import outputs from "./_data";
+import { reviewableOutputs } from "./_data";
 
 // Signal for the currently visible output
 export const openOutput = signal();
@@ -7,14 +7,19 @@ export const openOutput = signal();
 // Signal for output comments, initial state is an empty string
 // for each output
 export const outputComments = signal(
-  Object.fromEntries(Object.keys(outputs).map((output) => [output, ""]))
+  Object.fromEntries(
+    Object.keys(reviewableOutputs).map((output) => [output, ""])
+  )
 );
 
 // Signal for the approval state, initial approval status for each output
 // is null
 export const approvedOutputs = signal(
   Object.fromEntries(
-    Object.entries(outputs).map(([output]) => [output, { approved: null }])
+    Object.entries(reviewableOutputs).map(([output]) => [
+      output,
+      { approved: null },
+    ])
   )
 );
 
